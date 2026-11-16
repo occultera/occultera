@@ -250,8 +250,8 @@ Enable it in your overlay:
 
 ```yaml
 components:   # remote, pinned — or copy the folders next to your overlay to edit the host names
-  - https://github.com/occultera/occultera//deploy/kubernetes/components/networkpolicy?ref=v0.12.0
-  - https://github.com/occultera/occultera//deploy/kubernetes/components/ingress-traefik-authentik?ref=v0.12.0
+  - https://github.com/occultera/occultera//deploy/kubernetes/components/networkpolicy?ref=v0.12.1
+  - https://github.com/occultera/occultera//deploy/kubernetes/components/ingress-traefik-authentik?ref=v0.12.1
 ```
 
 The component already sets `AUTH_DISABLED=true`, `COOKIE_SECURE=true` and `NOTIFY_UI_URL` (edit the host). Add

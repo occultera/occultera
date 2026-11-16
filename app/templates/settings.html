@@ -62,6 +62,12 @@
     <label class="chk"><input type="checkbox" name="triggers.spike" {{ 'checked' if st.watch.triggers.spike }}> {{ _('watch.trigger.spike') }}</label>
     <label>{{ _('set.w.spike_factor') }} <input type="number" name="spike_factor" min="1.5" max="100" step="0.5" value="{{ st.watch.spike_factor }}" data-type="float" class="num"></label>
     <label>{{ _('set.w.spike_min') }} <input type="number" name="spike_min" min="10" value="{{ st.watch.spike_min }}" class="num wide"></label>
+    <label>{{ _('set.w.spike_min_level') }} <input type="number" name="spike_min_level" min="0" max="16" value="{{ st.watch.spike_min_level }}" class="num"></label>
+  </div>
+  <div class="trig">
+    <label>{{ _('set.w.spike_exclude') }}
+    <input name="spike_exclude_groups" data-type="list-or-null" value="{{ (st.watch.spike_exclude_groups or [])|join(', ') if st.watch.spike_exclude_groups is not none else '' }}" placeholder="{{ spike_exclude_default|join(', ') }}"></label>
+    <div class="small muted">{{ _('set.w.spike_exclude_help') }}</div>
   </div>
   <div class="trig">
     <label class="chk"><input type="checkbox" name="triggers.agents" {{ 'checked' if st.watch.triggers.agents }} {{ 'disabled' if not env.api }}> {{ _('watch.trigger.agents') }}</label>

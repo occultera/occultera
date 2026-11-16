@@ -20,7 +20,7 @@ The watch is **off** until an administrator switches it on in **Settings → Wat
 | Watched group | an alert of a watched group at or above `group_min_level` (default 10) | list, level |
 | Active Response | Wazuh executed an automatic action (`rule.groups: active_response`) | — |
 | Login after failed attempts | a successful login from a source address with ≥ `brute_failures` failed logins in the `brute_window_minutes` before it — always *critical* | count, window |
-| Sudden increase | the alerts of one interval are ≥ `spike_factor` × the 24 h average and ≥ `spike_min` | factor, minimum |
+| Sudden increase | alerts at `spike_min_level` (default 7) and above in one interval are ≥ `spike_factor` × their 7-day average and ≥ `spike_min` (default 50). The scan groups (`syscheck`, `sca`, `vulnerability-detector`, `rootcheck`, `syscollector`, `ciscat`, `oscap`) do not count. The message names the rules behind the burst | factor, minimum, level, groups |
 | Agents lost | an agent disconnected for more than `agent_minutes` (`ignore_agents` are skipped; 5 or more at once is *critical*). The first scan after a start only learns the current state | minutes |
 
 ## Sorting out
@@ -30,7 +30,19 @@ by the AI) when
 
 - its key is in the **mute** list (an exact key, a prefix ending in `*`, or `rule:<id>`),
 - its rule is an active **baseline** entry in the knowledge base (never for critical events),
-- the same key was announced within `repeat_hours` (default 6) — the count on the existing event goes up.
+- the same key was announced within `repeat_hours` (default 6) — the count on the existing event goes up,
+- it is a **recurring burst**: a sudden increase whose rules already produced a burst of at least half the size
+  in a window of the same length during the last 7 days (scheduled jobs, nightly batches).
+
+### Why the sudden increase works this way
+
+Counting every alert made the trigger fire on scheduled work: a registry scan on a Windows desktop (rules
+750–752, level 5, thousands in a minute), the vulnerability detector closing CVEs after an update (23502, level
+3), an SCA run (19007) or rootcheck. None of these is an attack, and the old message did not even say which rule
+it was. Now only alerts that matter count, scans are left out, the 7-day average replaces the 24 h one, the event
+key is the main rule (`spike:<rule id>`) so it can be muted or filed as baseline like any other rule, and a burst
+the same rules already did this week stays on the watch page without a notification. To get the old behaviour
+back, set the level to 0 and the groups to `-`.
 
 ## Channels and quiet hours
 

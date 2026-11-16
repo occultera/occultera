@@ -13,7 +13,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 from .config import DAYS, Schedule
 
@@ -24,7 +24,10 @@ TRIGGERS = ("level", "rules", "groups", "brute_force", "spike", "agents", "activ
 TUNABLE: dict[str, tuple[float, float]] = {
     "critical_level": (1, 16), "group_min_level": (1, 16), "brute_failures": (3, 1000),
     "spike_factor": (1.5, 100), "spike_min": (10, 10_000_000), "agent_minutes": (5, 1440),
+    "spike_min_level": (0, 16),
 }
+# groups whose alerts come in scheduled batches (scans): a burst of them is expected, not an attack
+SPIKE_EXCLUDE = ("syscheck", "sca", "vulnerability-detector", "rootcheck", "syscollector", "ciscat", "oscap")
 CUSTOM_NAME = re.compile(r"x_[a-z0-9_]{1,24}")
 MAX_CUSTOM = 20
 MAX_PATTERN = 200
@@ -80,10 +83,26 @@ class WatchSettings(BaseModel):
     group_min_level: int = Field(10, ge=1, le=16)           # watched groups only count at/above this level
     brute_failures: int = Field(10, ge=3, le=1000)          # failed logins before a success, same source
     brute_window_minutes: int = Field(30, ge=5, le=240)
-    spike_factor: float = Field(5.0, ge=1.5, le=100)        # × the 24 h average for a window of the same length
-    spike_min: int = Field(500, ge=10, le=10_000_000)       # … and at least this many alerts
+    spike_factor: float = Field(5.0, ge=1.5, le=100)        # × the 7-day average for a window of the same length
+    spike_min: int = Field(50, ge=10, le=10_000_000)        # … and at least this many alerts
+    spike_min_level: int = Field(7, ge=0, le=16)            # only alerts at or above this level count
+    spike_exclude_groups: list[str] | None = None           # None = SPIKE_EXCLUDE (scheduled scans); ["-"] = none
     agent_minutes: int = Field(15, ge=5, le=1440)           # an agent counts as lost after this long
     mute: list[str] = Field(default_factory=list)           # event keys an admin silenced (often an AI suggestion)
+
+    @model_validator(mode="before")
+    @classmethod
+    def _spike_v2(cls, v):
+        # Before 0.12.1 the spike counted every alert, so 500 was the default floor. A stored 500 without the
+        # new level setting is that old default: move it to the new one instead of silencing the trigger.
+        if isinstance(v, dict) and "spike_min_level" not in v and v.get("spike_min") == 500:
+            v = {**v, "spike_min": 50}
+        return v
+
+    def spike_excluded(self) -> list[str]:
+        if self.spike_exclude_groups is None:
+            return list(SPIKE_EXCLUDE)
+        return [g for g in self.spike_exclude_groups if g != "-"]
 
     @field_validator("channels")
     @classmethod
@@ -99,7 +118,7 @@ class WatchSettings(BaseModel):
         v = v or {}
         return {k: bool(v.get(k, True)) for k in TRIGGERS}
 
-    @field_validator("rules", "groups", mode="before")
+    @field_validator("rules", "groups", "spike_exclude_groups", mode="before")
     @classmethod
     def _list(cls, v):
         if v is None:

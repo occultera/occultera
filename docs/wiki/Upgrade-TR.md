@@ -72,6 +72,12 @@ etkisizdir. Eski sürüm yeni veriyle düzgün çalışmazsa yükseltmeden önce
 
 ## Sürüm notları
 
+### 0.12.1
+
+- **Ani artış** yalnız seviye 7 ve üstü alarmları sayar, tarama gruplarını dışarıda bırakır, 7 günlük ortalamayla
+  karşılaştırır ve artışı yapan kuralları adıyla verir. Tekrarlayan bir patlama bildirim göndermez. Varsayılan en
+  az değer artık 50; eski sürümden kayıtlı 500, 50'ye çekilir. Bkz. [Nöbet](Watch-TR#ani-artış-neden-böyle-çalışıyor).
+
 ### 0.12.0
 
 - **Projenin adı artık Occultera.** Başka hiçbir şey değişmedi: yeni ayar yok, veri taşıma yok.

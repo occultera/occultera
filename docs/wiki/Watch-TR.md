@@ -20,7 +20,7 @@ Nöbet, bir yönetici **Ayarlar → Nöbet** (`/e/<ortam>/settings`) bölümünd
 | İzlenen grup | izlenen bir grubun `group_min_level` veya üstündeki alarmı (varsayılan 10) | liste, seviye |
 | Active Response | Wazuh otomatik bir işlem yaptı (`rule.groups: active_response`) | — |
 | Başarısız denemelerden sonra giriş | aynı kaynak adresten, öncesindeki `brute_window_minutes` içinde en az `brute_failures` başarısız denemeden sonra başarılı giriş — her zaman *kritik* | sayı, süre |
-| Ani artış | bir aralığın alarmları 24 saatlik ortalamanın `spike_factor` katı ve en az `spike_min` | kat, en az |
+| Ani artış | bir aralıktaki `spike_min_level` (varsayılan 7) ve üstü alarmlar, 7 günlük ortalamalarının `spike_factor` katı ve en az `spike_min` (varsayılan 50). Tarama grupları (`syscheck`, `sca`, `vulnerability-detector`, `rootcheck`, `syscollector`, `ciscat`, `oscap`) sayılmaz. Mesaj, artışı yapan kuralları adıyla verir | kat, en az, seviye, gruplar |
 | Ajan koptu | `agent_minutes` süresinden uzun bağlantısız ajan (`ignore_agents` atlanır; aynı anda 5 ve fazlası *kritik*). Açılıştan sonraki ilk tarama yalnızca mevcut durumu öğrenir | dakika |
 
 ## Ayıklama
@@ -29,7 +29,19 @@ Bir olay şu durumlarda bildirime girmez (yine kaydedilir ve AI yine değerlendi
 
 - anahtarı **susturma** listesindeyse (tam anahtar, `*` ile biten önek ya da `rule:<id>`),
 - kuralı bilgi tabanında etkin bir **baseline** kaydıysa (kritik olaylar için asla),
-- aynı anahtar `repeat_hours` (varsayılan 6) içinde zaten bildirildiyse — mevcut olayın sayısı artar.
+- aynı anahtar `repeat_hours` (varsayılan 6) içinde zaten bildirildiyse — mevcut olayın sayısı artar,
+- **tekrarlayan bir patlamaysa**: kuralları son 7 gün içinde aynı uzunlukta bir aralıkta en az yarısı kadar bir
+  patlama yapmış bir ani artış (planlı işler, gece toplu işleri).
+
+### Ani artış neden böyle çalışıyor
+
+Her alarmı saymak tetikleyiciyi planlı işlerde çalıştırıyordu: bir Windows masaüstündeki kayıt defteri taraması
+(750–752, seviye 5, bir dakikada binlerce), güncelleme sonrası zafiyet tarayıcısının CVE kapatması (23502, seviye
+3), bir SCA taraması (19007) ya da rootcheck. Bunların hiçbiri saldırı değil; eski mesaj hangi kural olduğunu da
+söylemiyordu. Artık yalnız önemli alarmlar sayılıyor, taramalar dışarıda kalıyor, 24 saatlik ortalamanın yerini 7
+günlük ortalama aldı, olay anahtarı ana kural oldu (`spike:<kural no>`) ve bu sayede her kural gibi susturulabiliyor
+ya da baseline olarak kaydedilebiliyor; aynı kuralların bu hafta zaten yaptığı bir patlama bildirim göndermeden
+nöbet sayfasında kalıyor. Eski davranışa dönmek için seviyeyi 0, grupları `-` yapın.
 
 ## Kanallar ve sessiz saatler
 

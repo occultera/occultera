@@ -5,6 +5,24 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.12.1] — 2026-11-16
+
+### Changed
+- **The watch's sudden-increase trigger names what it saw and stops firing on scheduled scans.** It counted every
+  alert, so a registry scan on one Windows desktop (rules 750–752, level 5), the vulnerability detector closing CVEs
+  after an update (23502, level 3), an SCA run or rootcheck sent "2,109 alerts in 5 min — 12.5× the usual" without
+  saying what it was. Now
+  - only alerts at `spike_min_level` (default **7**) and above count, and the scan groups `syscheck`, `sca`,
+    `vulnerability-detector`, `rootcheck`, `syscollector`, `ciscat`, `oscap` are left out
+    (`spike_exclude_groups`; `-` leaves out nothing);
+  - the window is compared with the **7-day** average of the same filter (was 24 h); `spike_min` defaults to 50
+    (a stored 500 from an older version moves to 50 unless the new level was saved too);
+  - the event names the rules that make up the burst (description, count, agents) and its key is the main rule,
+    `spike:<rule id>`, so it can be muted (`rule:<id>`) or filed as baseline like any rule event;
+  - a burst the same rules already produced in a window of the same length during the last 7 days is kept
+    silent as **recurring** (still listed on the watch page and judged by the AI round).
+- Settings → Watch: new fields *count alerts from level* and *leave out these groups*.
+
 ## [0.12.0] — 2026-11-16
 
 The project is now called **Occultera** — *Find the signal in the dark.* No functional changes.

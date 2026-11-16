@@ -70,6 +70,12 @@ you took before the upgrade.
 
 ## Version notes
 
+### 0.12.1
+
+- **Sudden increase** counts only alerts at level 7 and above, leaves out the scan groups, compares with the 7-day
+  average and names the rules behind a burst. A recurring burst stays silent. The default minimum is now 50;
+  a saved 500 from an older version moves to 50. See [Watch](Watch#why-the-sudden-increase-works-this-way).
+
 ### 0.12.0
 
 - **The project is now called Occultera.** Nothing else changes: no new settings, no data migration.

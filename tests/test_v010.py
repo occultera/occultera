@@ -147,15 +147,46 @@ async def test_watch_brute_force_then_success():
 
 async def test_watch_spike():
     web = AGENTS[0]
-    base = [_ev(_at(60 + i * 10), "31101", web) for i in range(100)]     # ~100 in the day before
-    burst = [_ev(_at(0.5 + i * 0.004), "31101", web) for i in range(600)]
+    base = [_ev(_at(60 + i * 60), "31151", web) for i in range(70)]       # ~10 a day at level 10
+    burst = [_ev(_at(0.5 + i * 0.004), "31151", web) for i in range(80)]
     sc, _ = _scanner(base + burst)
     evs = await sc.spike(_at(5), NOW)
-    assert len(evs) == 1 and evs[0]["key"] == "spike:total" and evs[0]["count"] == 600 and evs[0]["factor"] > 5
-    sc, _ = _scanner(base + burst[:100])
-    assert await sc.spike(_at(5), NOW) == []                             # under spike_min
+    assert len(evs) == 1
+    ev = evs[0]
+    assert ev["key"] == "spike:31151" and ev["rule_ids"] == ["31151"] and ev["count"] == 80 and ev["factor"] > 5
+    assert ev["agents"] == ["web01"] and ev["contributors"][0]["description"] and not ev.get("recurring")
+    assert "31151" in ev["title"]
+    sc, _ = _scanner(base + burst[:30])
+    assert await sc.spike(_at(5), NOW) == []                             # under spike_min (50)
     sc, _ = _scanner(base + burst, triggers={"spike": False})
     assert await sc.spike(_at(5), NOW) == []
+
+
+async def test_watch_spike_ignores_low_levels_and_scan_groups():
+    web, win = AGENTS[0], AGENTS[1]
+    low = [_ev(_at(0.5 + i * 0.001), "31101", web) for i in range(2000)]   # level 5 web noise
+    sca = []
+    for i in range(400):                                                  # SCA results at level 7
+        e = _ev(_at(0.5 + i * 0.001), "31151", win)
+        e["rule"].update(id="19007", level=7, groups=["sca"], description="CIS: check failed")
+        sca.append(e)
+    sc, _ = _scanner(low + sca)
+    assert await sc.spike(_at(5), NOW) == []
+    sc, _ = _scanner(low + sca, spike_min_level=0, spike_exclude_groups=["-"])
+    assert len(await sc.spike(_at(5), NOW)) == 1                          # the old behaviour on request
+
+
+async def test_watch_spike_recurring_burst_is_silent():
+    web = AGENTS[0]
+    yesterday = [_ev(_at(24 * 60 + i * 0.004), "31151", web) for i in range(80)]   # same burst a day ago
+    burst = [_ev(_at(0.5 + i * 0.004), "31151", web) for i in range(80)]
+    sc, _ = _scanner(yesterday + burst)
+    evs = await sc.spike(_at(5), NOW)
+    assert len(evs) == 1 and evs[0]["recurring"] is True and evs[0]["contributors"][0]["peak_7d"] >= 40
+    from app.settingsdoc import WatchSettings as WS
+    assert WS.model_validate({"spike_min": 500}).spike_min == 50          # the old default moves
+    assert WS.model_validate({"spike_min": 500, "spike_min_level": 7}).spike_min == 500
+    assert WS.model_validate({"spike_min": 800}).spike_min == 800
 
 
 async def test_watch_agents_learns_first_then_reports():

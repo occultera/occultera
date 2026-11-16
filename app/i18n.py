@@ -1362,6 +1362,10 @@ from .i18n_v120 import EXTRA as _V120  # noqa: E402 - 0.12.0 messages (Occultera
 
 for _lang, _msgs in _V120.items():
     CATALOG[_lang].update(_msgs)
+from .i18n_v121 import EXTRA as _V121  # noqa: E402 - 0.12.1 messages (spike trigger)
+
+for _lang, _msgs in _V121.items():
+    CATALOG[_lang].update(_msgs)
 LANG_NAMES = {"en": "English", "tr": "Türkçe", "es": "Español", "de": "Deutsch"}
 OUTPUT_LANGUAGE = {"en": "English", "tr": "Turkish", "es": "Spanish", "de": "German"}
 

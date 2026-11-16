@@ -9,7 +9,9 @@ involved, so an urgent situation is announced within minutes and costs nothing:
 2. ``rules``/``groups`` the environment's watched rule ids; watched groups at or above ``group_min_level``
 3. ``active_response``  Wazuh took an automatic action
 4. ``brute_force``      a successful login from a source that failed ``brute_failures`` times before it
-5. ``spike``            the alert volume is ``spike_factor`` × the 24 h average
+5. ``spike``            alerts at ``spike_min_level`` and above, outside the scan groups, reach ``spike_factor`` ×
+                        their 7-day average — named by the rules behind them; a burst the same rules already
+                        produced in the last 7 days is kept silent as *recurring*
 6. ``agents``           agents that stopped reporting
 
 Events are then *sorted out* (muted keys, known noise from the knowledge base, the repeat window),
@@ -23,6 +25,7 @@ from __future__ import annotations
 import asyncio
 import fnmatch
 import logging
+import math
 from datetime import UTC, datetime, timedelta
 from typing import TYPE_CHECKING, Any
 
@@ -202,25 +205,90 @@ class Scanner:
         return out
 
     # -------------------------------------------------------- volume
+    def _spike_query(self, frm: datetime, to: datetime, rule_ids: list[str] | None = None) -> dict:
+        cfg = self.cfg
+        flt: list[dict] = [rng(frm, to)]
+        if cfg.spike_min_level > 0:
+            flt.append({"range": {"rule.level": {"gte": cfg.spike_min_level}}})
+        if rule_ids:
+            flt.append({"terms": {"rule.id": rule_ids}})
+        excl = cfg.spike_excluded()
+        return {"bool": {"filter": flt, "must_not": [{"terms": {"rule.groups": excl}}] if excl else []}}
+
     async def spike(self, frm: datetime, to: datetime) -> list[dict]:
+        """A burst of alerts that matter, named by the rules behind it.
+
+        Only alerts at ``spike_min_level`` and above count, and the scan groups (syscheck, SCA, vulnerability
+        detector, rootcheck, …) are left out: their scheduled batches are bursts by design and say nothing about
+        an attack. The window is compared with the 7-day average of the same filter. The event names the rules
+        that make up the burst; when those rules already produced a burst of the same size in the last 7 days
+        the event is marked *recurring* and kept silent (it still shows on the watch page).
+        """
         cfg = self.cfg
         if not cfg.on("spike"):
             return []
         span = (to - frm).total_seconds()
         if span <= 0:
             return []
-        cur = await self.ix.count(self.env.alerts_index, {"bool": {"filter": [rng(frm, to)]}})
+        idx = self.env.alerts_index
+        cur = await self.ix.count(idx, self._spike_query(frm, to))
         if cur < cfg.spike_min:
             return []
-        day = await self.ix.count(self.env.alerts_index, {"bool": {"filter": [rng(frm - timedelta(hours=24), frm)]}})
-        avg = day * span / 86400
-        if avg <= 0 or cur < cfg.spike_factor * avg:
+        week_from = frm - timedelta(days=7)
+        week = await self.ix.count(idx, self._spike_query(week_from, frm))
+        avg = week * span / (7 * 86400)
+        if avg > 0 and cur < cfg.spike_factor * avg:
             return []
-        return [_event(self.env.id, "spike:total", "spike", "high", rule_ids=[], agents=[], srcips=[], count=cur,
-                       first_seen=iso(frm), last_seen=iso(to), baseline=round(avg, 1),
-                       factor=round(cur / avg, 1),
-                       title=t(self.lang, "watch.ev.spike", n=f"{cur:,}", m=round(span / 60),
-                               x=round(cur / avg, 1), avg=f"{round(avg):,}"))]
+        r = await self.ix.search(idx, {"size": 0, "query": self._spike_query(frm, to), "aggs": {
+            "r": {"terms": {"field": "rule.id", "size": 5}, "aggs": {
+                "a": {"terms": {"field": "agent.name", "size": 3}},
+                "d": {"top_hits": {"size": 1, "_source": ["rule.description", "rule.level"]}}}}}})
+        contrib: list[dict] = []
+        for b in _b(r.get("aggregations", {}).get("r") or {}):
+            hits = (b.get("d") or {}).get("hits", {}).get("hits") or [{}]
+            src = hits[0].get("_source") or {}
+            contrib.append({"rule": str(b["key"]), "count": int(b["doc_count"]),
+                            "agents": [str(a["key"]) for a in _b(b.get("a") or {})],
+                            "description": str(_get(src, "rule.description") or "")[:120],
+                            "level": _level(src)})
+        if not contrib:
+            return []
+        # the rules that make up most of the burst (at least 80 %, at most three)
+        main: list[dict] = []
+        for c in contrib:
+            main.append(c)
+            if sum(x["count"] for x in main) >= 0.8 * cur or len(main) == 3:
+                break
+        # has each of them already done this in the last 7 days? (largest window of the same length)
+        minutes = max(5, math.ceil(span / 60))
+        h = await self.ix.search(idx, {"size": 0, "query": self._spike_query(week_from, frm, [c["rule"] for c in main]),
+                                       "aggs": {"r": {"terms": {"field": "rule.id", "size": len(main)}, "aggs": {
+                                           "h": {"date_histogram": {"field": TS, "fixed_interval": f"{minutes}m",
+                                                                    "min_doc_count": 1}}}}}})
+        peak = {str(b["key"]): max((int(x["doc_count"]) for x in _b(b.get("h") or {})), default=0)
+                for b in _b(h.get("aggregations", {}).get("r") or {})}
+        for c in main:
+            c["peak_7d"] = peak.get(c["rule"], 0)
+        recurring = all(c["peak_7d"] >= 0.5 * c["count"] for c in main)
+        top = main[0]
+        agents = list(dict.fromkeys(a for c in main for a in c["agents"]))[:5]
+        names = "; ".join(f"{c['rule']} “{c['description']}” ×{c['count']:,}" for c in main)
+        m = round(span / 60)
+        lvl = cfg.spike_min_level
+        if avg > 0:
+            x = cur / avg
+            title = t(self.lang, "watch.ev.spike", n=f"{cur:,}", m=m, lvl=lvl,
+                      x=">100" if x > 100 else (f"{x:.0f}" if x >= 10 else f"{x:.1f}"),
+                      avg="<1" if avg < 1 else (f"{avg:.1f}" if avg < 10 else f"{round(avg):,}"), rules=names)
+        else:
+            title = t(self.lang, "watch.ev.spike_new", n=f"{cur:,}", m=m, lvl=lvl, rules=names)
+        ev = _event(self.env.id, f"spike:{top['rule']}", "spike", "high", rule_ids=[c["rule"] for c in main],
+                    level=top["level"], agents=agents, srcips=[], count=cur, first_seen=iso(frm),
+                    last_seen=iso(to), baseline=round(avg, 2), factor=round(cur / avg, 1) if avg > 0 else None,
+                    contributors=main, title=title)
+        if recurring:
+            ev["recurring"] = True
+        return [ev]
 
     # -------------------------------------------------------- agents
     async def agents(self, now: datetime, known: set[str] | None) -> tuple[list[dict], set[str] | None]:
@@ -281,7 +349,7 @@ def muted(ev: dict, mute: list[str]) -> bool:
 
 def known_noise(ev: dict, baseline_rules: set[str]) -> bool:
     """Alert-based events whose rule a human already filed as known noise (knowledge base ``baseline``)."""
-    return ev["trigger"] in ("rules", "groups", "level") and ev["severity"] != "critical" \
+    return ev["trigger"] in ("rules", "groups", "level", "spike") and ev["severity"] != "critical" \
         and bool(ev.get("rule_ids")) and set(ev["rule_ids"]) <= baseline_rules
 
 
@@ -321,7 +389,8 @@ def event_line(ev: dict, lang: str) -> str:
 def compact_for_ai(ev: dict) -> dict:
     """What the AI round sees of one event (ids and numbers; the sample goes through the masker like all text)."""
     keep = ("id", "trigger", "severity", "title", "rule_ids", "level", "agents", "srcips", "users", "count",
-            "first_seen", "last_seen", "baseline", "factor", "successes", "status", "sample")
+            "first_seen", "last_seen", "baseline", "factor", "successes", "status", "sample", "contributors",
+            "recurring")
     return {k: ev[k] for k in keep if ev.get(k) not in (None, "", [])}
 
 
@@ -404,6 +473,8 @@ class WatchMixin:
                 ev["status"], ev["why_silent"] = "muted", "mute"
             elif known_noise(ev, baseline):
                 ev["status"], ev["why_silent"] = "muted", "baseline"
+            elif ev.get("recurring"):
+                ev["status"], ev["why_silent"] = "muted", "recurring"
             fresh.append(ev)
 
         quiet = quiet_now(cfg, now.astimezone(self.tz))
