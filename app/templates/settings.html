@@ -80,6 +80,11 @@
     <div class="small muted">{{ _('set.w.egress_help') if has_prom else _('set.w.egress_no_prom') }}</div>
   </div>
   <div class="trig">
+    <label class="chk"><input type="checkbox" name="triggers.prom_alerts" {{ 'checked' if st.watch.triggers.prom_alerts }} {{ 'disabled' if not has_prom }}> {{ _('watch.trigger.prom_alerts') }}</label>
+    <label>{{ _('set.w.prom_sev') }} <input name="prom_alert_severities" data-type="list-or-null" value="{{ st.watch.prom_alert_severities|join(', ') }}" placeholder="critical"></label>
+    <div class="small muted">{{ _('set.w.prom_help') if has_prom else _('set.w.egress_no_prom') }}</div>
+  </div>
+  <div class="trig">
     <label class="chk"><input type="checkbox" name="triggers.agents" {{ 'checked' if st.watch.triggers.agents }} {{ 'disabled' if not env.api }}> {{ _('watch.trigger.agents') }}</label>
     <label>{{ _('set.w.agent_minutes') }} <input type="number" name="agent_minutes" min="5" max="1440" value="{{ st.watch.agent_minutes }}" class="num"></label>
   </div>

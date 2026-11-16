@@ -13,6 +13,7 @@ window stays inside a 7-day retention) and gets a status — ``ok``, ``warn`` or
 * container restarts and the last termination reasons (OOMKilled, crash loops)
 * certificates managed by cert-manager (days left, not ready)
 * scrape targets that are down — the places where this page, and Occultera, are blind
+* the alerts the cluster's own Prometheus is firing, grouped, with an optional AI explanation (``pulse_ai``)
 
 A panel whose metrics do not exist (no Kong, no cert-manager …) says so instead of failing; one broken query
 never hides the others.
@@ -300,6 +301,13 @@ class Pulse:
         return {"rows": rows, "soonest": rows[0]["days"], "n_warn": sum(r["status"] != "ok" for r in rows),
                 "status": worst(*(r["status"] for r in rows))}
 
+    async def alerts(self) -> dict:
+        from .clusteralerts import counts, group
+        g = group(await self.p.alerts())
+        c = counts(g)
+        return {"groups": g, "counts": c, "total": sum(c.values()),
+                "status": "bad" if c["critical"] else "warn" if c["warning"] else "ok"}
+
     async def targets(self) -> dict:
         up, down = await asyncio.gather(self.one("count(up)"), self.vec("up == 0"))
         if up is None:
@@ -318,7 +326,7 @@ class Pulse:
             return {"error": f"{type(e).__name__}"}
 
     async def collect(self) -> dict:
-        names = ("egress", "ingress", "secrets", "dns", "cpu", "restarts", "certs", "targets")
+        names = ("alerts", "egress", "ingress", "secrets", "dns", "cpu", "restarts", "certs", "targets")
         res = await asyncio.gather(*(self._safe(n, getattr(self, n)()) for n in names))
         out: dict[str, Any] = {n: Panel(r) for n, r in zip(names, res, strict=True)}
         out["at"] = self.now.isoformat()

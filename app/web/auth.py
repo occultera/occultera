@@ -114,7 +114,7 @@ def explicit_perm(method: str, path: str) -> str | None:
     if path.endswith("/deploy") or path.endswith("/undeploy") or path.endswith("/promoted"):
         return authz.DEPLOY
     if path.endswith("/run") or path.endswith("/check") or path.endswith("/liveness") \
-            or path.endswith("/notify-test") or path.endswith("/verify"):
+            or path.endswith("/notify-test") or path.endswith("/verify") or path.endswith("/pulse/explain"):
         return authz.RUN
     if path.endswith("/kb/import") or path.endswith("/kb/export") or "/k/" in path or path.endswith("/k"):
         return authz.KNOWLEDGE

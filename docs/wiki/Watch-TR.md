@@ -22,6 +22,7 @@ Nöbet, bir yönetici **Ayarlar → Nöbet** (`/e/<ortam>/settings`) bölümünd
 | Başarısız denemelerden sonra giriş | aynı kaynak adresten, öncesindeki `brute_window_minutes` içinde en az `brute_failures` başarısız denemeden sonra başarılı giriş — her zaman *kritik* | sayı, süre |
 | Ani artış | bir aralıktaki `spike_min_level` (varsayılan 7) ve üstü alarmlar, 7 günlük ortalamalarının `spike_factor` katı ve en az `spike_min` (varsayılan 50). Tarama grupları (`syscheck`, `sca`, `vulnerability-detector`, `rootcheck`, `syscollector`, `ciscat`, `oscap`) sayılmaz. Mesaj, artışı yapan kuralları adıyla verir | kat, en az, seviye, gruplar |
 | Olağan dışı dışarı aktarım (varsayılan kapalı) | bir Kubernetes iş yükü bir aralıkta pod'larından en az `egress_min_mb` (varsayılan 500 MB) ve 7 günlük ortalamasının en az `egress_factor` (varsayılan 5) katı veri gönderdi. Prometheus kaynağı gerekir; bkz. [aşağısı](#olağan-dışı-dışarı-aktarım) | kat, MB, namespace'ler |
+| Küme alarmı (varsayılan kapalı) | kümenin kendi Prometheus'u seçilen önem derecesinde bir alarm ateşlemeye başladı (`prom_alert_severities`, varsayılan `critical`); küme, alarm ve önem derecesi başına tek olay. İlk görüldüğünde iki saatten uzun süredir ateşlenen alarm *hâlâ ateşleniyor* olarak sessiz kalır | önem dereceleri |
 | Ajan koptu | `agent_minutes` süresinden uzun bağlantısız ajan (`ignore_agents` atlanır; aynı anda 5 ve fazlası *kritik*). Açılıştan sonraki ilk tarama yalnızca mevcut durumu öğrenir | dakika |
 
 ## Ayıklama

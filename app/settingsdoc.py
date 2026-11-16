@@ -19,9 +19,10 @@ from .config import DAYS, Schedule
 
 HM = re.compile(r"([01]\d|2[0-3]):[0-5]\d")
 CHANNELS = ("email", "telegram", "teams", "slack", "discord", "webhook", "ntfy")
-TRIGGERS = ("level", "rules", "groups", "brute_force", "spike", "agents", "active_response", "egress")
+TRIGGERS = ("level", "rules", "groups", "brute_force", "spike", "agents", "active_response", "egress", "prom_alerts")
 # triggers that stay off until an administrator turns them on (they need an extra source or local tuning)
-DEFAULT_OFF = ("egress",)
+DEFAULT_OFF = ("egress", "prom_alerts")
+PROM_SEVERITIES = ("critical", "error", "warning", "info")
 # what the AI may suggest to change (and an admin may accept): name → (min, max)
 TUNABLE: dict[str, tuple[float, float]] = {
     "critical_level": (1, 16), "group_min_level": (1, 16), "brute_failures": (3, 1000),
@@ -96,6 +97,7 @@ class WatchSettings(BaseModel):
     egress_factor: float = Field(5.0, ge=1.5, le=100)       # outbound bytes × the workload's 7-day average
     egress_min_mb: int = Field(500, ge=10, le=1_000_000)    # … and at least this many MB in the window
     egress_exclude_namespaces: list[str] | None = None      # None = EGRESS_EXCLUDE; ["-"] = none
+    prom_alert_severities: list[str] = Field(default_factory=lambda: ["critical"])   # cluster alerts announced
     mute: list[str] = Field(default_factory=list)           # event keys an admin silenced (often an AI suggestion)
 
     @model_validator(mode="before")
@@ -130,6 +132,17 @@ class WatchSettings(BaseModel):
     def _tr(cls, v):
         v = v or {}
         return {k: bool(v.get(k, k not in DEFAULT_OFF)) for k in TRIGGERS}
+
+    @field_validator("prom_alert_severities", mode="before")
+    @classmethod
+    def _sev(cls, v):
+        if isinstance(v, str):
+            v = re.split(r"[,\s]+", v)
+        out = [str(x).strip().lower() for x in (v or []) if str(x).strip()]
+        bad = [x for x in out if x not in PROM_SEVERITIES]
+        if bad:
+            raise ValueError(f"unknown severity: {bad}; one of {list(PROM_SEVERITIES)}")
+        return list(dict.fromkeys(out)) or ["critical"]
 
     @field_validator("egress_exclude_namespaces", mode="before")
     @classmethod

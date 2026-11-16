@@ -70,6 +70,12 @@ you took before the upgrade.
 
 ## Version notes
 
+### 0.14.0
+
+- Cluster alerts: a panel and **Explain with AI** on the cluster pulse, `cluster_alerts` in the daily review, the
+  `prom_alerts` watch trigger (off until you turn it on) and tool. Nothing to configure beyond the Prometheus
+  sources you already have. See [Cluster pulse](Cluster-Pulse#firing-alerts).
+
 ### 0.13.0
 
 - **Several clusters per environment** with `sources.prometheus_extra` (names required). Nothing changes for an

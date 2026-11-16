@@ -43,6 +43,31 @@ async def _launch(request: Request, kind: str, env_id: str, key: str, fn) -> obj
     return JSONResponse(job.public(), status_code=202 if job.state == "running" else 200)
 
 
+@router.post("/api/e/{env_id}/pulse/explain")
+async def api_pulse_explain(request: Request, env_id: str, c: str = ""):
+    """AI explanation of the alerts one cluster's Prometheus is firing (a job: the model may take a minute)."""
+    from ..pulse_ai import explain
+    from ..services import clusters_of
+    from .ui import tpl
+    er = _env(request, env_id)
+    cs = clusters_of(er.sources)
+    rt, lang = _rt(request), ui_lang(request)
+    if not cs and rt.demo:                       # demo: no model, no cluster — a plain list of the sample alerts
+        from ..clusteralerts import group
+        from ..demo_pulse import DEMO_ALERTS
+        from ..pulse_ai import _plain
+        md = _plain(group(DEMO_ALERTS), lang)
+        return {"cluster": "demo", "md": md, "ai": False, "html": str(tpl.env.filters["md"](md)), "at": now_iso()}
+    if not cs:
+        raise HTTPException(404, "no Prometheus source for this environment")
+    name = c if c in cs else next(iter(cs))
+
+    async def work(job):
+        out = await explain(rt, env_id, name, lang)
+        return {**out, "html": str(tpl.env.filters["md"](out["md"]))}
+    return await _launch(request, "explain", env_id, f"explain:{env_id}:{name}", work)
+
+
 @router.get("/api/e/{env_id}/jobs/{job_id}")
 async def api_job(request: Request, env_id: str, job_id: str):
     _env(request, env_id)

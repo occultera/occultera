@@ -17,6 +17,8 @@ involved, so an urgent situation is announced within minutes and costs nothing:
                         ``egress_min_mb``) — read from Prometheus (cAdvisor), off by default. It sees volume, not
                         content: a possible data leak, a backup or a sync job look the same, so a transfer the same
                         workload already made in the last 7 days is kept silent as *recurring*
+8. ``prom_alerts``      the clusters' own Prometheus started firing an alert of a selected severity (default
+                        critical); off by default. Alerts already firing for more than two hours stay silent
 
 Events are then *sorted out* (muted keys, known noise from the knowledge base, the repeat window),
 *announced* at once on the selected channels as "rule-based alert — not reviewed by AI" (held back
@@ -54,6 +56,7 @@ AUTH_FAIL = ["authentication_failed", "authentication_failures"]
 AUTH_OK = ["authentication_success"]
 MAX_HITS = 500
 MAX_WINDOW_MINUTES = 120          # after downtime the watch does not replay more than this
+PROM_FRESH = 2 * 3600             # a cluster alert active longer than this when first seen is not "new"
 PENDING = ("new", "notified", "held", "muted")
 VERDICTS = ("real_incident", "investigate", "expected", "noise")
 
@@ -123,7 +126,42 @@ class Scanner:
             self._safe("spike", self.spike(frm, to), []),
             self._safe("agents", self.agents(to, known_disconnected), ([], known_disconnected)),
             self._safe("egress", self.egress(frm, to), []))
-        return a + b + c + d[0] + e, d[1]
+        f = await self._safe("prom_alerts", self.prom_alerts(to), [])
+        return a + b + c + d[0] + e + f, d[1]
+
+    # -------------------------------------------------------- the clusters' own Prometheus alerts
+    async def prom_alerts(self, now: datetime) -> list[dict]:
+        """An alert of a selected severity that the cluster's Prometheus fires; new ones are announced.
+
+        One event per cluster, alert name and severity (``promalert:<cluster>:<alert>:<severity>``), so the repeat
+        window keeps a long-running alert to one message; an alert active for more than ``PROM_FRESH`` when it is
+        first seen (for example when the trigger is switched on) is recorded silently as *still firing*.
+        """
+        from .clusteralerts import collect
+        cfg = self.cfg
+        if not cfg.on("prom_alerts") or not self.clusters:
+            return []
+        out: list[dict] = []
+        for name, res in (await collect(self.clusters)).items():
+            if "error" in res:
+                self.errors.append(f"prom_alerts[{name}]: {res['error'][:80]}")
+                continue
+            for g in res["groups"]:
+                if g["severity"] not in cfg.prom_alert_severities:
+                    continue
+                since = _parse(g["since"]) if g.get("since") else now
+                ns = ", ".join(g["namespaces"][:4]) + ("…" if len(g["namespaces"]) > 4 else "")
+                title = t(self.lang, "watch.ev.promalert", cluster=name, alert=g["name"], sev=g["severity"],
+                          n=g["count"], ns=ns or "—", summary=g.get("summary") or "")
+                ev = _event(self.env.id, f"promalert:{name}:{g['name']}:{g['severity']}", "prom_alerts",
+                            "critical" if g["severity"] == "critical" else "high", rule_ids=[], agents=[], srcips=[],
+                            cluster=name, alert=g["name"], alert_severity=g["severity"], namespaces=g["namespaces"],
+                            targets=g["targets"], count=g["count"], first_seen=iso(since), last_seen=iso(now),
+                            title=title.strip())
+                if (now - since).total_seconds() > PROM_FRESH:
+                    ev["still_firing"] = True
+                out.append(ev)
+        return out
 
     # -------------------------------------------------------- level / rules / groups / active response
     async def alerts(self, frm: datetime, to: datetime) -> list[dict]:
@@ -505,7 +543,8 @@ def compact_for_ai(ev: dict) -> dict:
     """What the AI round sees of one event (ids and numbers; the sample goes through the masker like all text)."""
     keep = ("id", "trigger", "severity", "title", "rule_ids", "level", "agents", "srcips", "users", "count",
             "first_seen", "last_seen", "baseline", "factor", "successes", "status", "sample", "contributors",
-            "recurring", "workload", "bytes", "baseline_bytes", "peak_7d_bytes", "cluster")
+            "recurring", "workload", "bytes", "baseline_bytes", "peak_7d_bytes", "cluster", "alert",
+            "alert_severity", "namespaces", "targets", "still_firing")
     return {k: ev[k] for k in keep if ev.get(k) not in (None, "", [])}
 
 
@@ -589,6 +628,8 @@ class WatchMixin:
                 ev["status"], ev["why_silent"] = "muted", "mute"
             elif known_noise(ev, baseline):
                 ev["status"], ev["why_silent"] = "muted", "baseline"
+            elif ev.get("still_firing"):
+                ev["status"], ev["why_silent"] = "muted", "still_firing"
             elif ev.get("recurring"):
                 ev["status"], ev["why_silent"] = "muted", "recurring_egress" if ev["trigger"] == "egress" else "recurring"
             fresh.append(ev)

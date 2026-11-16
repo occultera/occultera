@@ -5,6 +5,23 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.14.0] — 2026-11-16
+
+### Added
+- **The clusters' own Prometheus alerts** (Alertmanager rules such as KubePodCrashLooping, TargetDown,
+  KubePersistentVolumeFillingUp, certificate expiry), read from `/api/v1/alerts` or, where that is missing, from the
+  `ALERTS` / `ALERTS_FOR_STATE` series; grouped by alert name and severity, `Watchdog` left out.
+  - **Cluster pulse:** a *firing alerts* tile and panel per cluster, and an **Explain with AI** button (run
+    permission): the model reads the grouped alerts, checks them with a few PromQL queries on that cluster and writes
+    what is happening, the likely cause, the priority and concrete checks, security first and noise named as such.
+    The answer goes through the environment's masking and is kept for six hours.
+  - **Daily review:** `cluster_alerts` in the collected summary; security-relevant alerts and outages that explain
+    Wazuh activity become findings, the rest a short note in the summary.
+  - **Watch:** new trigger `prom_alerts` (off by default; `prom_alert_severities`, default `critical`). A new alert
+    is announced once per cluster, alert and severity; one already firing for more than two hours when first seen is
+    recorded silently as *still firing*.
+  - **Tool** `prom_alerts` for the AI and MCP clients (one cluster or all).
+
 ## [0.13.0] — 2026-11-16
 
 ### Added

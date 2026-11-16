@@ -93,6 +93,18 @@ document.addEventListener("DOMContentLoaded", () => {
   }));
   document.querySelectorAll("[data-poll]").forEach(el => poll(el.dataset.runstate, el.dataset.poll, el, !!el.dataset.reload));
 
+  // cluster pulse: AI explanation of the firing alerts (a background job; the answer is server-rendered markdown)
+  document.querySelectorAll("[data-explain]").forEach(btn => btn.addEventListener("click", async () => {
+    const out = document.querySelector("[data-explain-out]");
+    const label = btn.textContent;
+    btn.disabled = true; btn.textContent = tr("pl_working");
+    try {
+      const r = await api(btn.dataset.explain, "POST");
+      out.innerHTML = r.html || "";
+    } catch (e) { out.textContent = tr("error") + " " + e.message; }
+    btn.disabled = false; btn.textContent = label;
+  }));
+
   // finding feedback
   document.querySelectorAll("[data-finding]").forEach(box => {
     box.querySelector("[data-save]").addEventListener("click", async () => {

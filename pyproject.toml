@@ -1,6 +1,6 @@
 [project]
 name = "occultera"
-version = "0.13.0"
+version = "0.14.0"
 description = "AI-assisted daily triage for Wazuh SIEM"
 readme = "README.md"
 license = "AGPL-3.0-only"

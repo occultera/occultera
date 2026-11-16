@@ -77,6 +77,37 @@ class Prometheus:
             {"labels": x.get("metric", {}), "value": (x.get("value") or [None, None])[1]} for x in res[:60]],
             "total_series": len(res)}
 
+    async def alerts(self) -> list[dict]:
+        """Firing alerts with labels, annotations and the time they became active.
+
+        ``/api/v1/alerts`` (Prometheus, Thanos Querier with the rules API) carries the annotations; where it is
+        missing, the ``ALERTS`` / ``ALERTS_FOR_STATE`` series give names, labels and the start time.
+        """
+        try:
+            d = await _get(self.c, "/api/v1/alerts")
+            rows = (d.get("data") or {}).get("alerts")
+            if isinstance(rows, list):
+                return [{"labels": a.get("labels") or {}, "annotations": a.get("annotations") or {},
+                         "active_at": a.get("activeAt")} for a in rows if a.get("state") == "firing"]
+        except SourceError:
+            pass
+        now = time.time()
+        d = await _get(self.c, "/api/v1/query", {"query": 'ALERTS{alertstate="firing"}', "time": now})
+        f = await _get(self.c, "/api/v1/query", {"query": "ALERTS_FOR_STATE", "time": now})
+
+        def key(m: dict) -> tuple:
+            return tuple(sorted((k, v) for k, v in m.items() if k not in ("__name__", "alertstate")))
+        since = {key(x.get("metric") or {}): (x.get("value") or [None, None])[1]
+                 for x in (f.get("data") or {}).get("result") or []}
+        out = []
+        for x in (d.get("data") or {}).get("result") or []:
+            m = x.get("metric") or {}
+            ts = since.get(key(m))
+            out.append({"labels": {k: v for k, v in m.items() if k not in ("__name__", "alertstate")},
+                        "annotations": {},
+                        "active_at": datetime.fromtimestamp(float(ts), UTC).isoformat() if ts else None})
+        return out
+
     async def query_range(self, expr: str, start: str | None, end: str | None, step: str | None) -> dict:
         now = time.time()
         e = _ts(end, now)

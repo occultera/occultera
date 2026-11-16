@@ -7,6 +7,25 @@ import math
 from datetime import UTC, datetime
 
 
+def _a(alert, sev, ns, since, summary, **lab):
+    return {"labels": {"alertname": alert, "severity": sev, "namespace": ns, **lab},
+            "annotations": {"summary": summary}, "active_at": since}
+
+
+DEMO_ALERTS = [
+    _a("Watchdog", "none", "monitoring", "2026-11-01T00:00:00Z", "Alerting pipeline heartbeat"),
+    _a("KubePodCrashLooping", "warning", "erp", "2026-11-16T06:12:00Z", "Pod is crash looping.",
+       pod="report-export-7c9d8b6f5-x2k4p"),
+    _a("KubePodCrashLooping", "warning", "shop", "2026-11-16T09:40:00Z", "Pod is crash looping.", pod="web-5d7f9c8b4-q8w2e"),
+    _a("TargetDown", "warning", "erp", "2026-11-16T06:15:00Z", "Some targets were not reachable.", service="report-export"),
+    _a("KubePersistentVolumeFillingUp", "critical", "data", "2026-11-16T10:02:00Z",
+       "PersistentVolume is filling up.", persistentvolumeclaim="data-kafka-broker-0"),
+    _a("KubeCPUOvercommit", "warning", "", "2026-11-09T08:00:00Z", "Cluster has overcommitted CPU resource requests."),
+    _a("CertificateExpiringSoon", "warning", "auth", "2026-11-15T22:00:00Z", "Certificate expires in 6 days.",
+       name="sso-example-tls"),
+]
+
+
 class DemoPrometheus:
     """Stands in for a Prometheus source in the demo: the pulse page shows fixed data, other callers see nothing."""
 
@@ -17,6 +36,9 @@ class DemoPrometheus:
 
     async def query_range(self, expr: str, start, end, step) -> dict:
         return {"step": step, "series": [], "total_series": 0}
+
+    async def alerts(self) -> list[dict]:
+        return DEMO_ALERTS
 
     async def close(self):
         return None
@@ -32,7 +54,11 @@ def _wave(n: int, base: float, amp: float, spike_at: int | None = None, spike: f
 def demo_pulse() -> dict:
     from .pulse import Panel
     d = _demo()
-    for k in ("egress", "ingress", "secrets", "dns", "cpu", "restarts", "certs", "targets"):
+    from .clusteralerts import counts, group
+    g = group(DEMO_ALERTS)
+    c = counts(g)
+    d["alerts"] = {"groups": g, "counts": c, "total": sum(c.values()), "status": "bad" if c["critical"] else "warn"}
+    for k in ("alerts", "egress", "ingress", "secrets", "dns", "cpu", "restarts", "certs", "targets"):
         d[k] = Panel(d[k])
     return d
 

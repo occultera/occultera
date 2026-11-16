@@ -30,6 +30,19 @@ bir dakika önbellekte tutulur.
 bırakır (Ayarlar → Nöbet → *Bu namespace'leri sayma*). Kümede metriği olmayan panel bunu söyler; hata veren bir
 sorgu yalnız kendi panelini gizler.
 
+## Ateşlenen alarmlar
+
+İlk panel, kümenin kendi Prometheus'unun ateşlediği alarmları (Alertmanager kuralları) alarm ve önem derecesine göre
+gruplu; namespace'ler, hedefler ve başlangıç zamanıyla listeler. `Watchdog` nabzı sayılmaz. Veri `/api/v1/alerts`
+uç noktasından (Prometheus, OpenShift Thanos Querier) ya da o uç nokta yoksa `ALERTS` serisinden okunur.
+
+**AI ile yorumla** (çalıştırma yetkisi gerekir) gruplu alarmları modele verir; model o kümede birkaç PromQL
+sorgusuyla doğrulayıp birbiriyle ilişkili her alarm grubu için ne olduğunu, olası nedeni, önceliği (hemen / bugün /
+bu hafta / gürültü) ve somut `oc` / `kubectl` / PromQL kontrollerini yazar; güvenlikle ilgili alarmlar önce gelir,
+beklenen gürültü açıkça söylenir. Her şey ortamın maskelemesinden geçer; cevap altı saat saklanır. Aynı alarmlar
+günlük rapora (`cluster_alerts`) ve açarsanız [nöbete](Watch-TR) (`prom_alerts`: seçilen önem derecelerindeki yeni
+alarmlar, her biri bir kez) de gider.
+
 ## Nasıl okunur
 
 Sayılar hacmi ve değişimi anlatır, içeriği asla. Kırmızı bir kart bakmak için bir nedendir, hüküm değil: iş yükünün

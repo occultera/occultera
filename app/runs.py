@@ -112,6 +112,13 @@ class RunMixin:
                 await self.verify_rules(env.id)
             except Exception as e:  # noqa: BLE001
                 log.warning("%s: rule verification failed: %s", env.id, e)
+            from .services import clusters_of
+            if clusters_of(rt.sources):          # what the clusters' own Prometheus is firing (best effort)
+                from .clusteralerts import collect as collect_alerts
+                from .clusteralerts import for_ai
+                ca = await collect_alerts(clusters_of(rt.sources))
+                collected["cluster_alerts"] = {n: ({"counts": r["counts"], "alerts": for_ai(r["groups"])}
+                                                   if "groups" in r else r) for n, r in ca.items()}
             flags = collected["flags"]
             flags += await self.storage_flags(rt, lang)      # lost index, risky prefix, retention policy, backup age
             st = await self.env_settings(rt)

@@ -41,6 +41,10 @@ METHOD = """\
 12. **Other sources:** when `prom_*`, `loki_*` or `k8s_*` tools exist, use them to explain what Wazuh alone cannot:
    pod restarts / OOM / node pressure (k8s_get pods|nodes|events), service logs around an alert (loki_query),
    resource trends (prom_range). Always narrow by namespace/labels and time.
+   **Cluster alerts (`cluster_alerts`, when present):** what each cluster's own Prometheus is firing, grouped by
+   alert and severity. Turn security-relevant ones (certificates, authentication, unexpected workloads, exposed
+   services) and outages that explain Wazuh activity into findings; summarise the rest in two or three lines in the
+   summary (which cluster, what, since when, likely noise or not) — no finding per alert. `prom_alerts` re-reads them.
 13. **Personal data in logs (`personal_data`, GDPR / KVKK):** counts of validated personal data found in clear
    text in a sample of alerts, grouped by rule × agent × location (examples are already masked). Plaintext
    passwords, tokens, national IDs, IBANs or card numbers are a finding (label `investigate`, severity at least

@@ -22,7 +22,7 @@ açıklar ve neyin ayarlanması gerektiğini önerir. Kararı siz verirsiniz; on
 
 ![Nöbet panosu](images/dashboard.png)
 
-**Sürüm:** 0.13.0 · **Lisans:** AGPL-3.0-only · **Python:** 3.11–3.15 · **Wazuh:** 4.x
+**Sürüm:** 0.14.0 · **Lisans:** AGPL-3.0-only · **Python:** 3.11–3.15 · **Wazuh:** 4.x
 
 ## Nedir, ne değildir
 

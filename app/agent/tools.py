@@ -125,7 +125,8 @@ class ToolBox:
             self._handlers.update({"agent_info": self.agent_info, "rule_info": self.rule_info,
                                    "logtest": self.logtest})
         if self.sources.get("prometheus"):
-            self._handlers.update({"prom_query": self.prom_query, "prom_range": self.prom_range})
+            self._handlers.update({"prom_query": self.prom_query, "prom_range": self.prom_range,
+                                   "prom_alerts": self.prom_alerts})
         if self.sources.get("loki"):
             self._handlers.update({"loki_query": self.loki_query, "loki_labels": self.loki_labels})
         if self.sources.get("kubernetes"):
@@ -382,6 +383,19 @@ class ToolBox:
     async def prom_query(self, a):
         return await self._prom(a).query(a["expr"], a.get("time"))
 
+    async def prom_alerts(self, a):
+        from ..clusteralerts import collect, for_ai
+        from ..services import clusters_of
+        cs = clusters_of(self.sources)
+        name = str(a.get("cluster") or "")
+        if name:
+            if name not in cs:
+                raise ValueError(f"unknown cluster {name!r}; one of {sorted(cs)}")
+            cs = {name: cs[name]}
+        res = await collect(cs)
+        return {n: ({"counts": r["counts"], "alerts": for_ai(r["groups"])} if "groups" in r else r)
+                for n, r in res.items()}
+
     async def prom_range(self, a):
         return await self._prom(a).query_range(a["expr"], a.get("from"), a.get("to"), a.get("step"))
 
@@ -543,6 +557,11 @@ SPECS: dict[str, dict] = {
         "parameters": _obj({"expr": {"type": "string"}, "from": {"type": "string"}, "to": {"type": "string"},
                             "step": {"type": "string", "description": "e.g. 60s, 5m"},
                             "cluster": {"type": "string", "description": "cluster name; empty = the first"}}, ["expr"])},
+    "prom_alerts": {"name": "prom_alerts", "description":
+        "Alerts the cluster's own Prometheus is firing right now (KubePodCrashLooping, TargetDown, disk filling up, "
+        "certificates …), grouped by alert name and severity with namespaces, targets, start time and summary. "
+        "Correlate them with Wazuh alerts of the same hosts and time.",
+        "parameters": _obj({"cluster": {"type": "string", "description": "one cluster; empty = all clusters"}})},
     "loki_query": {"name": "loki_query", "description":
         "Loki LogQL query over a time range: log lines (newest first, max 500) or a metric query "
         "(count_over_time …). Always use a label selector, e.g. {namespace=\"wazuh\"} |= \"error\".",

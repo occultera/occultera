@@ -158,6 +158,13 @@ class PulseProm:
         self.queries.append(expr)
         return {"series": [{"labels": lab, "value": str(v)} for lab, v in self._rows(expr)]}
 
+    async def alerts(self):
+        if self.empty:
+            return []
+        return [{"labels": {"alertname": "Watchdog", "severity": "none"}, "annotations": {}, "active_at": None},
+                {"labels": {"alertname": "TargetDown", "severity": "warning", "namespace": "erp", "service": "x"},
+                 "annotations": {"summary": "Targets down."}, "active_at": "2026-11-16T10:00:00Z"}]
+
     async def query_range(self, expr, start, end, step):
         self.queries.append(expr)
         rows = self._rows(expr) if not self.empty else []

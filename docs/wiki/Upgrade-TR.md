@@ -72,6 +72,12 @@ etkisizdir. Eski sürüm yeni veriyle düzgün çalışmazsa yükseltmeden önce
 
 ## Sürüm notları
 
+### 0.14.0
+
+- Küme alarmları: küme nabzında panel ve **AI ile yorumla**, günlük raporda `cluster_alerts`, `prom_alerts` nöbet
+  tetikleyicisi (açılana kadar kapalı) ve aracı. Var olan Prometheus kaynaklarının dışında ayar gerekmez. Bkz.
+  [Küme nabzı](Cluster-Pulse-TR#ateşlenen-alarmlar).
+
 ### 0.13.0
 
 - `sources.prometheus_extra` ile **ortam başına birden çok küme** (ad zorunlu). Tek Prometheus'lu ortamlarda hiçbir

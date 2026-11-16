@@ -23,7 +23,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: triage
-          image: ghcr.io/occultera/occultera:0.13.0
+          image: ghcr.io/occultera/occultera:0.14.0
           imagePullPolicy: IfNotPresent
           ports:
             - name: http

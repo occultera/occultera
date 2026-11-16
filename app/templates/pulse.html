@@ -11,8 +11,11 @@
     <span class="small muted">{{ _('pl.window') }} · {{ p.at|ts if p else '' }}</span></div>
 </div>
 {% if not p %}<div class="card err">{{ _('pl.error') }}</div>{% else %}
-{% set eg, ig, se, dn, cp, rs, ce, tg = p.egress, p.ingress, p.secrets, p.dns, p.cpu, p.restarts, p.certs, p.targets %}
+{% set eg, ig, se, dn, cp, rs, ce, tg, al = p.egress, p.ingress, p.secrets, p.dns, p.cpu, p.restarts, p.certs, p.targets, p.alerts %}
 <div class="ktiles pulse-tiles">
+  <a class="ktile ps-{{ al.status or 'ok' }}" href="#alerts"><span class="klabel">{{ _('pl.k.alerts') }}</span>
+    <b class="kval">{{ al.total if al.total is not none else '–' }}</b>
+    <span class="kdelta">{% if al.counts %}{{ _('pl.alert_sub', c=al.counts.critical, w=al.counts.warning) }}{% endif %}</span></a>
   <a class="ktile ps-{{ eg.status or 'ok' }}" href="#egress"><span class="klabel">{{ _('pl.k.egress') }}</span>
     <b class="kval">{{ fmt_bytes(eg.total) if eg.total is not none else '–' }}</b>
     <span class="kdelta">{{ chg(eg.change) }} {{ _('pl.vs_avg') }}</span>{{ chart.spark(eg.spark or [], 'c-total', _('pl.k.egress')) }}</a>
@@ -41,6 +44,21 @@
     <b class="kval">{{ tg.down if tg.down is not none else '–' }}</b>
     <span class="kdelta">{{ _('pl.of_targets', n=tg.total or 0) }}</span></a>
 </div>
+
+<section class="panel table-card" id="alerts">
+  <div class="phead pad"><h2>{{ _('pl.alerts') }}</h2>{% if al.status %}{{ st(al.status) }}{% endif %}<span class="spacer"></span>
+    {% if al.groups and can.run %}<button class="btn small" data-explain="/api/e/{{ env.id }}/pulse/explain?c={{ cluster|urlencode }}">{{ _('pl.explain') }}</button>{% endif %}</div>
+  {% if al.groups %}<div class="scrollx"><table class="tbl compact">
+    <tr><th>{{ _('pl.c.alert') }}</th><th>{{ _('pl.c.sev') }}</th><th class="r">×</th><th>{{ _('pl.c.ns') }}</th><th>{{ _('pl.c.since') }}</th><th>{{ _('pl.c.summary') }}</th></tr>
+    {% for g in al.groups %}<tr class="{{ 'bad' if g.severity == 'critical' else 'warnrow' if g.severity == 'warning' }}">
+      <td><b>{{ g.name }}</b>{% if g.targets %}<div class="small muted">{{ g.targets|join(', ') }}</div>{% endif %}</td>
+      <td><span class="pill {{ 'red' if g.severity == 'critical' else 'amber' if g.severity == 'warning' else 'outline' }}">{{ g.severity }}</span></td>
+      <td class="r">{{ g.count }}</td><td class="small">{{ g.namespaces|join(', ') or '—' }}</td>
+      <td class="small nowrap">{{ g.since|ts if g.since else '—' }}</td><td class="small">{{ g.summary }}</td></tr>{% endfor %}
+  </table></div>{% elif al.total is not none %}<p class="small pad">{{ _('pl.alerts_none') }}</p>{% else %}<div class="pad">{{ nodata(al) }}</div>{% endif %}
+  <div class="pad explain" data-explain-out>{% if explained %}<div class="small muted">{{ _('pl.explained_at', at=explained.at|ts) }}{% if not explained.ai %} · {{ _('pl.ai_off') }}{% endif %}</div>{{ explained.md|md }}{% endif %}</div>
+  <p class="small muted pad">{{ _('pl.alerts_note') }}</p>
+</section>
 
 <div class="dgrid">
   <section class="panel span2 table-card" id="egress">

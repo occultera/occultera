@@ -132,7 +132,7 @@ otherwise the next sync silently reverts it.
 - README and wiki do not repeat each other: the README is the short version and links here; exact reference
   material (permissions, deployment API, notification fields) stays in `docs/*.md` and is linked, not copied.
 - Every page ends with `[English](Page) · [Türkçe](Page-TR)`.
-- Keep commands copy-pasteable and version-pinned: `0.13.0`, chart `0.5.0`.
+- Keep commands copy-pasteable and version-pinned: `0.14.0`, chart `0.6.0`.
 - Update the version string in `Home.md`, `Home-TR.md`, `_Sidebar.md` when the release changes.
 - Never put a real password, token, hostname or customer alert in a page or a screenshot.
 

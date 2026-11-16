@@ -30,6 +30,19 @@ Plumbing namespaces are left out of the per-workload panels with the same list a
 trigger (Settings → Watch → *Leave out these namespaces*). A panel whose metrics do not exist in the cluster says
 so; a failing query hides only its own panel.
 
+## Firing alerts
+
+The first panel lists what the cluster's own Prometheus is firing (its Alertmanager rules), grouped by alert and
+severity with the namespaces, the targets and the start time; the `Watchdog` heartbeat is left out. It is read from
+`/api/v1/alerts` (Prometheus, OpenShift Thanos Querier) or, where that endpoint is missing, from the `ALERTS` series.
+
+**Explain with AI** (needs the run permission) hands the grouped alerts to the model, which may check them with a
+few PromQL queries on that cluster and writes, per group of related alerts, what is happening, the likely cause,
+the priority (now / today / this week / noise) and concrete `oc` / `kubectl` / PromQL checks — security-relevant
+alerts first, expected noise named as such. Everything goes through the environment's masking; the answer is kept
+for six hours. The same alerts reach the daily review (`cluster_alerts`) and, when you turn it on, the
+[watch](Watch) (`prom_alerts`: new alerts of the chosen severities, once each).
+
 ## Reading it
 
 The numbers describe volume and change, never content. A red tile is a reason to look, not a verdict: open the

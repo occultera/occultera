@@ -102,9 +102,11 @@ async def pulse_page(request: Request, env_id: str, c: str = ""):
     name = c if c in clusters else next(iter(clusters))
     st = await _safe(_rt(request).env_settings(er), None, request=request)
     exclude = st.watch.egress_excluded() if st else list(EGRESS_EXCLUDE)
+    from ..pulse_ai import cached
     p = await _safe(pulse(f"{er.env.id}:{name}", clusters[name], exclude), None, request=request)
     return tpl.TemplateResponse(request, "pulse.html", _ctx(request, er=er, env=er.env, p=p, cluster=name,
-                                                            clusters=list(clusters)))
+                                                            clusters=list(clusters),
+                                                            explained=cached(er.env.id, name)))
 
 
 @router.get("/e/{env_id}", response_class=HTMLResponse)

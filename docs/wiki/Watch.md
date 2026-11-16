@@ -22,6 +22,7 @@ The watch is **off** until an administrator switches it on in **Settings → Wat
 | Login after failed attempts | a successful login from a source address with ≥ `brute_failures` failed logins in the `brute_window_minutes` before it — always *critical* | count, window |
 | Sudden increase | alerts at `spike_min_level` (default 7) and above in one interval are ≥ `spike_factor` × their 7-day average and ≥ `spike_min` (default 50). The scan groups (`syscheck`, `sca`, `vulnerability-detector`, `rootcheck`, `syscollector`, `ciscat`, `oscap`) do not count. The message names the rules behind the burst | factor, minimum, level, groups |
 | Unusual outbound transfer (off by default) | a Kubernetes workload sent ≥ `egress_min_mb` (default 500 MB) out of its pods in one interval and ≥ `egress_factor` (default 5) × its 7-day average. Needs a Prometheus source; see [below](#unusual-outbound-transfer) | factor, MB, namespaces |
+| Cluster alert (off by default) | the cluster's own Prometheus started firing an alert of a chosen severity (`prom_alert_severities`, default `critical`); one event per cluster, alert and severity. One already firing for more than two hours when first seen stays silent as *still firing* | severities |
 | Agents lost | an agent disconnected for more than `agent_minutes` (`ignore_agents` are skipped; 5 or more at once is *critical*). The first scan after a start only learns the current state | minutes |
 
 ## Sorting out
