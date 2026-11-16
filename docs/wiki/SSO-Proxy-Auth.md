@@ -217,7 +217,7 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: wazuh-daily-triage
+  name: occultera
 spec:
   routes:
     - kind: Rule
@@ -225,7 +225,7 @@ spec:
       middlewares:
         - name: authentik
       services:
-        - name: wazuh-daily-triage
+        - name: occultera
           port: 8080
     # Authentik's own sign-in / callback endpoints
     - kind: Rule
@@ -240,7 +240,7 @@ spec:
       match: Host(`triage.example.com`) && Path(`/mcp`)
       priority: 900
       services:
-        - name: wazuh-daily-triage
+        - name: occultera
           port: 8080
   tls:
     secretName: triage-tls
@@ -250,8 +250,8 @@ Enable it in your overlay:
 
 ```yaml
 components:   # remote, pinned — or copy the folders next to your overlay to edit the host names
-  - https://github.com/occultera/occultera//deploy/kubernetes/components/networkpolicy?ref=v0.14.0
-  - https://github.com/occultera/occultera//deploy/kubernetes/components/ingress-traefik-authentik?ref=v0.14.0
+  - https://github.com/occultera/occultera//deploy/kubernetes/components/networkpolicy?ref=v0.15.0
+  - https://github.com/occultera/occultera//deploy/kubernetes/components/ingress-traefik-authentik?ref=v0.15.0
 ```
 
 The component already sets `AUTH_DISABLED=true`, `COOKIE_SECURE=true` and `NOTIFY_UI_URL` (edit the host). Add

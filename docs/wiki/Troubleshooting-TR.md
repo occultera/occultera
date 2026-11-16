@@ -2,8 +2,8 @@
 
 **Kimin için:** operatörler. Gördüğünüz iletiyi bu sayfada arayın. Her satır denetimi, olası nedeni ve çözümü
 verir. Komutlar Docker Compose içindir; Kubernetes'te `docker compose exec triage` yerine
-`kubectl -n wazuh-daily-triage exec deploy/wazuh-daily-triage --`, `docker compose logs triage` yerine
-`kubectl -n wazuh-daily-triage logs deploy/wazuh-daily-triage` kullanın.
+`kubectl -n occultera exec deploy/occultera --`, `docker compose logs triage` yerine
+`kubectl -n occultera logs deploy/occultera` kullanın.
 
 ## İlk üç denetim
 

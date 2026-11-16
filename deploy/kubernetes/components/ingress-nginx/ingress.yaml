@@ -2,7 +2,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: wazuh-daily-triage
+  name: occultera
   annotations:
     # cert-manager issues the certificate (remove if you provide triage-tls yourself, e.g. a wildcard secret):
     cert-manager.io/cluster-issuer: letsencrypt-prod
@@ -25,5 +25,5 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: wazuh-daily-triage
+                name: occultera
                 port: { number: 8080 }

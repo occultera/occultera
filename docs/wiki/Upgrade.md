@@ -70,6 +70,26 @@ you took before the upgrade.
 
 ## Version notes
 
+### 0.15.0
+
+- **Kustomize: the resources are now called `occultera`** (Deployment, Service, ServiceAccount, ClusterRole
+  `occultera-readonly`, labels) and the example overlay uses the `occultera` namespace. In your overlay rename the
+  generators to `occultera-config`, `occultera-env`, `occultera-secret`; point your own resources at the new names
+  (ingress backend `occultera`, oauth2-proxy upstream `http://occultera:8080`, NetworkPolicy selectors
+  `app.kubernetes.io/name: occultera`). To move to the new namespace as well, set `namespace: occultera`, apply,
+  check, then remove the old one:
+  ```sh
+  kubectl apply -k .
+  kubectl -n occultera rollout status deploy/occultera
+  kubectl -n occultera exec deploy/occultera -- python -m app.check
+  kubectl delete namespace wazuh-daily-triage
+  ```
+  Nothing is lost: the state lives in the `daily-triage-*` indices of your Wazuh Indexer. If you keep the old
+  namespace, delete the old Deployment and Service instead
+  (`kubectl -n wazuh-daily-triage delete deploy/wazuh-daily-triage svc/wazuh-daily-triage`).
+- Docker Compose: the container is now called `occultera` (`docker compose up -d` replaces it).
+- Helm: nothing changes.
+
 ### 0.14.0
 
 - Cluster alerts: a panel and **Explain with AI** on the cluster pulse, `cluster_alerts` in the daily review, the

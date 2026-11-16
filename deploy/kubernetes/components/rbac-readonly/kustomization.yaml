@@ -8,11 +8,11 @@ kind: Component
 resources:
   - rbac.yaml
 patches:
-  - target: {kind: Deployment, name: wazuh-daily-triage}
+  - target: {kind: Deployment, name: occultera}
     patch: |-
       - op: replace
         path: /spec/template/spec/automountServiceAccountToken
         value: true
       - op: add
         path: /spec/template/spec/serviceAccountName
-        value: wazuh-daily-triage
+        value: occultera

@@ -20,7 +20,7 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: wazuh-daily-triage
+  name: occultera
 spec:
   routes:
     - kind: Rule
@@ -28,7 +28,7 @@ spec:
       middlewares:
         - name: authentik
       services:
-        - name: wazuh-daily-triage
+        - name: occultera
           port: 8080
     # Authentik's sign-in / callback endpoints on the same host
     - kind: Rule
@@ -43,7 +43,7 @@ spec:
       match: Host(`triage.example.com`) && Path(`/mcp`)
       priority: 900
       services:
-        - name: wazuh-daily-triage
+        - name: occultera
           port: 8080
   tls:
     secretName: triage-tls     # e.g. a copy of your wildcard certificate, or a cert-manager Certificate

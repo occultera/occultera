@@ -38,9 +38,10 @@ blue `#7FD3FF`, text `#F2EFE6`. Font: Space Grotesk (SIL Open Font License).
 
 ## What did not change
 
-Environment variables (`WDT_*`), index names (`daily-triage-*`), metric names (`wdt_*`) and the Kustomize
-resource names stay as they were, so existing installations upgrade in place without moving data. The Helm chart
-and the backup archives carry the new name (see [Upgrade](Upgrade#0120)).
+Environment variables (`WDT_*`), index names (`daily-triage-*`) and metric names (`wdt_*`) stay as they were, so
+existing installations upgrade without moving data. The Helm chart and the backup archives carry the new name
+(see [Upgrade](Upgrade#0120)); since 0.15.0 the Kustomize manifests do too (namespace, Deployment, Service,
+labels: `occultera`, see [Upgrade](Upgrade#0150)).
 
 ---
 

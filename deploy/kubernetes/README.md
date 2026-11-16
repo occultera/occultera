@@ -18,12 +18,12 @@ deploy/kubernetes/
 ```sh
 cp -r deploy/kubernetes/example ~/triage-overlay && cd ~/triage-overlay
 # point the base at the repository:
-sed -i 's#  - ../base .*#  - https://github.com/occultera/occultera//deploy/kubernetes/base?ref=v0.14.0#' kustomization.yaml
+sed -i 's#  - ../base .*#  - https://github.com/occultera/occultera//deploy/kubernetes/base?ref=v0.15.0#' kustomization.yaml
 cp secret.env.example secret.env && vi secret.env environments.yaml context.md
 kubectl apply -k .
-kubectl -n wazuh-daily-triage rollout status deploy/wazuh-daily-triage
-kubectl -n wazuh-daily-triage exec deploy/wazuh-daily-triage -- python -m app.check
-kubectl -n wazuh-daily-triage port-forward svc/wazuh-daily-triage 8080:8080   # http://127.0.0.1:8080
+kubectl -n occultera rollout status deploy/occultera
+kubectl -n occultera exec deploy/occultera -- python -m app.check
+kubectl -n occultera port-forward svc/occultera 8080:8080   # http://127.0.0.1:8080
 ```
 
 ## Components
@@ -61,4 +61,4 @@ generated Secret gets a new name and the pod restarts with it.
 - **Exposing the UI:** start with `port-forward`. For an Ingress, put SSO (oauth2-proxy, Authentik, Keycloak
   forward-auth) in front and set `AUTH_DISABLED=true`, or keep the app password and set `COOKIE_SECURE=true`
   behind TLS. Set `FORWARDED_ALLOW_IPS` to your ingress controller's pod CIDR, never `*`.
-- **Knowledge import:** `kubectl -n wazuh-daily-triage exec -i deploy/wazuh-daily-triage -- python -m app.kb import - --update < notes.yaml`
+- **Knowledge import:** `kubectl -n occultera exec -i deploy/occultera -- python -m app.kb import - --update < notes.yaml`

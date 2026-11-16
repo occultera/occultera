@@ -25,7 +25,7 @@ cp .env.demo .env
 docker compose up -d --build
 ```
 
-**Expected:** `docker compose ps` lists `wazuh-daily-triage` as running, and after about half a minute as
+**Expected:** `docker compose ps` lists `occultera` as running, and after about half a minute as
 healthy. `curl -fsS http://127.0.0.1:8080/healthz` answers with HTTP 200.
 
 **If not:** `docker compose logs triage` shows the reason. The usual one is a `.env` copied from `.env.example`

@@ -38,9 +38,10 @@ yazı `#F2EFE6`. Yazı tipi: Space Grotesk (SIL Open Font License).
 
 ## Değişmeyenler
 
-Ortam değişkenleri (`WDT_*`), indeks adları (`daily-triage-*`), metrik adları (`wdt_*`) ve Kustomize kaynak
-adları aynı kaldı; mevcut kurulumlar veri taşımadan yerinde yükseltilir. Helm chart'ı ve yedek arşivleri yeni adı
-taşır (bkz. [Yükseltme](Upgrade-TR#0120)).
+Ortam değişkenleri (`WDT_*`), indeks adları (`daily-triage-*`) ve metrik adları (`wdt_*`) aynı kaldı; mevcut
+kurulumlar veri taşımadan yükseltilir. Helm chart'ı ve yedek arşivleri yeni adı taşır (bkz.
+[Yükseltme](Upgrade-TR#0120)); 0.15.0'dan beri Kustomize manifestleri de öyle (namespace, Deployment, Service,
+etiketler: `occultera`, bkz. [Yükseltme](Upgrade-TR#0150)).
 
 ---
 

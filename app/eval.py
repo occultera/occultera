@@ -4,7 +4,7 @@
 
     python -m app.eval cases.yaml                         # current model
     python -m app.eval cases.yaml --model deepseek-flash  # compare models / prompts
-    kubectl exec -i deploy/wazuh-daily-triage -- python -m app.eval - --model deepseek-v4-pro < cases.yaml
+    kubectl exec -i deploy/occultera -- python -m app.eval - --model deepseek-v4-pro < cases.yaml
 
 Nothing is written: runs are not saved, AI proposals are discarded. Case format (YAML list):
 

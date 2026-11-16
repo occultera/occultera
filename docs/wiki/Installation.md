@@ -105,7 +105,7 @@ run. Notifications have their own **Test notifications** button.
 > part of the value.
 
 > **Pin the image for production.** `docker-compose.yml` uses `:latest` so the demo always works. Replace it with
-> `ghcr.io/occultera/occultera:0.14.0` (or your own digest) so an upgrade is a deliberate change.
+> `ghcr.io/occultera/occultera:0.15.0` (or your own digest) so an upgrade is a deliberate change.
 
 ### A3. Several Wazuh environments
 
@@ -171,7 +171,7 @@ app:
 
 ```sh
 helm install occultera occultera/occultera \
-  --version 0.6.0 -f my-values.yaml
+  --version 0.7.0 -f my-values.yaml
 ```
 
 Or install straight from a checkout: `helm install occultera ./deploy/helm/occultera -f my-values.yaml`.
@@ -187,12 +187,12 @@ placeholders.
 cp -r deploy/kubernetes/example ~/triage-overlay
 cd ~/triage-overlay
 # outside the repository the relative "../base" no longer resolves — point it at the pinned remote base:
-sed -i 's#^  - ../base.*#  - https://github.com/occultera/occultera//deploy/kubernetes/base?ref=v0.14.0#' kustomization.yaml
+sed -i 's#^  - ../base.*#  - https://github.com/occultera/occultera//deploy/kubernetes/base?ref=v0.15.0#' kustomization.yaml
 cp secret.env.example secret.env
 vi secret.env environments.yaml context.md
 kubectl apply -k .
-kubectl -n wazuh-daily-triage rollout status deploy/wazuh-daily-triage
-kubectl -n wazuh-daily-triage exec deploy/wazuh-daily-triage -- python -m app.check
+kubectl -n occultera rollout status deploy/occultera
+kubectl -n occultera exec deploy/occultera -- python -m app.check
 ```
 
 Optional components in `deploy/kubernetes/components/`: `networkpolicy`, `ingress-nginx`,
@@ -300,7 +300,7 @@ docker compose exec triage python -m app.check
 
 # Helm
 helm upgrade occultera occultera/occultera \
-  --version 0.6.0 -f my-values.yaml
+  --version 0.7.0 -f my-values.yaml
 helm rollback occultera 1     # if needed
 ```
 

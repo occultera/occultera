@@ -8,7 +8,7 @@ with numbers instead of impressions.
 python -m app.eval cases.yaml                          # current model
 python -m app.eval cases.yaml --model other-model      # compare
 python -m app.eval cases.yaml --repeat 3 --out res.json
-kubectl -n wazuh-daily-triage exec -i deploy/wazuh-daily-triage -- python -m app.eval - < cases.yaml
+kubectl -n occultera exec -i deploy/occultera -- python -m app.eval - < cases.yaml
 ```
 
 A case is a window plus what *had* to be found (`expect`) and known noise that must *not* be reported as an

@@ -258,7 +258,7 @@ as PDF (`audit.pdf`) and through MCP (`audit_report`, `month: YYYY-MM`).
 
 ```sh
 python -m app.eval cases.yaml --model deepseek-v4-pro --repeat 2 --out eval.json
-kubectl exec -i deploy/wazuh-daily-triage -- python -m app.eval - < cases.yaml
+kubectl exec -i deploy/occultera -- python -m app.eval - < cases.yaml
 ```
 
 Eval replays past windows and scores recall against `expect` cases and noise against `forbid` cases. Nothing is

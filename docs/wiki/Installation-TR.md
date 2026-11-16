@@ -105,7 +105,7 @@ Bildirimlerin kendi **Bildirim testi** düğmesi vardır.
 > parçası sayar.
 
 > **Üretimde imajı sabitleyin.** `docker-compose.yml` demoyu kolaylaştırmak için `:latest` kullanır. Üretimde
-> `ghcr.io/occultera/occultera:0.14.0` (veya kendi digest'inizi) yazın; böylece yükseltme bilinçli
+> `ghcr.io/occultera/occultera:0.15.0` (veya kendi digest'inizi) yazın; böylece yükseltme bilinçli
 > bir adım olur.
 
 ### A3. Birden çok Wazuh ortamı
@@ -172,7 +172,7 @@ app:
 
 ```sh
 helm install occultera occultera/occultera \
-  --version 0.6.0 -f my-values.yaml
+  --version 0.7.0 -f my-values.yaml
 ```
 
 Depodan doğrudan: `helm install occultera ./deploy/helm/occultera -f my-values.yaml`.
@@ -188,12 +188,12 @@ Depodan doğrudan: `helm install occultera ./deploy/helm/occultera -f my-values.
 cp -r deploy/kubernetes/example ~/triage-overlay
 cd ~/triage-overlay
 # depo dışında göreli "../base" çözülmez — sürümü sabitlenmiş uzak base'i gösterin:
-sed -i 's#^  - ../base.*#  - https://github.com/occultera/occultera//deploy/kubernetes/base?ref=v0.14.0#' kustomization.yaml
+sed -i 's#^  - ../base.*#  - https://github.com/occultera/occultera//deploy/kubernetes/base?ref=v0.15.0#' kustomization.yaml
 cp secret.env.example secret.env
 vi secret.env environments.yaml context.md
 kubectl apply -k .
-kubectl -n wazuh-daily-triage rollout status deploy/wazuh-daily-triage
-kubectl -n wazuh-daily-triage exec deploy/wazuh-daily-triage -- python -m app.check
+kubectl -n occultera rollout status deploy/occultera
+kubectl -n occultera exec deploy/occultera -- python -m app.check
 ```
 
 `deploy/kubernetes/components/` altındaki isteğe bağlı bileşenler: `networkpolicy`, `ingress-nginx`,
@@ -303,7 +303,7 @@ docker compose exec triage python -m app.check
 
 # Helm
 helm upgrade occultera occultera/occultera \
-  --version 0.6.0 -f my-values.yaml
+  --version 0.7.0 -f my-values.yaml
 helm rollback occultera 1     # gerekirse
 ```
 

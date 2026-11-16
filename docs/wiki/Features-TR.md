@@ -258,7 +258,7 @@ PDF (`audit.pdf`) ve MCP (`audit_report`, `month: YYYY-MM`) olarak alınabilir.
 
 ```sh
 python -m app.eval cases.yaml --model deepseek-v4-pro --repeat 2 --out eval.json
-kubectl exec -i deploy/wazuh-daily-triage -- python -m app.eval - < cases.yaml
+kubectl exec -i deploy/occultera -- python -m app.eval - < cases.yaml
 ```
 
 Eval geçmiş pencereleri yeniden oynatır; `expect` vakalarına göre yakalama oranını (recall), `forbid` vakalarına

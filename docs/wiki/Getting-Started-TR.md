@@ -25,7 +25,7 @@ cp .env.demo .env
 docker compose up -d --build
 ```
 
-**Beklenen:** `docker compose ps` çıktısında `wazuh-daily-triage` çalışıyor, yaklaşık yarım dakika sonra da
+**Beklenen:** `docker compose ps` çıktısında `occultera` çalışıyor, yaklaşık yarım dakika sonra da
 "healthy" görünür. `curl -fsS http://127.0.0.1:8080/healthz` HTTP 200 döner.
 
 **Olmadıysa:** nedeni `docker compose logs triage` gösterir. En sık görülen neden, `.env.example` kopyasına

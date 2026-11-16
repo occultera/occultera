@@ -2,7 +2,7 @@ services:
   triage:
     image: ghcr.io/occultera/occultera:latest
     build: .
-    container_name: wazuh-daily-triage
+    container_name: occultera
     restart: unless-stopped
     env_file: .env
     ports:

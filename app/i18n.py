@@ -1366,11 +1366,11 @@ from .i18n_v121 import EXTRA as _V121  # noqa: E402 - 0.12.1 messages (spike tri
 
 for _lang, _msgs in _V121.items():
     CATALOG[_lang].update(_msgs)
-from .i18n_v122 import EXTRA as _V122  # noqa: E402 - 0.14.0 messages (egress trigger)
+from .i18n_v122 import EXTRA as _V122  # noqa: E402 - 0.15.0 messages (egress trigger)
 
 for _lang, _msgs in _V122.items():
     CATALOG[_lang].update(_msgs)
-from .i18n_v140 import EXTRA as _V140  # noqa: E402 - 0.14.0 messages (cluster alerts)
+from .i18n_v140 import EXTRA as _V140  # noqa: E402 - 0.15.0 messages (cluster alerts)
 
 for _lang, _msgs in _V140.items():
     CATALOG[_lang].update(_msgs)

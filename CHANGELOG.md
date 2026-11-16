@@ -5,6 +5,17 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.15.0] — 2026-11-16
+
+### Changed
+- **Kubernetes names follow the project name.** The Kustomize base and components now use `occultera` for the
+  Deployment, Service, ServiceAccount, ClusterRole (`occultera-readonly`), the `app.kubernetes.io/name` and `part-of`
+  labels and the generated `occultera-config` / `occultera-env` / `occultera-secret`; the example overlay deploys into
+  the `occultera` namespace, and the Compose container is called `occultera`. Data does not move: the state stays in
+  the `daily-triage-*` indices, and `WDT_*` variables, `wdt_*` metrics and the rule group written to Wazuh keep
+  their names. An existing Kustomize overlay needs the new generator names and references (see the upgrade
+  notes); Helm releases are not affected.
+
 ## [0.14.0] — 2026-11-16
 
 ### Added

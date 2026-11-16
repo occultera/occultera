@@ -72,6 +72,26 @@ etkisizdir. Eski sürüm yeni veriyle düzgün çalışmazsa yükseltmeden önce
 
 ## Sürüm notları
 
+### 0.15.0
+
+- **Kustomize: kaynakların adı artık `occultera`** (Deployment, Service, ServiceAccount, ClusterRole
+  `occultera-readonly`, etiketler) ve örnek overlay `occultera` namespace'ini kullanıyor. Overlay'inizde
+  üreteçlerin adını `occultera-config`, `occultera-env`, `occultera-secret` yapın; kendi kaynaklarınızı yeni adlara
+  yönlendirin (ingress arka ucu `occultera`, oauth2-proxy upstream `http://occultera:8080`, NetworkPolicy
+  seçicileri `app.kubernetes.io/name: occultera`). Yeni namespace'e de geçmek için `namespace: occultera` yazın,
+  uygulayın, kontrol edin, sonra eskisini silin:
+  ```sh
+  kubectl apply -k .
+  kubectl -n occultera rollout status deploy/occultera
+  kubectl -n occultera exec deploy/occultera -- python -m app.check
+  kubectl delete namespace wazuh-daily-triage
+  ```
+  Hiçbir şey kaybolmaz: durum Wazuh Indexer'daki `daily-triage-*` indekslerinde. Eski namespace'te kalırsanız
+  bunun yerine eski Deployment ve Service'i silin
+  (`kubectl -n wazuh-daily-triage delete deploy/wazuh-daily-triage svc/wazuh-daily-triage`).
+- Docker Compose: konteynerin adı artık `occultera` (`docker compose up -d` değiştirir).
+- Helm: değişiklik yok.
+
 ### 0.14.0
 
 - Küme alarmları: küme nabzında panel ve **AI ile yorumla**, günlük raporda `cluster_alerts`, `prom_alerts` nöbet

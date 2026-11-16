@@ -4,7 +4,7 @@
 
     python -m app.kb import noise.yaml -e prod --dry-run      # preview
     python -m app.kb import noise.yaml -e prod --update       # add new, update changed (by key / kind+title)
-    kubectl exec -i deploy/wazuh-daily-triage -- python -m app.kb import - -e prod < noise.yaml
+    kubectl exec -i deploy/occultera -- python -m app.kb import - -e prod < noise.yaml
     python -m app.kb export -e prod --kind baseline > baseline.yaml
 """
 from __future__ import annotations

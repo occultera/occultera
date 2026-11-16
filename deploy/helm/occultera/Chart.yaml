@@ -2,8 +2,8 @@ apiVersion: v2
 name: occultera
 description: Occultera — AI-assisted alert triage for the Wazuh SIEM
 type: application
-version: 0.6.0
-appVersion: "0.14.0"
+version: 0.7.0
+appVersion: "0.15.0"
 kubeVersion: ">=1.25-0"
 home: https://occultera.dev
 icon: https://raw.githubusercontent.com/occultera/occultera/main/app/static/icon.svg

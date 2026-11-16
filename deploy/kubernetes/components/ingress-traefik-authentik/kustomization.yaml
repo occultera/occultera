@@ -9,7 +9,7 @@ kind: Component
 resources:
   - ingressroute.yaml
 configMapGenerator:
-  - name: wazuh-daily-triage-env
+  - name: occultera-env
     behavior: merge
     literals:
       - AUTH_DISABLED=true

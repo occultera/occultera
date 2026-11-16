@@ -2,8 +2,8 @@
 
 **For:** operators. Search this page for the message you see. Each entry gives the check, the likely cause and
 the fix. The commands are for Docker Compose; on Kubernetes replace `docker compose exec triage` with
-`kubectl -n wazuh-daily-triage exec deploy/wazuh-daily-triage --` and `docker compose logs triage` with
-`kubectl -n wazuh-daily-triage logs deploy/wazuh-daily-triage`.
+`kubectl -n occultera exec deploy/occultera --` and `docker compose logs triage` with
+`kubectl -n occultera logs deploy/occultera`.
 
 ## First three checks
 

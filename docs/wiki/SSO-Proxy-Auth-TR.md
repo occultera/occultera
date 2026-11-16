@@ -214,7 +214,7 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: wazuh-daily-triage
+  name: occultera
 spec:
   routes:
     - kind: Rule
@@ -222,7 +222,7 @@ spec:
       middlewares:
         - name: authentik
       services:
-        - name: wazuh-daily-triage
+        - name: occultera
           port: 8080
     # Authentik'in kendi giriş / callback uçları
     - kind: Rule
@@ -237,7 +237,7 @@ spec:
       match: Host(`triage.example.com`) && Path(`/mcp`)
       priority: 900
       services:
-        - name: wazuh-daily-triage
+        - name: occultera
           port: 8080
   tls:
     secretName: triage-tls
@@ -247,8 +247,8 @@ Overlay'de etkinleştirin:
 
 ```yaml
 components:   # uzak ve sürümü sabit — host adlarını düzenlemek için klasörleri overlay'in yanına kopyalayın
-  - https://github.com/occultera/occultera//deploy/kubernetes/components/networkpolicy?ref=v0.14.0
-  - https://github.com/occultera/occultera//deploy/kubernetes/components/ingress-traefik-authentik?ref=v0.14.0
+  - https://github.com/occultera/occultera//deploy/kubernetes/components/networkpolicy?ref=v0.15.0
+  - https://github.com/occultera/occultera//deploy/kubernetes/components/ingress-traefik-authentik?ref=v0.15.0
 ```
 
 Bileşen `AUTH_DISABLED=true`, `COOKIE_SECURE=true` ve `NOTIFY_UI_URL` değerlerini zaten ayarlar (host'u

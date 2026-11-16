@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wazuh-daily-triage
+  name: occultera
 spec:
   # Exactly one replica: the built-in scheduler would run every daily check once per replica.
   replicas: 1
@@ -23,16 +23,16 @@ spec:
           type: RuntimeDefault
       containers:
         - name: triage
-          image: ghcr.io/occultera/occultera:0.14.0
+          image: ghcr.io/occultera/occultera:0.15.0
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
               containerPort: 8080
           envFrom:
             - configMapRef:
-                name: wazuh-daily-triage-env
+                name: occultera-env
             - secretRef:
-                name: wazuh-daily-triage-secret
+                name: occultera-secret
           env:
             - name: WDT_CONFIG
               value: /app/config/environments.yaml
@@ -65,7 +65,7 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: wazuh-daily-triage-config
+            name: occultera-config
             # The overlay's configMapGenerator must provide these three keys.
             items:
               - { key: environments.yaml, path: environments.yaml }

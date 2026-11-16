@@ -28,10 +28,10 @@ helm repo add occultera https://occultera.github.io/occultera
 helm repo update
 helm install occultera occultera/occultera \
   --namespace occultera --create-namespace \
-  --version 0.6.0 -f my-values.yaml
+  --version 0.7.0 -f my-values.yaml
 ```
 
-Chart 0.6.0, uygulamanın 0.14.0 sürümünü kurar. Üretimde önemli değerler:
+Chart 0.7.0, uygulamanın 0.15.0 sürümünü kurar. Üretimde önemli değerler:
 
 | Değer | Ne yazılır |
 |---|---|
@@ -62,10 +62,10 @@ Aşağıdaki komutlar Kustomize adlarını kullanır. Helm ile release adını v
 (`-n occultera`, `deploy/occultera`, `svc/occultera`).
 
 ```sh
-kubectl -n wazuh-daily-triage rollout status deploy/wazuh-daily-triage
-kubectl -n wazuh-daily-triage logs deploy/wazuh-daily-triage | head -50
-kubectl -n wazuh-daily-triage exec deploy/wazuh-daily-triage -- python -m app.check
-kubectl -n wazuh-daily-triage port-forward svc/wazuh-daily-triage 8080:8080
+kubectl -n occultera rollout status deploy/occultera
+kubectl -n occultera logs deploy/occultera | head -50
+kubectl -n occultera exec deploy/occultera -- python -m app.check
+kubectl -n occultera port-forward svc/occultera 8080:8080
 ```
 
 **Beklenen:** rollout tamamlanır, log yapılandırılmış ortamları ve zamanlamayı güvenlik uyarısı olmadan

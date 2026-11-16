@@ -6,7 +6,7 @@ kind: Component
 resources:
   - ingress.yaml
 configMapGenerator:
-  - name: wazuh-daily-triage-env
+  - name: occultera-env
     behavior: merge
     literals:
       - COOKIE_SECURE=true              # served over HTTPS
