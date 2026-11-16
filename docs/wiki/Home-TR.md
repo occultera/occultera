@@ -2,8 +2,6 @@
 
 [English](Home) · **Türkçe** · [Español](Home-ES) · [Français](Home-FR)
 
-*Find the signal in the dark.* Occultera'nın 0.11.1'e kadarki adı **wazuh-daily-triage** idi — bkz. [Ad ve logo](Name-and-Logo-TR).
-
 **Wazuh için bir nöbet programı.** Alarmlarınızı gece gündüz izler, acil bir şey olduğunda dakikalar içinde
 haber verir — yapay zekâya sormadan. Günde bir ya da iki kez bir AI turu, nöbetin gördüğü her şeyi inceler,
 açıklar ve neyin ayarlanması gerektiğini önerir. Kararı siz verirsiniz; onayınız olmadan Wazuh'ta hiçbir şey değişmez.

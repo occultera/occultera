@@ -2,8 +2,6 @@
 
 **English** · [Türkçe](Home-TR) · [Español](Home-ES) · [Français](Home-FR)
 
-*Find the signal in the dark.* Occultera was called **wazuh-daily-triage** until 0.11.1 — see [Name and logo](Name-and-Logo).
-
 **An on-call companion for Wazuh.** It watches your alerts around the clock and tells you within minutes when
 something urgent happens — without asking an AI. Once or twice a day an AI round reviews everything the watch
 saw, explains it and suggests what to tune. You decide; nothing changes in Wazuh without your approval.
