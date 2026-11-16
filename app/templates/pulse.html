@@ -13,7 +13,7 @@
 {% set eg, ig, se, dn, cp, rs, ce, tg = p.egress, p.ingress, p.secrets, p.dns, p.cpu, p.restarts, p.certs, p.targets %}
 <div class="ktiles pulse-tiles">
   <a class="ktile ps-{{ eg.status or 'ok' }}" href="#egress"><span class="klabel">{{ _('pl.k.egress') }}</span>
-    <b class="kval">{{ fmt_bytes(eg.total) if eg.total is defined else '–' }}</b>
+    <b class="kval">{{ fmt_bytes(eg.total) if eg.total is not none else '–' }}</b>
     <span class="kdelta">{{ chg(eg.change) }} {{ _('pl.vs_avg') }}</span>{{ chart.spark(eg.spark or [], 'c-total', _('pl.k.egress')) }}</a>
   <a class="ktile ps-{{ ig.status_auth or 'ok' }}" href="#ingress"><span class="klabel">{{ _('pl.k.auth') }}</span>
     <b class="kval">{{ ig.cur.auth|round|int|n if ig.cur else '–' }}</b>
@@ -22,22 +22,22 @@
     <b class="kval">{{ ig.cur['5xx']|round|int|n if ig.cur else '–' }}</b>
     <span class="kdelta">{{ chg(((ig.cur['5xx'] - ig.prev['5xx']) / ig.prev['5xx']) if ig.cur and ig.prev['5xx'] else none) }} {{ _('pl.vs_avg') }}</span>{{ chart.spark(ig.spark_5xx or [], 'c-crit', _('pl.k.5xx')) }}</a>
   <a class="ktile ps-{{ se.status or 'ok' }}" href="#secrets"><span class="klabel">{{ _('pl.k.secrets') }}</span>
-    <b class="kval">{{ se.reads|round|int|n if se.reads is defined else '–' }}</b>
+    <b class="kval">{{ se.reads|round|int|n if se.reads is not none else '–' }}</b>
     <span class="kdelta">{{ chg(se.change) }} {{ _('pl.vs_avg') }}</span>{{ chart.spark(se.spark or [], 'c-total', _('pl.k.secrets')) }}</a>
   <a class="ktile ps-{{ dn.status or 'ok' }}" href="#dns"><span class="klabel">{{ _('pl.k.dns') }}</span>
-    <b class="kval">{{ ((100 * dn.nx)|round(1)) ~ ' %' if dn.nx is defined else '–' }}</b>
-    <span class="kdelta">{{ _('pl.nx_avg', v=((100 * dn.nx_avg)|round(1)) if dn.nx_avg is not none and dn.nx_avg is defined else '—') }}</span>{{ chart.spark(dn.spark or [], 'c-total', _('pl.k.dns')) }}</a>
+    <b class="kval">{{ ((100 * dn.nx)|round(1)) ~ ' %' if dn.nx is not none else '–' }}</b>
+    <span class="kdelta">{{ _('pl.nx_avg', v=((100 * dn.nx_avg)|round(1)) if dn.nx_avg is not none and dn.nx_avg is not none else '—') }}</span>{{ chart.spark(dn.spark or [], 'c-total', _('pl.k.dns')) }}</a>
   <a class="ktile ps-{{ cp.status or 'ok' }}" href="#cpu"><span class="klabel">{{ _('pl.k.cpu') }}</span>
-    <b class="kval">{{ cp.hot if cp.hot is defined else '–' }}</b>
+    <b class="kval">{{ cp.hot if cp.hot is not none else '–' }}</b>
     <span class="kdelta">{{ _('pl.cpu_sub', x=3) }}</span></a>
   <a class="ktile ps-{{ rs.status or 'ok' }}" href="#restarts"><span class="klabel">{{ _('pl.k.restarts') }}</span>
-    <b class="kval">{{ rs.total|n if rs.total is defined else '–' }}</b>
+    <b class="kval">{{ rs.total|n if rs.total is not none else '–' }}</b>
     <span class="kdelta">{{ _('pl.oom', n=rs.oom or 0) }}</span>{{ chart.spark(rs.spark or [], 'c-high', _('pl.k.restarts')) }}</a>
   <a class="ktile ps-{{ ce.status or 'ok' }}" href="#certs"><span class="klabel">{{ _('pl.k.certs') }}</span>
-    <b class="kval">{{ _('pl.days', d=ce.soonest|round|int) if ce.soonest is defined else '–' }}</b>
+    <b class="kval">{{ _('pl.days', d=ce.soonest|round|int) if ce.soonest is not none else '–' }}</b>
     <span class="kdelta">{{ _('pl.cert_sub', n=ce.n_warn or 0, t=(ce.rows or [])|length) }}</span></a>
   <a class="ktile ps-{{ tg.status or 'ok' }}" href="#targets"><span class="klabel">{{ _('pl.k.targets') }}</span>
-    <b class="kval">{{ tg.down if tg.down is defined else '–' }}</b>
+    <b class="kval">{{ tg.down if tg.down is not none else '–' }}</b>
     <span class="kdelta">{{ _('pl.of_targets', n=tg.total or 0) }}</span></a>
 </div>
 
@@ -74,7 +74,7 @@
   </section>
   <section class="panel" id="dns">
     <div class="phead"><h2>{{ _('pl.dns') }}</h2>{% if dn.status %}{{ st(dn.status) }}{% endif %}</div>
-    {% if dn.total is defined %}<dl class="kv">
+    {% if dn.total is not none %}<dl class="kv">
       <dt>{{ _('pl.c.queries') }}</dt><dd>{{ dn.total|round|int|n }} {{ chg(dn.change) }}</dd>
       <dt>NXDOMAIN</dt><dd>{{ (100 * dn.nx)|round(1) }} % <span class="muted">({{ _('pl.avg') }} {{ ((100 * dn.nx_avg)|round(1)) if dn.nx_avg is not none else '—' }} %)</span></dd>
       <dt>SERVFAIL</dt><dd>{{ dn.servfail|round|int|n }}</dd></dl>
@@ -87,12 +87,12 @@
       <tr><th>{{ _('pl.c.workload') }}</th><th class="r">{{ _('pl.c.cores') }}</th><th class="r">×</th></tr>
       {% for r in cp.rows %}<tr class="{{ 'warnrow' if r.status != 'ok' }}"><td><span class="muted">{{ r.ns }}/</span>{{ r.workload }}</td>
         <td class="r">{{ (r.cores or 0)|round(2) }}</td><td class="r">{{ r.x|round(1) }}</td></tr>{% endfor %}
-    </table>{% elif cp.total is defined %}<p class="small pad">{{ _('pl.cpu_none') }}</p>{% else %}<div class="pad">{{ nodata(cp) }}</div>{% endif %}
+    </table>{% elif cp.total is not none %}<p class="small pad">{{ _('pl.cpu_none') }}</p>{% else %}<div class="pad">{{ nodata(cp) }}</div>{% endif %}
     <p class="small muted pad">{{ _('pl.cpu_note') }}</p>
   </section>
   <section class="panel table-card" id="restarts">
     <div class="phead pad"><h2>{{ _('pl.restarts') }}</h2>{% if rs.status %}{{ st(rs.status) }}{% endif %}</div>
-    {% if rs.total is defined %}{% if rs.rows %}<table class="tbl compact">
+    {% if rs.total is not none %}{% if rs.rows %}<table class="tbl compact">
       <tr><th>{{ _('pl.c.workload') }}</th><th class="r">{{ _('pl.c.24h') }}</th></tr>
       {% for r in rs.rows %}<tr class="{{ 'warnrow' if r.count >= 10 }}"><td><span class="muted">{{ r.ns }}/</span>{{ r.workload }}</td><td class="r">{{ r.count|n }}</td></tr>{% endfor %}
     </table>{% else %}<p class="small pad">{{ _('pl.restarts_none') }}</p>{% endif %}
@@ -110,7 +110,7 @@
 
   <section class="panel span2 table-card" id="targets">
     <div class="phead pad"><h2>{{ _('pl.targets') }}</h2>{% if tg.status %}{{ st(tg.status) }}{% endif %}</div>
-    {% if tg.total is defined %}{% if tg.rows %}<div class="scrollx"><table class="tbl compact">
+    {% if tg.total is not none %}{% if tg.rows %}<div class="scrollx"><table class="tbl compact">
       <tr><th>job</th><th>{{ _('pl.c.where') }}</th><th>instance</th></tr>
       {% for r in tg.rows %}<tr><td>{{ r.job }}</td><td>{% if r.ns %}<span class="muted">{{ r.ns }}/</span>{{ r.pod }}{% endif %}</td><td><code>{{ r.instance }}</code></td></tr>{% endfor %}
     </table></div>{% else %}<p class="small pad">{{ _('pl.targets_none', n=tg.total) }}</p>{% endif %}

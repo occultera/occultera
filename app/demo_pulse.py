@@ -30,6 +30,14 @@ def _wave(n: int, base: float, amp: float, spike_at: int | None = None, spike: f
 
 
 def demo_pulse() -> dict:
+    from .pulse import Panel
+    d = _demo()
+    for k in ("egress", "ingress", "secrets", "dns", "cpu", "restarts", "certs", "targets"):
+        d[k] = Panel(d[k])
+    return d
+
+
+def _demo() -> dict:
     gb, mb = 1e9, 1e6
     egress_rows = [
         {"ns": "erp", "workload": "report-export", "bytes": 3.4 * gb, "avg": 0.12 * gb},

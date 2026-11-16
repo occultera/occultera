@@ -214,3 +214,34 @@ def test_pulse_page():
         assert 'href="/e/demo/pulse"' in c.get("/e/demo/attack").text
         c.post("/lang", data={"lang": "tr"})
         assert "Küme nabzı" in c.get("/e/demo/pulse").text
+<<<<<<< Updated upstream
+=======
+
+
+class DownProm:
+    async def query(self, *a, **k):
+        raise RuntimeError("cannot reach")
+
+    async def query_range(self, *a, **k):
+        raise RuntimeError("cannot reach")
+
+
+def test_pulse_page_renders_when_prometheus_is_down_or_empty(monkeypatch):
+    import asyncio
+
+    from fastapi.testclient import TestClient
+
+    from app.main import app
+    for prom, word in ((DownProm(), "did not answer"), (PulseProm(empty=True), "No metrics"),
+                       (PulseProm(kong=False), "Traefik")):
+        data = asyncio.run(P.Pulse(prom, [], NOW).collect())
+
+        async def fake(env_id, p, exclude, use_cache=True, data=data):
+            return data
+        monkeypatch.setattr(P, "pulse", fake)
+        with TestClient(app) as c:
+            c.post("/login", data={"password": "pw"})
+            c.post("/lang", data={"lang": "en"})
+            r = c.get("/e/demo/pulse")
+            assert r.status_code == 200 and word in r.text
+>>>>>>> Stashed changes

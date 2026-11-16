@@ -72,6 +72,10 @@ etkisizdir. Eski sürüm yeni veriyle düzgün çalışmazsa yükseltmeden önce
 
 ## Sürüm notları
 
+### 0.12.3
+
+- Düzeltme: Prometheus'a ulaşılamadığında küme nabzı sayfası artık HTTP 500 vermiyor. Yapılacak bir şey yok.
+
 ### 0.12.2
 
 - **Yeni nöbet tetikleyicisi: olağan dışı dışarı aktarım** (olası veri sızıntısı). Varsayılan olarak kapalı;

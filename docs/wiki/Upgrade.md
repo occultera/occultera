@@ -70,6 +70,10 @@ you took before the upgrade.
 
 ## Version notes
 
+### 0.12.3
+
+- Fix: the cluster pulse page no longer fails with HTTP 500 when Prometheus cannot be reached. Nothing to change.
+
 ### 0.12.2
 
 - **New watch trigger: unusual outbound transfer** (possible data leak). Off by default; needs a Prometheus

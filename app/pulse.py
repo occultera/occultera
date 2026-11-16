@@ -44,6 +44,13 @@ INGRESS = (("Kong", "kong_http_requests_total", "code", "route"),
            ("ingress-nginx", "nginx_ingress_controller_requests", "status", "ingress"))
 
 
+class Panel(dict):
+    """A panel's values; a key the panel does not have reads as ``None`` (an empty or failed panel has few)."""
+
+    def __missing__(self, key):
+        return None
+
+
 def _num(v) -> float | None:
     try:
         f = float(v)
@@ -307,7 +314,7 @@ class Pulse:
     async def collect(self) -> dict:
         names = ("egress", "ingress", "secrets", "dns", "cpu", "restarts", "certs", "targets")
         res = await asyncio.gather(*(self._safe(n, getattr(self, n)()) for n in names))
-        out: dict[str, Any] = dict(zip(names, res, strict=True))
+        out: dict[str, Any] = {n: Panel(r) for n, r in zip(names, res, strict=True)}
         out["at"] = self.now.isoformat()
         out["errors"] = self.errors
         out["status"] = worst(*(p.get("status", "ok") for p in res))

@@ -28,10 +28,10 @@ helm repo add occultera https://occultera.github.io/occultera
 helm repo update
 helm install occultera occultera/occultera \
   --namespace occultera --create-namespace \
-  --version 0.4.2 -f my-values.yaml
+  --version 0.4.3 -f my-values.yaml
 ```
 
-Chart 0.4.2, uygulamanın 0.12.2 sürümünü kurar. Üretimde önemli değerler:
+Chart 0.4.3, uygulamanın 0.12.3 sürümünü kurar. Üretimde önemli değerler:
 
 | Değer | Ne yazılır |
 |---|---|

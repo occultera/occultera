@@ -5,6 +5,13 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.12.3] — 2026-11-16
+
+### Fixed
+- **Cluster pulse returned HTTP 500 when Prometheus could not be reached** (wrong address, a NetworkPolicy without
+  an egress rule to it). Every panel failed and the page read values a failed panel does not have. A missing value
+  now reads as empty: the page opens and each panel says that Prometheus did not answer.
+
 ## [0.12.2] — 2026-11-16
 
 ### Added
