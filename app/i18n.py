@@ -1366,6 +1366,10 @@ from .i18n_v121 import EXTRA as _V121  # noqa: E402 - 0.12.1 messages (spike tri
 
 for _lang, _msgs in _V121.items():
     CATALOG[_lang].update(_msgs)
+from .i18n_v122 import EXTRA as _V122  # noqa: E402 - 0.12.2 messages (egress trigger)
+
+for _lang, _msgs in _V122.items():
+    CATALOG[_lang].update(_msgs)
 LANG_NAMES = {"en": "English", "tr": "Türkçe", "es": "Español", "de": "Deutsch"}
 OUTPUT_LANGUAGE = {"en": "English", "tr": "Turkish", "es": "Spanish", "de": "German"}
 

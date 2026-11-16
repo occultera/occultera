@@ -70,6 +70,12 @@ you took before the upgrade.
 
 ## Version notes
 
+### 0.12.2
+
+- **New watch trigger: unusual outbound transfer** (possible data leak). Off by default; needs a Prometheus
+  source. Nothing changes until you turn it on in Settings → Watch. See [Watch](Watch#unusual-outbound-transfer).
+- About page: a short story line about the name and the logo.
+
 ### 0.12.1
 
 - **Sudden increase** counts only alerts at level 7 and above, leaves out the scan groups, compares with the 7-day

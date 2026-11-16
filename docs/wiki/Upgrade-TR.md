@@ -72,6 +72,13 @@ etkisizdir. Eski sürüm yeni veriyle düzgün çalışmazsa yükseltmeden önce
 
 ## Sürüm notları
 
+### 0.12.2
+
+- **Yeni nöbet tetikleyicisi: olağan dışı dışarı aktarım** (olası veri sızıntısı). Varsayılan olarak kapalı;
+  Prometheus kaynağı gerekir. Ayarlar → Nöbet bölümünden açılana kadar hiçbir şey değişmez. Bkz.
+  [Nöbet](Watch-TR#olağan-dışı-dışarı-aktarım).
+- Hakkında sayfası: ad ve logonun hikâyesini anlatan kısa bir satır.
+
 ### 0.12.1
 
 - **Ani artış** yalnız seviye 7 ve üstü alarmları sayar, tarama gruplarını dışarıda bırakır, 7 günlük ortalamayla

@@ -19,15 +19,20 @@ from .config import DAYS, Schedule
 
 HM = re.compile(r"([01]\d|2[0-3]):[0-5]\d")
 CHANNELS = ("email", "telegram", "teams", "slack", "discord", "webhook", "ntfy")
-TRIGGERS = ("level", "rules", "groups", "brute_force", "spike", "agents", "active_response")
+TRIGGERS = ("level", "rules", "groups", "brute_force", "spike", "agents", "active_response", "egress")
+# triggers that stay off until an administrator turns them on (they need an extra source or local tuning)
+DEFAULT_OFF = ("egress",)
 # what the AI may suggest to change (and an admin may accept): name → (min, max)
 TUNABLE: dict[str, tuple[float, float]] = {
     "critical_level": (1, 16), "group_min_level": (1, 16), "brute_failures": (3, 1000),
     "spike_factor": (1.5, 100), "spike_min": (10, 10_000_000), "agent_minutes": (5, 1440),
-    "spike_min_level": (0, 16),
+    "spike_min_level": (0, 16), "egress_factor": (1.5, 100), "egress_min_mb": (10, 1_000_000),
 }
 # groups whose alerts come in scheduled batches (scans): a burst of them is expected, not an attack
 SPIKE_EXCLUDE = ("syscheck", "sca", "vulnerability-detector", "rootcheck", "syscollector", "ciscat", "oscap")
+# namespaces whose traffic is cluster plumbing (storage replication, CNI, monitoring, log shipping), not data leaving
+EGRESS_EXCLUDE = ("kube-system", "longhorn-system", "cattle-system", "cattle-fleet-system", "cattle-monitoring-system",
+                  "monitoring", "logging", "calico-system", "tigera-operator", "cert-manager")
 CUSTOM_NAME = re.compile(r"x_[a-z0-9_]{1,24}")
 MAX_CUSTOM = 20
 MAX_PATTERN = 200
@@ -76,7 +81,7 @@ class WatchSettings(BaseModel):
     channels: list[str] = Field(default_factory=list)       # empty = every configured channel
     quiet: QuietHours = Field(default_factory=QuietHours)
     repeat_hours: float = Field(6, ge=0.25, le=168)         # the same event is not announced again within this
-    triggers: dict[str, bool] = Field(default_factory=lambda: dict.fromkeys(TRIGGERS, True))
+    triggers: dict[str, bool] = Field(default_factory=lambda: {k: k not in DEFAULT_OFF for k in TRIGGERS})
     critical_level: int = Field(12, ge=1, le=16)            # any alert at or above this level
     rules: list[str] | None = None                          # None = the environment's watch_rules
     groups: list[str] | None = None                         # None = the environment's watch_groups
@@ -88,6 +93,9 @@ class WatchSettings(BaseModel):
     spike_min_level: int = Field(7, ge=0, le=16)            # only alerts at or above this level count
     spike_exclude_groups: list[str] | None = None           # None = SPIKE_EXCLUDE (scheduled scans); ["-"] = none
     agent_minutes: int = Field(15, ge=5, le=1440)           # an agent counts as lost after this long
+    egress_factor: float = Field(5.0, ge=1.5, le=100)       # outbound bytes × the workload's 7-day average
+    egress_min_mb: int = Field(500, ge=10, le=1_000_000)    # … and at least this many MB in the window
+    egress_exclude_namespaces: list[str] | None = None      # None = EGRESS_EXCLUDE; ["-"] = none
     mute: list[str] = Field(default_factory=list)           # event keys an admin silenced (often an AI suggestion)
 
     @model_validator(mode="before")
@@ -98,6 +106,11 @@ class WatchSettings(BaseModel):
         if isinstance(v, dict) and "spike_min_level" not in v and v.get("spike_min") == 500:
             v = {**v, "spike_min": 50}
         return v
+
+    def egress_excluded(self) -> list[str]:
+        if self.egress_exclude_namespaces is None:
+            return list(EGRESS_EXCLUDE)
+        return [n for n in self.egress_exclude_namespaces if n != "-"]
 
     def spike_excluded(self) -> list[str]:
         if self.spike_exclude_groups is None:
@@ -116,9 +129,9 @@ class WatchSettings(BaseModel):
     @classmethod
     def _tr(cls, v):
         v = v or {}
-        return {k: bool(v.get(k, True)) for k in TRIGGERS}
+        return {k: bool(v.get(k, k not in DEFAULT_OFF)) for k in TRIGGERS}
 
-    @field_validator("rules", "groups", "spike_exclude_groups", mode="before")
+    @field_validator("rules", "groups", "spike_exclude_groups", "egress_exclude_namespaces", mode="before")
     @classmethod
     def _list(cls, v):
         if v is None:

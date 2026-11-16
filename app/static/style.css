@@ -493,3 +493,4 @@ a.ttag:hover { text-decoration: none; border-color: var(--accent); }
 .brand-card { display: flex; align-items: center; gap: 18px; padding: 16px 20px; }
 .brand-card img { flex: none; border-radius: 50%; background: #0A0F1A; }
 .brand-slogan { font-size: 1.15rem; font-weight: 600; margin-bottom: 4px; }
+.brand-story { margin-bottom: 6px; }

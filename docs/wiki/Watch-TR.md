@@ -21,6 +21,7 @@ Nöbet, bir yönetici **Ayarlar → Nöbet** (`/e/<ortam>/settings`) bölümünd
 | Active Response | Wazuh otomatik bir işlem yaptı (`rule.groups: active_response`) | — |
 | Başarısız denemelerden sonra giriş | aynı kaynak adresten, öncesindeki `brute_window_minutes` içinde en az `brute_failures` başarısız denemeden sonra başarılı giriş — her zaman *kritik* | sayı, süre |
 | Ani artış | bir aralıktaki `spike_min_level` (varsayılan 7) ve üstü alarmlar, 7 günlük ortalamalarının `spike_factor` katı ve en az `spike_min` (varsayılan 50). Tarama grupları (`syscheck`, `sca`, `vulnerability-detector`, `rootcheck`, `syscollector`, `ciscat`, `oscap`) sayılmaz. Mesaj, artışı yapan kuralları adıyla verir | kat, en az, seviye, gruplar |
+| Olağan dışı dışarı aktarım (varsayılan kapalı) | bir Kubernetes iş yükü bir aralıkta pod'larından en az `egress_min_mb` (varsayılan 500 MB) ve 7 günlük ortalamasının en az `egress_factor` (varsayılan 5) katı veri gönderdi. Prometheus kaynağı gerekir; bkz. [aşağısı](#olağan-dışı-dışarı-aktarım) | kat, MB, namespace'ler |
 | Ajan koptu | `agent_minutes` süresinden uzun bağlantısız ajan (`ignore_agents` atlanır; aynı anda 5 ve fazlası *kritik*). Açılıştan sonraki ilk tarama yalnızca mevcut durumu öğrenir | dakika |
 
 ## Ayıklama
@@ -31,7 +32,9 @@ Bir olay şu durumlarda bildirime girmez (yine kaydedilir ve AI yine değerlendi
 - kuralı bilgi tabanında etkin bir **baseline** kaydıysa (kritik olaylar için asla),
 - aynı anahtar `repeat_hours` (varsayılan 6) içinde zaten bildirildiyse — mevcut olayın sayısı artar,
 - **tekrarlayan bir patlamaysa**: kuralları son 7 gün içinde aynı uzunlukta bir aralıkta en az yarısı kadar bir
-  patlama yapmış bir ani artış (planlı işler, gece toplu işleri).
+  patlama yapmış bir ani artış (planlı işler, gece toplu işleri),
+- **tekrarlayan bir aktarımsa**: aynı iş yükünün son 7 gün içinde aynı uzunlukta bir aralıkta en az yarısı kadar
+  yaptığı bir dışarı aktarım (yedek, eşitleme, dışa aktarma işleri).
 
 ### Ani artış neden böyle çalışıyor
 
@@ -42,6 +45,30 @@ söylemiyordu. Artık yalnız önemli alarmlar sayılıyor, taramalar dışarıd
 günlük ortalama aldı, olay anahtarı ana kural oldu (`spike:<kural no>`) ve bu sayede her kural gibi susturulabiliyor
 ya da baseline olarak kaydedilebiliyor; aynı kuralların bu hafta zaten yaptığı bir patlama bildirim göndermeden
 nöbet sayfasında kalıyor. Eski davranışa dönmek için seviyeyi 0, grupları `-` yapın.
+
+### Olağan dışı dışarı aktarım
+
+Bir veri sızıntısı çoğu zaman kendi başına bir Wazuh alarmı üretmez: çalınmış bir token ya da ele geçirilmiş bir
+uygulama yalnızca dışarı çok veri gönderir. Bu tetikleyici o hacmi izler. Her aralıkta ortamın Prometheus
+kaynağından cAdvisor'ın `container_network_transmit_bytes_total` değerini okur, namespace ve **iş yükü** başına
+toplar (ReplicaSet ya da DaemonSet son eki atılmış pod adı; böylece bir rollout geçmişini korur, StatefulSet
+pod'ları ayrı kalır) ve aralığı aynı iş yükünün 7 günlük ortalamasıyla karşılaştırır. Olay iş yükünü, hacmi ve katı
+söyler, örneğin *erp/odoo 5 dk içinde 900 MB dışarı gönderdi — 7 günlük ortalamasının (2.0 MB) >100 katı*;
+anahtarı `egress:<namespace>/<iş yükü>` olduğu için her olay gibi susturulabilir.
+
+Yapmadıkları:
+
+- **İçeriğe asla bakmaz.** Bir yedek, bir eşitleme işi ve bir sızıntı aynı görünür; kararı AI turu ve insan verir.
+- **Pod'un bütün arayüzünü sayar**, yani diğer pod'lara giden trafik de (veritabanı, nesne depolama, replikasyon)
+  sayılır. Küme altyapısı namespace'leri varsayılan olarak dışarıda kalır (`kube-system`, `longhorn-system`,
+  `cattle-*`, `monitoring`, `logging`, `calico-system`, `tigera-operator`, `cert-manager`); kendi
+  namespace'lerinizi ekleyin ya da hiçbirini çıkarmamak için `-` yazın.
+- **`hostNetwork` kullanan pod'lar** düğümün trafiğini bildirir ya da hiç bildirmez; Kubernetes dışındaki trafik
+  görülmez.
+
+Ayarlar → Nöbet bölümünden açın. Varsayılan olarak kapalıdır ve `sources.prometheus` yoksa onay kutusu
+kullanılamaz. Varsayılanlarla başlayın: yoğun bir kümede bu hafta zaten olmuş bir patlama (Kafka yeniden
+dengelemesi, gece yedekleri) tekrarlayan aktarım olarak sessiz kalır.
 
 ## Kanallar ve sessiz saatler
 

@@ -22,7 +22,7 @@ saw, explains it and suggests what to tune. You decide; nothing changes in Wazuh
 
 ![Watch board](images/dashboard.png)
 
-**Current release:** 0.12.1 · **Licence:** AGPL-3.0-only · **Python:** 3.11–3.15 · **Wazuh:** 4.x
+**Current release:** 0.12.2 · **Licence:** AGPL-3.0-only · **Python:** 3.11–3.15 · **Wazuh:** 4.x
 
 ## What it is, and what it is not
 

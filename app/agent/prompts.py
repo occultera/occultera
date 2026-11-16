@@ -182,7 +182,10 @@ round to judge all of them together. For EVERY event below return one entry in `
 Check the data with the tools before deciding; do not judge from the title alone. When an event is noise or the
 threshold is clearly wrong, add a `suggestion`: either `{{"mute": true}}` for this exact event key, or
 `{{"param": ..., "value": ...}}` for one of critical_level, group_min_level, brute_failures, spike_factor,
-spike_min, agent_minutes. A suggestion changes nothing until an administrator accepts it.
+spike_min, spike_min_level, agent_minutes, egress_factor, egress_min_mb. A suggestion changes nothing until an
+administrator accepts it. An `egress` event is outbound volume of one workload from Prometheus, never content:
+check with prom_range what the workload normally sends and when, and with Loki/k8s what it is (backup, sync,
+export) before calling it a leak.
 ```watch-events
 {events}
 ```

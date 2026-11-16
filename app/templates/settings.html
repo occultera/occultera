@@ -70,6 +70,16 @@
     <div class="small muted">{{ _('set.w.spike_exclude_help') }}</div>
   </div>
   <div class="trig">
+    <label class="chk"><input type="checkbox" name="triggers.egress" {{ 'checked' if st.watch.triggers.egress }} {{ 'disabled' if not has_prom }}> {{ _('watch.trigger.egress') }}</label>
+    <label>{{ _('set.w.egress_factor') }} <input type="number" name="egress_factor" min="1.5" max="100" step="0.5" value="{{ st.watch.egress_factor }}" data-type="float" class="num"></label>
+    <label>{{ _('set.w.egress_min_mb') }} <input type="number" name="egress_min_mb" min="10" max="1000000" value="{{ st.watch.egress_min_mb }}" class="num wide"></label>
+  </div>
+  <div class="trig">
+    <label>{{ _('set.w.egress_exclude') }}
+    <input name="egress_exclude_namespaces" data-type="list-or-null" value="{{ (st.watch.egress_exclude_namespaces or [])|join(', ') if st.watch.egress_exclude_namespaces is not none else '' }}" placeholder="{{ egress_exclude_default|join(', ') }}"></label>
+    <div class="small muted">{{ _('set.w.egress_help') if has_prom else _('set.w.egress_no_prom') }}</div>
+  </div>
+  <div class="trig">
     <label class="chk"><input type="checkbox" name="triggers.agents" {{ 'checked' if st.watch.triggers.agents }} {{ 'disabled' if not env.api }}> {{ _('watch.trigger.agents') }}</label>
     <label>{{ _('set.w.agent_minutes') }} <input type="number" name="agent_minutes" min="5" max="1440" value="{{ st.watch.agent_minutes }}" class="num"></label>
   </div>

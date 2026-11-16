@@ -15,7 +15,7 @@ from pydantic import BaseModel, Field, ValidationError
 from .. import auditlog
 from ..backup import MIN_PASSPHRASE, BackupError
 from ..privacy import DETECTORS, Masker
-from ..settingsdoc import CHANNELS, SPIKE_EXCLUDE, TRIGGERS, TUNABLE, EnvSettings, MaskProfile
+from ..settingsdoc import CHANNELS, EGRESS_EXCLUDE, SPIKE_EXCLUDE, TRIGGERS, TUNABLE, EnvSettings, MaskProfile
 from .common import actor
 from .common import ctx as _ctx
 from .common import env as _env
@@ -55,6 +55,7 @@ async def settings_page(request: Request, env_id: str):
         auto_possible=bcfg.s3.enabled and len(bcfg.passphrase) >= MIN_PASSPHRASE, min_pass=MIN_PASSPHRASE,
         yaml_schedule=er.env.schedule, schedule=st.schedule(er.env.schedule),
         yaml_rules=er.env.watch_rules, yaml_groups=er.env.watch_groups, spike_exclude_default=SPIKE_EXCLUDE,
+        egress_exclude_default=EGRESS_EXCLUDE, has_prom=er.env.sources.prometheus is not None,
         privacy_mode=er.env.privacy.mode,
         backup_age=rt._backup_age_days(storage) if storage else None))
 

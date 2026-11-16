@@ -5,6 +5,24 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.12.2] — 2026-11-16
+
+### Added
+- **Watch: unusual outbound transfer (possible data leak).** A new trigger, `egress`, reads cAdvisor's
+  `container_network_transmit_bytes_total` from the environment's Prometheus source, sums it per namespace and
+  workload (pod name without its ReplicaSet/DaemonSet suffix) and fires when a workload sends at least
+  `egress_min_mb` (default 500) in one interval and `egress_factor` (default 5) × its 7-day average. The event names
+  the workload, the volume and the factor (`egress:<namespace>/<workload>`); a transfer the same workload already made
+  at half the size or more in the last 7 days is kept silent as *recurring* (backups, sync jobs). Cluster plumbing
+  namespaces are left out (`egress_exclude_namespaces`; `-` leaves out nothing). Volume only, never content. **Off by
+  default**; the checkbox in Settings → Watch needs `sources.prometheus`.
+- The AI round may suggest `egress_factor`, `egress_min_mb` and `spike_min_level`; the prompt tells it to check what
+  a workload normally sends before calling a transfer a leak.
+
+### Changed
+- About page: the name card says what inspired the name — *Astronomers cover the Sun to see its corona. Occultera
+  covers the noise, so the threat stands out.*
+
 ## [0.12.1] — 2026-11-16
 
 ### Changed

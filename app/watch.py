@@ -13,6 +13,10 @@ involved, so an urgent situation is announced within minutes and costs nothing:
                         their 7-day average — named by the rules behind them; a burst the same rules already
                         produced in the last 7 days is kept silent as *recurring*
 6. ``agents``           agents that stopped reporting
+7. ``egress``           a workload sends ``egress_factor`` × its 7-day average out of its pods (and at least
+                        ``egress_min_mb``) — read from Prometheus (cAdvisor), off by default. It sees volume, not
+                        content: a possible data leak, a backup or a sync job look the same, so a transfer the same
+                        workload already made in the last 7 days is kept silent as *recurring*
 
 Events are then *sorted out* (muted keys, known noise from the knowledge base, the repeat window),
 *announced* at once on the selected channels as "rule-based alert — not reviewed by AI" (held back
@@ -26,6 +30,7 @@ import asyncio
 import fnmatch
 import logging
 import math
+import re
 from datetime import UTC, datetime, timedelta
 from typing import TYPE_CHECKING, Any
 
@@ -96,8 +101,8 @@ def _event(env_id: str, key: str, trigger: str, severity: str, **kw) -> dict:
 class Scanner:
     """The local rules. Stateless except for what the caller passes in; never writes anything."""
 
-    def __init__(self, env, ix, api, cfg: WatchSettings, lang: str = "en"):
-        self.env, self.ix, self.api, self.cfg, self.lang = env, ix, api, cfg, lang
+    def __init__(self, env, ix, api, cfg: WatchSettings, lang: str = "en", prom=None):
+        self.env, self.ix, self.api, self.cfg, self.lang, self.prom = env, ix, api, cfg, lang, prom
         self.rules = {str(x) for x in (cfg.rules if cfg.rules is not None else env.watch_rules)}
         self.groups = {str(x) for x in (cfg.groups if cfg.groups is not None else env.watch_groups)}
         self.errors: list[str] = []
@@ -111,12 +116,13 @@ class Scanner:
             return default
 
     async def scan(self, frm: datetime, to: datetime, known_disconnected: set[str] | None) -> tuple[list[dict], set[str] | None]:
-        a, b, c, d = await asyncio.gather(
+        a, b, c, d, e = await asyncio.gather(
             self._safe("alerts", self.alerts(frm, to), []),
             self._safe("brute_force", self.brute_force(frm, to), []),
             self._safe("spike", self.spike(frm, to), []),
-            self._safe("agents", self.agents(to, known_disconnected), ([], known_disconnected)))
-        return a + b + c + d[0], d[1]
+            self._safe("agents", self.agents(to, known_disconnected), ([], known_disconnected)),
+            self._safe("egress", self.egress(frm, to), []))
+        return a + b + c + d[0] + e, d[1]
 
     # -------------------------------------------------------- level / rules / groups / active response
     async def alerts(self, frm: datetime, to: datetime) -> list[dict]:
@@ -290,6 +296,68 @@ class Scanner:
             ev["recurring"] = True
         return [ev]
 
+    # -------------------------------------------------------- egress (possible data leak)
+    def _egress_sel(self, extra: str = "") -> str:
+        excl = "|".join(_rx(n) for n in self.cfg.egress_excluded())
+        parts = ['pod!=""'] + ([f'namespace!~"{excl}"'] if excl else []) + ([extra] if extra else [])
+        return "container_network_transmit_bytes_total{" + ",".join(parts) + "}"
+
+    async def _egress_one(self, expr: str, at: datetime) -> float:
+        r = await self.prom.query(expr, iso(at))
+        vals = [_num(x.get("value")) for x in r.get("series") or []]
+        return sum(v for v in vals if v is not None)
+
+    async def egress(self, frm: datetime, to: datetime) -> list[dict]:
+        """Workloads that send far more than usual out of their pods: a possible data leak.
+
+        Read from Prometheus (cAdvisor's ``container_network_transmit_bytes_total``), summed per namespace and
+        workload — the pod name without its ReplicaSet/DaemonSet suffix, so a rollout keeps its history. A workload
+        counts when it sent at least ``egress_min_mb`` in the window and ``egress_factor`` × its 7-day average for a
+        window of the same length. The counter is the pod's whole interface, so traffic to other pods counts too
+        (databases, object storage, backups); cluster plumbing namespaces are left out (``egress_exclude_namespaces``)
+        and a transfer the same workload already made in the last 7 days is kept silent as *recurring*.
+        Volume only, never content: the event says what to check, the AI round and a human decide.
+        """
+        cfg = self.cfg
+        if not cfg.on("egress") or self.prom is None:
+            return []
+        span = (to - frm).total_seconds()
+        if span <= 0:
+            return []
+        m = max(5, math.ceil(span / 60))
+        floor = cfg.egress_min_mb * 1_000_000
+        per_pod = f"sum by (namespace, pod) (increase({self._egress_sel()}[{m}m]))"
+        wl = f'label_replace(label_replace({per_pod}, "workload", "$1", "pod", "(.+)"), ' \
+             f'"workload", "$1", "pod", "{WORKLOAD_RX}")'
+        r = await self.prom.query(f"topk(5, sum by (namespace, workload) ({wl}) > {floor})", iso(to))
+        out: list[dict] = []
+        for row in r.get("series") or []:
+            lab = row.get("labels") or {}
+            ns, name, cur = str(lab.get("namespace") or ""), str(lab.get("workload") or ""), _num(row.get("value"))
+            if not ns or not name or cur is None or cur < floor or not NAME_OK.fullmatch(ns + "/" + name):
+                continue
+            sel = self._egress_sel(f'namespace="{ns}",pod=~"{_rx(name)}|{_rx(name)}{POD_SUFFIX}"')
+            week = await self._egress_one(f"sum(increase({sel}[7d] offset {m}m))", to)
+            avg = week * m / (7 * 24 * 60)
+            if avg > 0 and cur < cfg.egress_factor * avg:
+                continue
+            peak = await self._egress_one(f"max_over_time(sum(increase({sel}[{m}m]))[7d:{m}m] offset {m}m)", to)
+            wname = f"{ns}/{name}"
+            if avg > 0:
+                x = cur / avg
+                title = t(self.lang, "watch.ev.egress", wl=wname, size=fmt_bytes(cur), m=m, avg=fmt_bytes(avg),
+                          x=">100" if x > 100 else (f"{x:.0f}" if x >= 10 else f"{x:.1f}"))
+            else:
+                title = t(self.lang, "watch.ev.egress_new", wl=wname, size=fmt_bytes(cur), m=m)
+            ev = _event(self.env.id, f"egress:{wname}", "egress", "high", rule_ids=[], agents=[], srcips=[],
+                        workload=wname, bytes=int(cur), baseline_bytes=int(avg), peak_7d_bytes=int(peak),
+                        factor=round(cur / avg, 1) if avg > 0 else None, first_seen=iso(frm), last_seen=iso(to),
+                        title=title)
+            if peak >= 0.5 * cur:
+                ev["recurring"] = True
+            out.append(ev)
+        return out
+
     # -------------------------------------------------------- agents
     async def agents(self, now: datetime, known: set[str] | None) -> tuple[list[dict], set[str] | None]:
         cfg = self.cfg
@@ -320,6 +388,33 @@ class Scanner:
                                                 names=", ".join(new[:8]) + ("…" if len(new) > 8 else ""),
                                                 m=cfg.agent_minutes))
         return [ev], current
+
+
+# a pod name without the ReplicaSet hash and pod suffix (Deployment, DaemonSet); StatefulSet pods keep their ordinal
+POD_SUFFIX = "(-[a-z0-9]{6,10})?-[a-z0-9]{5}"
+WORKLOAD_RX = "(.+?)" + POD_SUFFIX
+NAME_OK = re.compile(r"[a-z0-9]([a-z0-9.-]*[a-z0-9])?/[a-z0-9]([a-z0-9.-]*[a-z0-9])?")
+
+
+def _rx(name: str) -> str:
+    """A Kubernetes name as a literal inside a PromQL regex string (only ``.`` needs escaping)."""
+    return name.replace(".", "\\\\.")
+
+
+def _num(v) -> float | None:
+    try:
+        f = float(v)
+    except (TypeError, ValueError):
+        return None
+    return f if math.isfinite(f) else None
+
+
+def fmt_bytes(n: float) -> str:
+    for unit, size in (("GB", 1e9), ("MB", 1e6), ("kB", 1e3)):
+        if n >= size:
+            v = n / size
+            return f"{v:.1f} {unit}" if v < 10 else f"{v:,.0f} {unit}"
+    return f"{n:.0f} B"
 
 
 def _agg_ts(agg: dict | None) -> datetime | None:
@@ -390,7 +485,7 @@ def compact_for_ai(ev: dict) -> dict:
     """What the AI round sees of one event (ids and numbers; the sample goes through the masker like all text)."""
     keep = ("id", "trigger", "severity", "title", "rule_ids", "level", "agents", "srcips", "users", "count",
             "first_seen", "last_seen", "baseline", "factor", "successes", "status", "sample", "contributors",
-            "recurring")
+            "recurring", "workload", "bytes", "baseline_bytes", "peak_7d_bytes")
     return {k: ev[k] for k in keep if ev.get(k) not in (None, "", [])}
 
 
@@ -453,7 +548,7 @@ class WatchMixin:
         if frm >= now:
             return {"enabled": True, "events": 0, "skipped": "clock"}
         known = set(state["disconnected"]) if isinstance(state.get("disconnected"), list) else None
-        sc = Scanner(rt.env, rt.ix, rt.api, cfg, lang)
+        sc = Scanner(rt.env, rt.ix, rt.api, cfg, lang, prom=(getattr(rt, "sources", None) or {}).get("prometheus"))
         found, disconnected = await sc.scan(frm, now, known)
 
         baseline = {str(r) for k in await rt.repo.list_knowledge(kinds=["baseline"], status="active")
@@ -474,7 +569,7 @@ class WatchMixin:
             elif known_noise(ev, baseline):
                 ev["status"], ev["why_silent"] = "muted", "baseline"
             elif ev.get("recurring"):
-                ev["status"], ev["why_silent"] = "muted", "recurring"
+                ev["status"], ev["why_silent"] = "muted", "recurring_egress" if ev["trigger"] == "egress" else "recurring"
             fresh.append(ev)
 
         quiet = quiet_now(cfg, now.astimezone(self.tz))

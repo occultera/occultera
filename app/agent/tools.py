@@ -577,7 +577,8 @@ SPECS: dict[str, dict] = {
                     "suggestion": _obj({
                         "mute": {"type": "boolean", "description": "true = stop announcing this exact event key"},
                         "param": {"type": "string", "enum": ["critical_level", "group_min_level", "brute_failures",
-                                                             "spike_factor", "spike_min", "agent_minutes"]},
+                                                             "spike_factor", "spike_min", "spike_min_level", "agent_minutes",
+                                                             "egress_factor", "egress_min_mb"]},
                         "value": {"type": "number"},
                         "why": {"type": "string"}}),
                 }, ["event_id", "verdict"])},
