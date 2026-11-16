@@ -46,6 +46,10 @@ Wazuh sans votre accord.
    avec les mêmes limites et le même masquage.
 5. **Montrer le travail accompli.** Décisions, modifications de règles et interruptions figurent dans un rapport
    mensuel.
+6. **Voir les clusters autour de Wazuh.** Avec une source Prometheus — Kubernetes, OpenShift (Thanos Querier),
+   plusieurs clusters par Wazuh — le [pouls du cluster](Cluster-Pulse) montre ce qui sort de chaque cluster, qui
+   frappe à l'entrée, qui lit les secrets et quelles alertes le cluster déclenche lui-même ; l'IA les explique sur
+   demande.
 
 ## Deux boucles
 
@@ -56,7 +60,9 @@ Wazuh sans votre accord.
 | Ce que vous recevez | une alerte immédiate « basée sur des règles » via Teams, Telegram, Slack, e-mail … | un rapport : constats étayés, questions, un verdict pour chaque événement de la surveillance, brouillons de règles et suggestions de réglage |
 
 Urgent signifie : une alerte de niveau critique, une règle ou un groupe surveillé, une connexion réussie après des
-échecs, Active Response, une hausse soudaine du volume, des agents qui ne répondent plus. Les heures de silence
+échecs, Active Response, une hausse soudaine du volume, des agents qui ne répondent plus et — lus dans Prometheus
+et désactivés jusqu'à ce que vous les activiez — un transfert sortant inhabituel (fuite de données possible) et une
+nouvelle alerte du Prometheus du cluster. Les heures de silence
 retiennent tout sauf les événements critiques. La surveillance s'active dans **Settings → Watch**.
 → [Watch](Watch) (en anglais)
 

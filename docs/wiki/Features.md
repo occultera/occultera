@@ -59,6 +59,14 @@ hint for a detection gap, not a measured coverage. The dashboard shows the same 
 Report findings carry the technique ids of their rules (plus the model's own, when the evidence supports it) as
 links to attack.mitre.org. Details: [User guide](User-Guide).
 
+## Cluster pulse
+
+With a Prometheus source, a page per environment shows the last 24 hours against the daily average of the six
+days before: outbound transfer per workload, ingress 401/403/404/5xx and the routes behind them, Kubernetes API
+reads of secrets, DNS, CPU outliers, restarts, certificates and scrape targets that are down — plus the alerts the
+cluster's own Prometheus is firing, with an **Explain with AI** button. Several clusters get a selector. The watch
+can announce an unusual outbound transfer and new cluster alerts. → [Cluster pulse](Cluster-Pulse)
+
 ## Noise map
 
 **Noise map** in the environment menu (no AI) answers "where does the volume come from?":

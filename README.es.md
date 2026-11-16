@@ -65,6 +65,10 @@ de la fuente», «cero no significa que la regla funcione», bajar el nivel en l
   y secretos se enmascaran antes de enviar nada al modelo (RGPD). Activado por defecto.
 - **Servidor MCP.** Las mismas herramientas de solo lectura para Claude Desktop, Cursor, VS Code o cualquier
   cliente MCP.
+- **Pulso del clúster (Prometheus).** Para Kubernetes y OpenShift — uno o varios clústeres por Wazuh: transferencia
+  saliente por carga, errores en la entrada, lecturas de secretos, DNS, CPU anómala, reinicios, certificados, puntos
+  ciegos y las alertas del propio clúster, explicadas por la IA a petición. La vigilancia puede avisar de una
+  transferencia saliente inusual (posible fuga de datos) y de nuevas alertas del clúster.
 - **Notificaciones** por correo, Telegram, Microsoft Teams, Slack, Discord, ntfy o un webhook genérico.
 - **Sin base de datos adicional.** El estado vive en índices `daily-triage-*` de su propio Indexer, con copia
   de seguridad cifrada.

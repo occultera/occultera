@@ -46,6 +46,10 @@ açıklar ve neyin ayarlanması gerektiğini önerir. Kararı siz verirsiniz; on
    maskelemeyle sorgulayabilir.
 5. **Yapılan işi göstermek.** Kararlar, kural değişiklikleri ve kesintiler gözden geçirme toplantısı için aylık
    bir raporda toplanır.
+6. **Wazuh'un çevresindeki kümeleri görmek.** Bir Prometheus kaynağıyla — Kubernetes, OpenShift (Thanos Querier),
+   bir Wazuh arkasında birden çok küme — [küme nabzı](Cluster-Pulse-TR) her kümeden ne çıktığını, girişte kapıyı
+   kimin çaldığını, secret'ları kimin okuduğunu ve kümenin kendisinin hangi alarmları ateşlediğini gösterir; bu
+   alarmları istenince yapay zekâ yorumlar.
 
 ## İki döngü
 
@@ -56,8 +60,9 @@ açıklar ve neyin ayarlanması gerektiğini önerir. Kararı siz verirsiniz; on
 | Size gelen | Teams, Telegram, Slack, e-posta … üzerinden anında "kural tabanlı uyarı" | rapor: kanıtlı bulgular, sorular, her nöbet olayı için hüküm, kural taslakları ve eşik önerileri |
 
 Acil demek: kritik seviyede bir alarm, izlenen bir kural ya da grup, başarısız denemelerden sonra başarılı giriş,
-Active Response, ani hacim artışı, veri göndermeyi kesen ajanlar. Sessiz saatlerde kritik olaylar dışındakiler
-bekletilir. Nöbet **Ayarlar → Nöbet** bölümünden açılır. → [Nöbet](Watch-TR)
+Active Response, ani hacim artışı, veri göndermeyi kesen ajanlar — ayrıca Prometheus'tan okunan ve siz açana kadar
+kapalı duran iki tetikleyici: bir iş yükünden olağan dışı dışarı aktarım (olası veri sızıntısı) ve kümenin kendi
+Prometheus'undan yeni bir alarm. Sessiz saatlerde kritik olaylar dışındakiler bekletilir. Nöbet **Ayarlar → Nöbet** bölümünden açılır. → [Nöbet](Watch-TR)
 
 ## Başka neler yapar?
 
@@ -69,6 +74,10 @@ bekletilir. Nöbet **Ayarlar → Nöbet** bölümünden açılır. → [Nöbet](
 - Kendi verisinin şifreli yedeği (indirme ya da S3) ve bir indeks silme politikası onu silecekse uyarı.
 - Eğilim grafikleri, önem bantları, en sık kural, ajan ve kaynaklarla bir pano ve alarmların **MITRE ATT&CK**
   görünümü (taktik şeridi, teknik matrisi, yeni teknikler, alarmı olmayan taktikler) — hepsi yapay zekâsız.
+- Prometheus'u olan her ortam için **küme nabzı**: iş yükü başına dışarı aktarım, girişte 401/403/5xx, secret
+  okumaları, DNS, CPU sapmaları, yeniden başlatmalar, sertifikalar, izlemenin kör noktaları ve kümenin kendi
+  ateşlenen alarmları (yapay zekâ yorumuyla) — bir ya da birden çok Kubernetes / OpenShift kümesi için.
+  → [Küme nabzı](Cluster-Pulse-TR)
 - Ayarlar sayfası, salt okunur görüntüleyici rolü (parolayla ya da Keycloak/Authentik arkasında SSO grubuyla),
   aylık denetim raporu.
 

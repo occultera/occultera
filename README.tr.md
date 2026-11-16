@@ -61,6 +61,10 @@ aynı sayı bir besleme olayıdır", "sıfır, kuralın çalıştığını göst
   kartlar ve sırlar modele bir şey gönderilmeden önce maskelenir (KVKK / GDPR). Varsayılan olarak açık.
 - **MCP sunucusu.** Aynı salt okunur araçlar Claude Desktop, Cursor, VS Code ya da herhangi bir MCP istemcisi
   için.
+- **Küme nabzı (Prometheus).** Kubernetes ve OpenShift için — bir Wazuh arkasında bir ya da birden çok küme: iş
+  yükü başına dışarı aktarım, giriş hataları, secret okumaları, DNS, CPU sapmaları, yeniden başlatmalar,
+  sertifikalar, kör noktalar ve kümenin kendi ateşlenen alarmları; istenince yapay zekâ yorumlar. Nöbet olağan dışı
+  dışarı aktarımı (olası veri sızıntısı) ve yeni küme alarmlarını bildirebilir.
 - **Bildirimler:** e-posta, Telegram, Microsoft Teams, Slack, Discord, ntfy ya da genel webhook.
 - **Ek veritabanı yok.** Durum kendi Indexer'ınızdaki `daily-triage-*` indekslerinde durur; şifreli yedek alınır.
 - **Aylık denetim raporu**, yapay zekâsız, PDF ya da Markdown: hacim, kararlar, kural değişiklikleri, kesintiler.

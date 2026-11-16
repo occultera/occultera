@@ -65,6 +65,10 @@ heißt nicht, dass die Regel funktioniert“, Stufe senken statt stummschalten.
 - **Personenbezogene Daten bleiben drinnen.** E-Mail-Adressen, Telefonnummern, Ausweisnummern, IBANs, Karten und
   Geheimnisse werden maskiert, bevor etwas an das Modell geht (DSGVO). Standardmäßig aktiv.
 - **MCP-Server.** Dieselben nur lesenden Werkzeuge für Claude Desktop, Cursor, VS Code oder jeden MCP-Client.
+- **Cluster-Puls (Prometheus).** Für Kubernetes und OpenShift — ein oder mehrere Cluster je Wazuh: ausgehende
+  Übertragung je Workload, Fehler am Eingang, Secret-Lesezugriffe, DNS, CPU-Ausreißer, Neustarts, Zertifikate,
+  blinde Flecken und die Alarme des Clusters selbst, auf Wunsch von der KI erklärt. Die Wache kann ungewöhnliche
+  ausgehende Übertragungen (mögliches Datenleck) und neue Cluster-Alarme melden.
 - **Benachrichtigungen** per E-Mail, Telegram, Microsoft Teams, Slack, Discord, ntfy oder generischem Webhook.
 - **Keine zusätzliche Datenbank.** Der Zustand liegt in `daily-triage-*`-Indizes Ihres eigenen Indexers, mit
   verschlüsselter Sicherung.

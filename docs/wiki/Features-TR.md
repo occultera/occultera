@@ -59,6 +59,14 @@ değil, bir tespit boşluğu ipucudur. Pano aynı 14 taktiği bir şerit olarak 
 Rapor bulguları, kurallarının teknik kimliklerini (ve kanıt desteklediğinde modelin kendi eşlemesini)
 attack.mitre.org bağlantıları olarak taşır. Ayrıntı: [Kullanıcı rehberi](User-Guide-TR).
 
+## Küme nabzı
+
+Prometheus kaynağı olan her ortam için bir sayfa, son 24 saati önceki altı günün günlük ortalamasıyla gösterir:
+iş yükü başına dışarı aktarım, girişte 401/403/404/5xx ve arkasındaki rotalar, Kubernetes API'de secret okumaları,
+DNS, CPU sapmaları, yeniden başlatmalar, sertifikalar ve düşük izleme hedefleri — ayrıca kümenin kendi
+Prometheus'unun ateşlediği alarmlar ve **AI ile yorumla** düğmesi. Birden çok küme için seçici gelir. Nöbet olağan
+dışı dışarı aktarımı ve yeni küme alarmlarını bildirebilir. → [Küme nabzı](Cluster-Pulse-TR)
+
 ## Gürültü haritası
 
 Ortam menüsündeki **Gürültü haritası** (yapay zekâsız) "hacim nereden geliyor?" sorusunu cevaplar:

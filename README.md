@@ -62,6 +62,10 @@ instead of silencing.
 - **Personal data stays in.** E-mail addresses, phone numbers, national IDs, IBANs, cards and secrets are
   masked before anything is sent to the model. On by default.
 - **MCP server.** The same read-only tools for Claude Desktop, Cursor, VS Code or any MCP client.
+- **Cluster pulse (Prometheus).** For Kubernetes and OpenShift — one or several clusters per Wazuh: outbound
+  transfer per workload, ingress errors, secret reads, DNS, CPU outliers, restarts, certificates, blind spots and the
+  cluster's own firing alerts, explained by the AI on request. The watch can announce an unusual outbound transfer
+  (possible data leak) and new cluster alerts.
 - **Notifications** by e-mail, Telegram, Microsoft Teams, Slack, Discord, ntfy or a generic webhook.
 - **No extra database.** State lives in `daily-triage-*` indices of your own Indexer, with encrypted backup.
 - **Monthly audit report** without AI, as PDF or Markdown: volume, decisions, rule changes, outages.

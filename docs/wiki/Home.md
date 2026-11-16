@@ -45,6 +45,9 @@ saw, explains it and suggests what to tune. You decide; nothing changes in Wazuh
 4. **Asking questions in plain language.** Any MCP-capable assistant can query alerts, agents and reports with
    the same limits and masking.
 5. **Showing the work.** Decisions, rule changes and outages end up in a monthly report for the review meeting.
+6. **Seeing the clusters around Wazuh.** With a Prometheus source — Kubernetes, OpenShift (Thanos Querier), several
+   clusters per Wazuh — the [cluster pulse](Cluster-Pulse) shows what leaves each cluster, who knocks at the
+   ingress, who reads secrets and which alerts the cluster itself is firing; an AI explains those alerts on request.
 
 ## Two loops
 
@@ -55,8 +58,9 @@ saw, explains it and suggests what to tune. You decide; nothing changes in Wazuh
 | You get | an immediate "rule-based alert" on Teams, Telegram, Slack, e-mail … | a report: findings with evidence, questions, a verdict on every watch event, rule drafts and tuning suggestions |
 
 Urgent means: an alert at a critical level, a watched rule or group, a successful login after failed attempts,
-Active Response, a sudden increase in volume, agents that stop reporting. Quiet hours hold everything but critical
-events. The watch is switched on in **Settings → Watch**. → [Watch](Watch)
+Active Response, a sudden increase in volume, agents that stop reporting — and, read from Prometheus and off until
+you turn them on, an unusual outbound transfer from a workload (a possible data leak) and a new alert from a
+cluster's own Prometheus. Quiet hours hold everything but critical events. The watch is switched on in **Settings → Watch**. → [Watch](Watch)
 
 ## What else it does
 
@@ -69,6 +73,9 @@ events. The watch is switched on in **Settings → Watch**. → [Watch](Watch)
 - Encrypted backups of its own data (download or S3), and a warning when an index retention policy would delete it.
 - A dashboard with trend charts, severity bands and top rules, agents and sources, and a **MITRE ATT&CK** view of
   the alerts (tactic strip, technique matrix, new techniques, tactics without alerts) — all without AI.
+- A **cluster pulse** per environment with Prometheus: outbound transfer per workload, ingress 401/403/5xx, secret
+  reads, DNS, CPU outliers, restarts, certificates, monitoring blind spots and the cluster's own firing alerts with
+  an AI explanation — for one or several Kubernetes / OpenShift clusters. → [Cluster pulse](Cluster-Pulse)
 - A settings page, a read-only viewer role (by password, or by SSO group behind Keycloak/Authentik), a monthly
   audit report.
 

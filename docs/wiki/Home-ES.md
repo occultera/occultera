@@ -43,6 +43,9 @@ lo explica y propone qué ajustar. Usted decide; nada cambia en Wazuh sin su apr
 4. **Preguntar en lenguaje natural.** Cualquier asistente compatible con MCP consulta alertas, agentes e informes
    con los mismos límites y el mismo enmascaramiento.
 5. **Demostrar el trabajo.** Decisiones, cambios de reglas e interrupciones quedan en un informe mensual.
+6. **Ver los clústeres alrededor de Wazuh.** Con una fuente Prometheus — Kubernetes, OpenShift (Thanos Querier),
+   varios clústeres por Wazuh — el [pulso del clúster](Cluster-Pulse) muestra qué sale de cada clúster, quién
+   llama a la entrada, quién lee secretos y qué alertas dispara el propio clúster; la IA las explica a petición.
 
 ## Dos ciclos
 
@@ -53,8 +56,9 @@ lo explica y propone qué ajustar. Usted decide; nada cambia en Wazuh sin su apr
 | Qué recibe | un aviso inmediato «basado en reglas» por Teams, Telegram, Slack, correo … | un informe: hallazgos con evidencias, preguntas, un veredicto para cada evento de la vigilancia, borradores de reglas y sugerencias de ajuste |
 
 Urgente significa: una alerta de nivel crítico, una regla o un grupo vigilado, un inicio de sesión correcto tras
-intentos fallidos, Active Response, un aumento repentino del volumen, agentes que dejan de informar. El horario
-silencioso retiene todo salvo los eventos críticos. La vigilancia se activa en **Ajustes → Vigilancia**.
+intentos fallidos, Active Response, un aumento repentino del volumen, agentes que dejan de informar y — leídos de
+Prometheus y desactivados hasta que los active — una transferencia saliente inusual (posible fuga de datos) y una
+alerta nueva del propio Prometheus del clúster. El horario silencioso retiene todo salvo los eventos críticos. La vigilancia se activa en **Ajustes → Vigilancia**.
 → [Watch](Watch) (en inglés)
 
 ## Qué más hace
