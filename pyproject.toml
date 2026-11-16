@@ -5,7 +5,7 @@ description = "AI-assisted daily triage for Wazuh SIEM"
 readme = "README.md"
 license = "AGPL-3.0-only"
 license-files = ["LICENSE", "NOTICE"]
-authors = [{ name = "Rüstem Duru" }]
+authors = [{ name = "Rüstem Duru", email = "hello@occultera.dev" }]
 requires-python = ">=3.11"
 keywords = ["wazuh", "siem", "security", "soc", "llm", "triage", "opensearch"]
 classifiers = [
@@ -16,7 +16,9 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/occultera/occultera"
+Homepage = "https://occultera.dev"
+Source = "https://github.com/occultera/occultera"
+Documentation = "https://github.com/occultera/occultera/wiki"
 Issues = "https://github.com/occultera/occultera/issues"
 
 [tool.pytest.ini_options]

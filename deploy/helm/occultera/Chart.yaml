@@ -5,7 +5,7 @@ type: application
 version: 0.4.3
 appVersion: "0.12.3"
 kubeVersion: ">=1.25-0"
-home: https://github.com/occultera/occultera
+home: https://occultera.dev
 icon: https://raw.githubusercontent.com/occultera/occultera/main/app/static/icon.svg
 sources:
   - https://github.com/occultera/occultera
@@ -19,6 +19,7 @@ keywords:
   - opensearch
 maintainers:
   - name: Rüstem Duru
+    email: hello@occultera.dev
     url: https://github.com/dururustem68
 annotations:
   artifacthub.io/license: AGPL-3.0

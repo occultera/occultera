@@ -188,6 +188,11 @@ a model on days you reviewed yourself with `python -m app.eval` ([docs/eval.md](
 - [Wazuh — Threat hunting with agentic AI](https://wazuh.com/blog/threat-hunting-with-agentic-ai/) (least-privilege roles, correlation window)
 - [gensecaihq/Wazuh-MCP-Server](https://github.com/gensecaihq/Wazuh-MCP-Server), [gbrigandi/mcp-server-wazuh](https://github.com/gbrigandi/mcp-server-wazuh)
 
+## Contact
+
+General questions: **hello@occultera.dev** · security problems: **security@occultera.dev** (please not as a
+public issue; see [SECURITY.md](SECURITY.md)) · website: [occultera.dev](https://occultera.dev).
+
 ## License
 
 Copyright © 2026 Rüstem Duru. Licensed under the **GNU Affero General Public License v3.0**; see

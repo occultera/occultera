@@ -202,6 +202,11 @@ Marketingzahlen: Messen Sie ein Modell an Tagen, die Sie selbst geprüft haben, 
 - [Wazuh — Threat hunting with agentic AI](https://wazuh.com/blog/threat-hunting-with-agentic-ai/) (Rollen mit minimalen Rechten, Korrelationsfenster)
 - [gensecaihq/Wazuh-MCP-Server](https://github.com/gensecaihq/Wazuh-MCP-Server), [gbrigandi/mcp-server-wazuh](https://github.com/gbrigandi/mcp-server-wazuh)
 
+## Kontakt
+
+Allgemeine Fragen: **hello@occultera.dev** · Sicherheitsprobleme: **security@occultera.dev** (bitte nicht als
+öffentliches Issue; siehe [SECURITY.md](SECURITY.md)) · Website: [occultera.dev](https://occultera.dev).
+
 ## Lizenz
 
 Copyright © 2026 Rüstem Duru. Lizenziert unter der **GNU Affero General Public License v3.0**; siehe

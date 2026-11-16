@@ -201,6 +201,11 @@ de marketing: mida un modelo con días que usted mismo revisó usando `python -m
 - [Wazuh — Threat hunting with agentic AI](https://wazuh.com/blog/threat-hunting-with-agentic-ai/) (roles de privilegio mínimo, ventana de correlación)
 - [gensecaihq/Wazuh-MCP-Server](https://github.com/gensecaihq/Wazuh-MCP-Server), [gbrigandi/mcp-server-wazuh](https://github.com/gbrigandi/mcp-server-wazuh)
 
+## Contacto
+
+Preguntas generales: **hello@occultera.dev** · problemas de seguridad: **security@occultera.dev** (no como issue
+público; ver [SECURITY.md](SECURITY.md)) · sitio web: [occultera.dev](https://occultera.dev).
+
 ## Licencia
 
 Copyright © 2026 Rüstem Duru. Licenciado bajo la **GNU Affero General Public License v3.0**; véanse

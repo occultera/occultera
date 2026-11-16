@@ -3,7 +3,8 @@
 ## Reporting a vulnerability
 
 Please **do not open a public issue** for security problems. Use GitHub's
-[private vulnerability reporting](../../security/advisories/new) for this repository.
+[private vulnerability reporting](../../security/advisories/new) for this repository, or write to
+**security@occultera.dev**.
 
 Include the affected version, a description, reproduction steps and the impact. You should receive an answer
 within 7 days. Please allow a reasonable time for a fix before public disclosure.

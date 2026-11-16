@@ -1,6 +1,7 @@
 # Contributing
 
-Thanks for helping! Issues and pull requests are welcome.
+Thanks for helping! Issues and pull requests are welcome. For anything that does not fit an issue, write to
+**hello@occultera.dev**; security problems go to **security@occultera.dev** (see [SECURITY.md](SECURITY.md)).
 
 ## Ground rules
 

@@ -190,6 +190,11 @@ kendi incelediğiniz günlerde `python -m app.eval` ile ölçün ([docs/eval.md]
 - [Wazuh — Threat hunting with agentic AI](https://wazuh.com/blog/threat-hunting-with-agentic-ai/) (en az yetkili roller, korelasyon penceresi)
 - [gensecaihq/Wazuh-MCP-Server](https://github.com/gensecaihq/Wazuh-MCP-Server), [gbrigandi/mcp-server-wazuh](https://github.com/gbrigandi/mcp-server-wazuh)
 
+## İletişim
+
+Genel sorular: **hello@occultera.dev** · güvenlik sorunları: **security@occultera.dev** (lütfen herkese açık bir
+issue olarak değil; bkz. [SECURITY.md](SECURITY.md)) · web sitesi: [occultera.dev](https://occultera.dev).
+
 ## Lisans
 
 Telif hakkı © 2026 Rüstem Duru. **GNU Affero General Public License v3.0** ile lisanslanmıştır; bkz.

@@ -4,7 +4,9 @@ FROM python:3.15-slim
 LABEL org.opencontainers.image.title="occultera" \
       org.opencontainers.image.description="AI-assisted daily triage for Wazuh SIEM" \
       org.opencontainers.image.licenses="AGPL-3.0-only" \
-      org.opencontainers.image.source="https://github.com/occultera/occultera"
+      org.opencontainers.image.source="https://github.com/occultera/occultera" \
+      org.opencontainers.image.url="https://occultera.dev" \
+      org.opencontainers.image.authors="Rüstem Duru <hello@occultera.dev>"
 
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1 \
     WDT_CONFIG=/app/config/environments.yaml \
