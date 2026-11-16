@@ -19,8 +19,8 @@ like before your own Wazuh, certificates and accounts are involved.
 ## Step 1 — Start the demo
 
 ```sh
-git clone https://github.com/dururustem68/wazuh-daily-triage.git
-cd wazuh-daily-triage
+git clone https://github.com/occultera/occultera.git
+cd occultera
 cp .env.demo .env
 docker compose up -d --build
 ```
@@ -62,7 +62,7 @@ data, set the `LLM_*` variables in `.env` and run `docker compose up -d` again.
 ## Step 5 — Create the read-only Wazuh accounts
 
 Do not use admin credentials. Create the two accounts with the commands in
-[docs/permissions.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/permissions.md):
+[docs/permissions.md](https://github.com/occultera/occultera/blob/main/docs/permissions.md):
 
 | Account | Where | May |
 |---|---|---|

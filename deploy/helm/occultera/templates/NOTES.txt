@@ -1,5 +1,5 @@
 {{- $svc := include "wdt.fullname" . }}
-Wazuh Daily Triage is deployed.
+Occultera is deployed.
 
 {{- if not .Values.secret.APP_PASSWORD }}
 ⚠  `secret.APP_PASSWORD` is empty — the UI will return 503 until you set it
@@ -18,7 +18,7 @@ Wazuh Daily Triage is deployed.
 
 2. Apply and check:
 
-     helm upgrade --install wazuh-daily-triage . -f my-values.yaml
+     helm upgrade --install occultera . -f my-values.yaml
      kubectl -n {{ .Release.Namespace }} rollout status deploy/{{ $svc }}
      kubectl -n {{ .Release.Namespace }} exec deploy/{{ $svc }} -- python -m app.check
 

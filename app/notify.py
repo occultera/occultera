@@ -264,7 +264,7 @@ async def _send_slack(cfg: SlackCfg, msg: dict, client: httpx.AsyncClient):
 
 
 async def _send_discord(cfg: DiscordCfg, msg: dict, client: httpx.AsyncClient):
-    r = await client.post(cfg.webhook_url, json={"username": "Wazuh Daily Triage", "content": msg["text"][:1900]})
+    r = await client.post(cfg.webhook_url, json={"username": "Occultera", "content": msg["text"][:1900]})
     if r.status_code >= 400:
         raise RuntimeError(f"Discord {r.status_code}: {r.text[:200]}")
 

@@ -1,6 +1,8 @@
-# Wazuh Daily Triage — Wiki
+# Occultera — Wiki
 
 **English** · [Türkçe](Home-TR) · [Español](Home-ES) · [Français](Home-FR)
+
+*Find the signal in the dark.* Occultera was called **wazuh-daily-triage** until 0.11.1 — see [Name and logo](Name-and-Logo).
 
 **An on-call companion for Wazuh.** It watches your alerts around the clock and tells you within minutes when
 something urgent happens — without asking an AI. Once or twice a day an AI round reviews everything the watch
@@ -20,7 +22,7 @@ saw, explains it and suggests what to tune. You decide; nothing changes in Wazuh
 
 ![Watch board](images/dashboard.png)
 
-**Current release:** 0.11.1 · **Licence:** AGPL-3.0-only · **Python:** 3.11–3.15 · **Wazuh:** 4.x
+**Current release:** 0.12.0 · **Licence:** AGPL-3.0-only · **Python:** 3.11–3.15 · **Wazuh:** 4.x
 
 ## What it is, and what it is not
 
@@ -105,8 +107,8 @@ events. The watch is switched on in **Settings → Watch**. → [Watch](Watch)
 ## Five-minute demo (no Wazuh needed)
 
 ```sh
-git clone https://github.com/dururustem68/wazuh-daily-triage.git
-cd wazuh-daily-triage
+git clone https://github.com/occultera/occultera.git
+cd occultera
 cp .env.demo .env
 docker compose up -d --build
 ```
@@ -137,19 +139,19 @@ flowchart LR
 
 - **This wiki** is the handbook: installing, using, securing and operating the tool.
 - **The README** is the short version: what it is and how to start
-  ([English](https://github.com/dururustem68/wazuh-daily-triage/blob/main/README.md), [Türkçe](https://github.com/dururustem68/wazuh-daily-triage/blob/main/README.tr.md),
-  [Deutsch](https://github.com/dururustem68/wazuh-daily-triage/blob/main/README.de.md), [Español](https://github.com/dururustem68/wazuh-daily-triage/blob/main/README.es.md)).
+  ([English](https://github.com/occultera/occultera/blob/main/README.md), [Türkçe](https://github.com/occultera/occultera/blob/main/README.tr.md),
+  [Deutsch](https://github.com/occultera/occultera/blob/main/README.de.md), [Español](https://github.com/occultera/occultera/blob/main/README.es.md)).
 - **Reference documents in the repository** hold the exact details the wiki links to:
-  [permissions](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/permissions.md), [rule deployment](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/rule-deployment.md),
-  [notifications](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/notifications.md), [providers](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/providers.md),
-  [sources](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/sources.md), [architecture](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/architecture.md),
-  [security exceptions](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/security-exceptions.md).
+  [permissions](https://github.com/occultera/occultera/blob/main/docs/permissions.md), [rule deployment](https://github.com/occultera/occultera/blob/main/docs/rule-deployment.md),
+  [notifications](https://github.com/occultera/occultera/blob/main/docs/notifications.md), [providers](https://github.com/occultera/occultera/blob/main/docs/providers.md),
+  [sources](https://github.com/occultera/occultera/blob/main/docs/sources.md), [architecture](https://github.com/occultera/occultera/blob/main/docs/architecture.md),
+  [security exceptions](https://github.com/occultera/occultera/blob/main/docs/security-exceptions.md).
 
 ## Help and bug reports
 
-- Questions and bugs: [GitHub issues](https://github.com/dururustem68/wazuh-daily-triage/issues). Remove host names, IP addresses and tokens first.
-- Security problems: privately, through [security advisories](https://github.com/dururustem68/wazuh-daily-triage/security/advisories/new).
-- What changed: [CHANGELOG](https://github.com/dururustem68/wazuh-daily-triage/blob/main/CHANGELOG.md) · what is planned: [ROADMAP](https://github.com/dururustem68/wazuh-daily-triage/blob/main/ROADMAP.md).
+- Questions and bugs: [GitHub issues](https://github.com/occultera/occultera/issues). Remove host names, IP addresses and tokens first.
+- Security problems: privately, through [security advisories](https://github.com/occultera/occultera/security/advisories/new).
+- What changed: [CHANGELOG](https://github.com/occultera/occultera/blob/main/CHANGELOG.md) · what is planned: [ROADMAP](https://github.com/occultera/occultera/blob/main/ROADMAP.md).
 
 > The language links at the bottom of each page switch between the English and Turkish wiki versions; the home
 > page is also in [Español](Home-ES) and [Français](Home-FR).

@@ -76,7 +76,7 @@ jobs:
         with:
           context: .
           push: false
-          tags: wazuh-daily-triage:ci
+          tags: occultera:ci
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -103,9 +103,9 @@ jobs:
           version: v3.15.0
       - name: Lint and render the chart
         run: |
-          helm lint deploy/helm/wazuh-daily-triage
-          helm template test deploy/helm/wazuh-daily-triage > /dev/null
-          helm template test deploy/helm/wazuh-daily-triage \
+          helm lint deploy/helm/occultera
+          helm template test deploy/helm/occultera > /dev/null
+          helm template test deploy/helm/occultera \
             --set ingress.enabled=true \
             --set networkPolicy.enabled=true \
             --set secret.APP_PASSWORD=test > /dev/null
@@ -124,18 +124,18 @@ jobs:
         # The chart's appVersion points at a release tag that is only published after this commit (a release
         # bump would otherwise wait for an image that does not exist yet) — test the code being pushed instead.
         run: |
-          docker build -t wazuh-daily-triage:ci .
-          kind load docker-image wazuh-daily-triage:ci --name wdt
+          docker build -t occultera:ci .
+          kind load docker-image occultera:ci --name wdt
       - name: Install the chart on a real cluster
         run: |
-          helm install wazuh-daily-triage ./deploy/helm/wazuh-daily-triage \
-            --set image.repository=wazuh-daily-triage --set image.tag=ci --set image.pullPolicy=Never \
+          helm install occultera ./deploy/helm/occultera \
+            --set image.repository=occultera --set image.tag=ci --set image.pullPolicy=Never \
             --set secret.APP_PASSWORD=test --set secret.LLM_API_KEY=test \
             --set secret.INDEXER_PASSWORD=test --set secret.API_PASSWORD=test
           # /readyz needs no reachable indexer (readiness is startup-only by design), so the pod becomes Ready
-          if ! kubectl wait --for=condition=available --timeout=180s deployment/wazuh-daily-triage; then
-            kubectl describe pods -l app.kubernetes.io/name=wazuh-daily-triage | tail -40
-            kubectl logs deploy/wazuh-daily-triage --tail=80 || true
+          if ! kubectl wait --for=condition=available --timeout=180s deployment/occultera; then
+            kubectl describe pods -l app.kubernetes.io/name=occultera | tail -40
+            kubectl logs deploy/occultera --tail=80 || true
             exit 1
           fi
           kubectl get pods

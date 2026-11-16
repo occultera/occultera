@@ -34,7 +34,7 @@ ingress, SSO, kural dağıtımının açılması) yeniden üzerinden geçin. Her
 
 - [ ] Gerekmiyorsa: `rule_deploy.enabled` değeri `false` (varsayılan) ve dağıtım kimlik bilgisi yok.
 - [ ] Gerekiyorsa: yalnız
-      [docs/rule-deployment.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/rule-deployment.md)
+      [docs/rule-deployment.md](https://github.com/occultera/occultera/blob/main/docs/rule-deployment.md)
       belgesindeki yetkilere sahip **ayrı** bir API kullanıcısı (`daily-triage-deploy`) kullanılıyor, ID aralığı
       (`id_min`–`id_max`) bu iş için ayırdığınız aralık ve `require_tests: true` ayarlı.
 - [ ] **Approve and deploy** düğmesine basabilecek kişiler bunun manager'ı yeniden başlattığını biliyor.
@@ -80,7 +80,7 @@ ingress, SSO, kural dağıtımının açılması) yeniden üzerinden geçin. Her
 - [ ] Öneri kutusunun sahibi olarak bir kişi belirlendi.
 
 Her maddenin arka planı: [Güvenlik modeli](Security-Model-TR) ·
-[docs/security-exceptions.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/security-exceptions.md)
+[docs/security-exceptions.md](https://github.com/occultera/occultera/blob/main/docs/security-exceptions.md)
 
 *0.11.0 için geçerlidir · gözden geçirme: 2026-11-11*
 

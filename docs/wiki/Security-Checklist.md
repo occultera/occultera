@@ -34,7 +34,7 @@ change of exposure (new ingress, SSO, rule deployment switched on). Each item sa
 
 - [ ] Not needed: `rule_deploy.enabled` is `false` (the default) and no deploy credentials exist.
 - [ ] Needed: it uses a **separate** API user (`daily-triage-deploy`) with only the permissions in
-      [docs/rule-deployment.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/rule-deployment.md),
+      [docs/rule-deployment.md](https://github.com/occultera/occultera/blob/main/docs/rule-deployment.md),
       the ID range (`id_min`–`id_max`) is one you reserved for it, and `require_tests: true` is set.
 - [ ] The people who may press **Approve and deploy** know that it restarts the manager.
 
@@ -79,7 +79,7 @@ change of exposure (new ingress, SSO, rule deployment switched on). Each item sa
 - [ ] Someone is named as owner of the recommendations inbox.
 
 Background for every item: [Security model](Security-Model) ·
-[docs/security-exceptions.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/security-exceptions.md)
+[docs/security-exceptions.md](https://github.com/occultera/occultera/blob/main/docs/security-exceptions.md)
 
 *Applies to 0.11.0 · reviewed 2026-11-11*
 

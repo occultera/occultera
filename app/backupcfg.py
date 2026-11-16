@@ -15,7 +15,7 @@ class S3Cfg(BaseModel):
     region: str = "us-east-1"
     access_key: str = ""
     secret_key: str = ""
-    prefix: str = "wazuh-daily-triage"
+    prefix: str = "occultera"
     path_style: bool = True
     verify_tls: bool = True
 
@@ -35,6 +35,6 @@ def backup_from_env(env=os.environ) -> dict:
     return {"passphrase": E("BACKUP_PASSPHRASE", ""),
             "s3": {"endpoint": E("BACKUP_S3_ENDPOINT", ""), "bucket": E("BACKUP_S3_BUCKET", ""),
                    "region": E("BACKUP_S3_REGION", "us-east-1"), "access_key": E("BACKUP_S3_ACCESS_KEY", ""),
-                   "secret_key": E("BACKUP_S3_SECRET_KEY", ""), "prefix": E("BACKUP_S3_PREFIX", "wazuh-daily-triage"),
+                   "secret_key": E("BACKUP_S3_SECRET_KEY", ""), "prefix": E("BACKUP_S3_PREFIX", "occultera"),
                    "path_style": (E("BACKUP_S3_PATH_STYLE", "true").lower() != "false"),
                    "verify_tls": (E("BACKUP_S3_VERIFY_TLS", "true").lower() != "false")}}

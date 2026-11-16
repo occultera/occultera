@@ -408,7 +408,7 @@ class Environment(BaseModel):
 class AppConfig(BaseModel):
     timezone: str = "UTC"
     language: str = "en"
-    title: str = "Wazuh Daily Triage"
+    title: str = "Occultera"
 
     @field_validator("timezone")
     @classmethod

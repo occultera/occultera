@@ -2,8 +2,8 @@
 
 **For:** platform engineers who run the application in a cluster. For a first look use `port-forward`; this page
 is about a deployment other people will rely on. Chart reference:
-[Helm chart README](https://github.com/dururustem68/wazuh-daily-triage/blob/main/deploy/helm/wazuh-daily-triage/README.md);
-Kustomize: [deploy/kubernetes/README.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/deploy/kubernetes/README.md).
+[Helm chart README](https://github.com/occultera/occultera/blob/main/deploy/helm/occultera/README.md);
+Kustomize: [deploy/kubernetes/README.md](https://github.com/occultera/occultera/blob/main/deploy/kubernetes/README.md).
 
 ## What gets deployed
 
@@ -23,14 +23,14 @@ page that explains the outage.
 ## Install with Helm
 
 ```sh
-helm repo add wazuh-daily-triage https://dururustem68.github.io/wazuh-daily-triage
+helm repo add occultera https://occultera.github.io/occultera
 helm repo update
-helm install wazuh-daily-triage wazuh-daily-triage/wazuh-daily-triage \
-  --namespace wazuh-daily-triage --create-namespace \
-  --version 0.3.1 -f my-values.yaml
+helm install occultera occultera/occultera \
+  --namespace occultera --create-namespace \
+  --version 0.4.0 -f my-values.yaml
 ```
 
-Chart 0.3.1 deploys application 0.11.1. The values that matter in production:
+Chart 0.4.0 deploys application 0.12.0. The values that matter in production:
 
 | Value | Set it to |
 |---|---|
@@ -56,6 +56,9 @@ Copy the example overlay, point it at a pinned remote base, and add the componen
 with a new name and the pod restarts with it.
 
 ## Verify
+
+The commands below use the Kustomize names. With Helm, use the release name and namespace instead
+(`-n occultera`, `deploy/occultera`, `svc/occultera`).
 
 ```sh
 kubectl -n wazuh-daily-triage rollout status deploy/wazuh-daily-triage
@@ -119,9 +122,9 @@ rather than proceed unaudited.
 ## Upgrade and rollback
 
 ```sh
-helm upgrade wazuh-daily-triage wazuh-daily-triage/wazuh-daily-triage \
-  --namespace wazuh-daily-triage --version <chart version> -f my-values.yaml
-helm -n wazuh-daily-triage rollback wazuh-daily-triage <revision>
+helm upgrade occultera occultera/occultera \
+  --namespace occultera --version <chart version> -f my-values.yaml
+helm -n occultera rollback occultera <revision>
 ```
 
 Take a backup first and read the version notes: [Upgrade](Upgrade).

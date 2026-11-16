@@ -488,7 +488,7 @@ async def test_slack_discord_webhook_ntfy(settings):
     assert {"hooks.slack.com", "discord.com", "soar.example.invalid", "ntfy.sh"} <= set(by_host)
     slack = by_host["hooks.slack.com"]
     assert slack["body"]["blocks"][0]["type"] == "header" and "Last alert was 300" in slack["body"]["blocks"][1]["text"]["text"]
-    assert by_host["discord.com"]["body"]["content"].startswith("[Wazuh Daily Triage]")
+    assert by_host["discord.com"]["body"]["content"].startswith("[Occultera]")
     wh = by_host["soar.example.invalid"]
     assert wh["auth"] == "Bearer t" and wh["body"]["title"] and wh["body"]["lines"]
     nt = by_host["ntfy.sh"]

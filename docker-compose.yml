@@ -1,6 +1,6 @@
 services:
   triage:
-    image: ghcr.io/dururustem68/wazuh-daily-triage:latest
+    image: ghcr.io/occultera/occultera:latest
     build: .
     container_name: wazuh-daily-triage
     restart: unless-stopped

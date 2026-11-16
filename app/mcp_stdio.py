@@ -76,7 +76,7 @@ async def serve(rt, stdin=None, stdout=None) -> None:
 async def main() -> None:
     install_logging(os.environ.get("LOG_LEVEL", "WARNING"))  # stderr; stdout carries the protocol only
     rt = await build_runtime()
-    log.warning("wazuh-daily-triage %s MCP over stdio — %d environment(s)%s", __version__,
+    log.warning("occultera %s MCP over stdio — %d environment(s)%s", __version__,
                 len(rt.envs), " (DEMO)" if rt.demo else "")
     try:
         await serve(rt)

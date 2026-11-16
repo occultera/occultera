@@ -1,4 +1,5 @@
-**Wazuh Daily Triage 0.11.1**
+**Occultera 0.12.0**
+*Find the signal in the dark.*
 
 [English](Home) · [Türkçe](Home-TR) · [Español](Home-ES) · [Français](Home-FR)
 
@@ -7,6 +8,7 @@
 - [Getting started](Getting-Started)
 - [Scenarios](Scenarios)
 - [FAQ and glossary](FAQ)
+- [Name and logo](Name-and-Logo)
 
 **Install and configure**
 - [Installation](Installation)
@@ -45,6 +47,7 @@
 - [Başlangıç](Getting-Started-TR)
 - [Örnek senaryolar](Scenarios-TR)
 - [SSS ve sözlük](FAQ-TR)
+- [Ad ve logo](Name-and-Logo-TR)
 
 **Kurulum ve yapılandırma**
 - [Kurulum](Installation-TR)
@@ -76,6 +79,6 @@
 
 ---
 
-[Source code](https://github.com/dururustem68/wazuh-daily-triage) ·
-[CHANGELOG](https://github.com/dururustem68/wazuh-daily-triage/blob/main/CHANGELOG.md) ·
-[AGPL-3.0](https://github.com/dururustem68/wazuh-daily-triage/blob/main/LICENSE)
+[Source code](https://github.com/occultera/occultera) ·
+[CHANGELOG](https://github.com/occultera/occultera/blob/main/CHANGELOG.md) ·
+[AGPL-3.0](https://github.com/occultera/occultera/blob/main/LICENSE)

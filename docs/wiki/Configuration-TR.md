@@ -108,7 +108,7 @@ aksi halde                    → WAZUH_* değişkenleriyle tek ortam modu
 | `WEBHOOK_URL`, `WEBHOOK_TOKEN` | *(boş)* | Genel JSON webhook; token `Authorization: Bearer` olur. |
 | `NTFY_TOPIC`, `NTFY_TOKEN` | *(boş)* | ntfy push. |
 
-Bir kanal, alanları dolu olduğunda açıktır. Ayrıntılar: [docs/notifications.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/notifications.md).
+Bir kanal, alanları dolu olduğunda açıktır. Ayrıntılar: [docs/notifications.md](https://github.com/occultera/occultera/blob/main/docs/notifications.md).
 
 ### Tek ortam (`WAZUH_*`)
 
@@ -143,7 +143,7 @@ Bir kanal, alanları dolu olduğunda açıktır. Ayrıntılar: [docs/notificatio
 | `MAIL_MAX_PER_HOUR`, `MAIL_ALERT_LEVEL` | *(yok)*, `7` | E-posta kanalı analizi (`ossec.conf` limitleriniz). |
 
 `WDT_ALLOW_INSECURE_TLS=1`, `WDT_ALLOW_INSECURE_COOKIE=1` ve `WDT_ALLOW_INSECURE_SMTP=1` üretim açılış kontrolleri için bilinçli laboratuvar
-istisnalarıdır; [docs/security-exceptions.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/security-exceptions.md).
+istisnalarıdır; [docs/security-exceptions.md](https://github.com/occultera/occultera/blob/main/docs/security-exceptions.md).
 
 ## YAML dosyası
 
@@ -153,7 +153,7 @@ istisnalarıdır; [docs/security-exceptions.md](https://github.com/dururustem68/
 app:
   timezone: ${TZ:-UTC}
   language: ${APP_LANGUAGE:-en}     # en | tr | es | de
-  title: Wazuh Daily Triage
+  title: Occultera
 
 llm:                                 # bloğu atlarsanız LLM_* değişkenleri kullanılır
   provider: anthropic

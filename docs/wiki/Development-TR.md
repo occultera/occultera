@@ -1,9 +1,9 @@
 # Geliştirme ve katkı
 
 **Kimin için:** katkı verenler. Bağlayıcı kurallar
-[CONTRIBUTING.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/CONTRIBUTING.md) dosyasında;
+[CONTRIBUTING.md](https://github.com/occultera/occultera/blob/main/CONTRIBUTING.md) dosyasında;
 modül haritası ve istek akışı
-[docs/architecture.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/architecture.md)
+[docs/architecture.md](https://github.com/occultera/occultera/blob/main/docs/architecture.md)
 belgesindedir.
 
 ## Temel kurallar
@@ -58,7 +58,7 @@ python -m app.eval cases.yaml --repeat 3 --out results.json
 ```
 
 Vaka başına recall, kaçırılanlar, olay diye raporlanan gürültü, araç adımları, belirteç ve süre raporlanır
-([docs/eval.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/eval.md)). CI bunu
+([docs/eval.md](https://github.com/occultera/occultera/blob/main/docs/eval.md)). CI bunu
 çalıştırmaz: bir model ve sizin veriniz gerekir.
 
 ## Yeni bir şey eklemek
@@ -67,7 +67,7 @@ Vaka başına recall, kaçırılanlar, olay diye raporlanan gürültü, araç ad
 |---|---|
 | Model için bir araç | `app/agent/tools.py` içinde bir işleyici ve tanım; yeni alanlar `app/query_guard.py` izin listesine. MCP kendiliğinden sunar. Salt okunur olmalıdır |
 | Bir veri kaynağı | `app/sources.py` içinde bir istemci, ortam çalışma zamanına kayıt, bir araç üzerinden sunum |
-| Bir bildirim kanalı | `app/notify.py` içinde yapılandırma ve gönderici ([docs/notifications.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/notifications.md)) |
+| Bir bildirim kanalı | `app/notify.py` içinde yapılandırma ve gönderici ([docs/notifications.md](https://github.com/occultera/occultera/blob/main/docs/notifications.md)) |
 | Bir model sağlayıcısı | çoğu sağlayıcı OpenAI uyumlu istemciyle çalışır; farklı bir tel biçimi `app/llm/` altında yeni bir istemcidir |
 | Bir nöbet tetikleyicisi | `app/watch.py`; model çağırmadan, yerelde karar vermelidir |
 
@@ -91,7 +91,7 @@ ekleyin (bir test bunu zorlar), `CATALOG`, `LANG_NAMES` ve `OUTPUT_LANGUAGE` iç
 ## Dokümantasyon
 
 - Wiki'nin kaynağı ana depodaki `docs/wiki/` dizinidir; wiki deposu bir kopyadır. Orada düzenleyip eşitleyin
-  ([docs/wiki/README.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/wiki/README.md)).
+  ([docs/wiki/README.md](https://github.com/occultera/occultera/blob/main/docs/wiki/README.md)).
 - Her sayfanın İngilizce ve Türkçe sürümü vardır ve `_Sidebar.md` içinde listelenir.
 - Sayfa kimin için olduğunu söyler, belirtilen sürümde çalıştırılmış komutlar verir ve sürüm ile gözden
   geçirme tarihiyle biter.

@@ -2,8 +2,8 @@
 
 **Kimin için:** uygulamayı bir cluster'da çalıştıran platform mühendisleri. İlk bakış için `port-forward`
 yeterlidir; bu sayfa başkalarının güveneceği bir kurulum içindir. Chart başvurusu:
-[Helm chart README](https://github.com/dururustem68/wazuh-daily-triage/blob/main/deploy/helm/wazuh-daily-triage/README.md);
-Kustomize: [deploy/kubernetes/README.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/deploy/kubernetes/README.md).
+[Helm chart README](https://github.com/occultera/occultera/blob/main/deploy/helm/occultera/README.md);
+Kustomize: [deploy/kubernetes/README.md](https://github.com/occultera/occultera/blob/main/deploy/kubernetes/README.md).
 
 ## Ne kurulur
 
@@ -24,14 +24,14 @@ açıklayan tek sayfayı devreden çıkarırdı.
 ## Helm ile kurulum
 
 ```sh
-helm repo add wazuh-daily-triage https://dururustem68.github.io/wazuh-daily-triage
+helm repo add occultera https://occultera.github.io/occultera
 helm repo update
-helm install wazuh-daily-triage wazuh-daily-triage/wazuh-daily-triage \
-  --namespace wazuh-daily-triage --create-namespace \
-  --version 0.3.1 -f my-values.yaml
+helm install occultera occultera/occultera \
+  --namespace occultera --create-namespace \
+  --version 0.4.0 -f my-values.yaml
 ```
 
-Chart 0.3.1, uygulamanın 0.11.1 sürümünü kurar. Üretimde önemli değerler:
+Chart 0.4.0, uygulamanın 0.12.0 sürümünü kurar. Üretimde önemli değerler:
 
 | Değer | Ne yazılır |
 |---|---|
@@ -57,6 +57,9 @@ Secrets, SOPS) tercih edin.
 bir Secret üretir ve pod onunla yeniden başlar.
 
 ## Doğrulama
+
+Aşağıdaki komutlar Kustomize adlarını kullanır. Helm ile release adını ve ad alanını kullanın
+(`-n occultera`, `deploy/occultera`, `svc/occultera`).
 
 ```sh
 kubectl -n wazuh-daily-triage rollout status deploy/wazuh-daily-triage
@@ -122,9 +125,9 @@ isteklerin denetimsiz ilerlemek yerine `503` ile reddedilmesine yol açar.
 ## Yükseltme ve geri dönüş
 
 ```sh
-helm upgrade wazuh-daily-triage wazuh-daily-triage/wazuh-daily-triage \
-  --namespace wazuh-daily-triage --version <chart sürümü> -f my-values.yaml
-helm -n wazuh-daily-triage rollback wazuh-daily-triage <revizyon>
+helm upgrade occultera occultera/occultera \
+  --namespace occultera --version <chart sürümü> -f my-values.yaml
+helm -n occultera rollback occultera <revizyon>
 ```
 
 Önce yedek alın ve sürüm notlarını okuyun: [Yükseltme](Upgrade-TR).

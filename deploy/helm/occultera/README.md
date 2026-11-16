@@ -1,6 +1,6 @@
-# Wazuh Daily Triage — Helm chart
+# Occultera — Helm chart
 
-Deploy the [wazuh-daily-triage](https://github.com/dururustem68/wazuh-daily-triage) container to Kubernetes.
+Deploy [Occultera](https://github.com/occultera/occultera) to Kubernetes.
 Same hardened deployment as the [kustomize manifests](../kubernetes/README.md): single replica, non-root,
 read-only filesystem, no PVC, optional read-only RBAC for the Kubernetes tools.
 
@@ -19,12 +19,12 @@ secret:
 EOF
 
 # 2. Install from the published Helm repository
-helm repo add wazuh-daily-triage https://dururustem68.github.io/wazuh-daily-triage
+helm repo add occultera https://occultera.github.io/occultera
 helm repo update
-helm install wazuh-daily-triage wazuh-daily-triage/wazuh-daily-triage -f my-values.yaml
+helm install occultera occultera/occultera -f my-values.yaml
 
 # …or install straight from the repository (no repo add needed):
-helm install wazuh-daily-triage ./deploy/helm/wazuh-daily-triage -f my-values.yaml
+helm install occultera ./deploy/helm/occultera -f my-values.yaml
 ```
 
 ## Publishing & Artifact Hub
@@ -32,7 +32,7 @@ helm install wazuh-daily-triage ./deploy/helm/wazuh-daily-triage -f my-values.ya
 The chart is published to GitHub Pages (branch `gh-pages`) by the
 [`release-chart` workflow](../../.github/workflows/release-chart.yml) whenever the chart in `deploy/helm/` changes —
 it runs [chart-releaser](https://github.com/helm/chart-releaser), which builds the `.tgz`, tags the chart
-(`wazuh-daily-triage-<version>`) and updates `index.yaml`. To turn this on:
+(`occultera-<version>`) and updates `index.yaml`. To turn this on:
 
 1. Enable **GitHub Pages** on the repository, source = the `gh-pages` branch (Settings → Pages).
 2. Bump `version:` in `Chart.yaml` for each release; push to `main`.
@@ -70,9 +70,9 @@ administrator group are read-only).
 ## Verify
 
 ```sh
-helm lint ./deploy/helm/wazuh-daily-triage
-helm template wazuh-daily-triage ./deploy/helm/wazuh-daily-triage > /tmp/rendered.yaml
-kubectl -n wazuh-daily-triage exec deploy/wazuh-daily-triage -- python -m app.check
+helm lint ./deploy/helm/occultera
+helm template occultera ./deploy/helm/occultera > /tmp/rendered.yaml
+kubectl -n occultera exec deploy/occultera -- python -m app.check
 ```
 
 See [docs/](../docs/) and the [root README](../../README.md) for the full feature set.

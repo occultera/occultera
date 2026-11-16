@@ -19,8 +19,8 @@ ve hesaplarınız devreye girmeden önce sağlıklı bir kurulumun nasıl görü
 ## Adım 1 — Demoyu başlatın
 
 ```sh
-git clone https://github.com/dururustem68/wazuh-daily-triage.git
-cd wazuh-daily-triage
+git clone https://github.com/occultera/occultera.git
+cd occultera
 cp .env.demo .env
 docker compose up -d --build
 ```
@@ -63,7 +63,7 @@ denemek için `.env` içinde `LLM_*` değişkenlerini ayarlayıp `docker compose
 ## Adım 5 — Salt okunur Wazuh hesaplarını oluşturun
 
 Yönetici kimlik bilgilerini kullanmayın. İki hesabı
-[docs/permissions.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/permissions.md)
+[docs/permissions.md](https://github.com/occultera/occultera/blob/main/docs/permissions.md)
 içindeki komutlarla oluşturun:
 
 | Hesap | Nerede | Yetkisi |

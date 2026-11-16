@@ -60,7 +60,7 @@ Uç nokta **varsayılan olarak kapalıdır**. `MCP_TOKEN` yoksa `404` döner.
 ### Claude Desktop (stdio köprüsü)
 
 Claude Desktop yerel MCP sunucularını stdio üzerinden başlatır; depo, stdio'yu `/mcp`'ye ileten standart
-kütüphane tabanlı bir köprü içerir: [`tools/mcp_bridge.py`](https://github.com/dururustem68/wazuh-daily-triage/blob/main/tools/mcp_bridge.py).
+kütüphane tabanlı bir köprü içerir: [`tools/mcp_bridge.py`](https://github.com/occultera/occultera/blob/main/tools/mcp_bridge.py).
 
 ```sh
 printf '%s' "$MCP_TOKEN" > ~/.wdt-mcp-token
@@ -75,7 +75,7 @@ chmod 600 ~/.wdt-mcp-token
     "wazuh-prod": {
       "command": "python3",
       "args": [
-        "/path/to/wazuh-daily-triage/tools/mcp_bridge.py",
+        "/path/to/occultera/tools/mcp_bridge.py",
         "https://triage.example.com/mcp",
         "--token-file", "/home/you/.wdt-mcp-token"
       ]
@@ -96,8 +96,8 @@ gerekmez. Herhangi bir MCP istemcisinden ilk bakış ve sunucuyu başlatıp ara�
 için kullanışlıdır.
 
 ```sh
-docker build -t wazuh-daily-triage .
-docker run -i --rm -e WDT_DEMO=true wazuh-daily-triage python -m app.mcp_stdio
+docker build -t occultera .
+docker run -i --rm -e WDT_DEMO=true occultera python -m app.mcp_stdio
 ```
 
 İstemci ayarı (Claude Desktop, Cursor, VS Code … — stdio sunucusu başlatabilen her istemci):
@@ -107,7 +107,7 @@ docker run -i --rm -e WDT_DEMO=true wazuh-daily-triage python -m app.mcp_stdio
   "mcpServers": {
     "wazuh-demo": {
       "command": "docker",
-      "args": ["run", "-i", "--rm", "-e", "WDT_DEMO=true", "wazuh-daily-triage", "python", "-m", "app.mcp_stdio"]
+      "args": ["run", "-i", "--rm", "-e", "WDT_DEMO=true", "occultera", "python", "-m", "app.mcp_stdio"]
     }
   }
 }

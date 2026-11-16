@@ -1,6 +1,6 @@
 # Least-privilege accounts and network access
 
-Wazuh Daily Triage is **read-only towards Wazuh** by default. The only write permission it needs is to its own
+Occultera is **read-only towards Wazuh** by default. The only write permission it needs is to its own
 `daily-triage-*` indices. Do not give it admin credentials — create the two accounts below.
 
 The optional "Approve and deploy" for rule drafts uses a **third, separate** API user that may only upload custom
@@ -31,7 +31,7 @@ curl -sk -u "$AUTH" -X PUT "$IX/_plugins/_security/api/roles/daily_triage" -H 'C
   ]}'
 
 curl -sk -u "$AUTH" -X PUT "$IX/_plugins/_security/api/internalusers/daily-triage" -H 'Content-Type: application/json' \
-  -d '{"password": "A_STRONG_PASSWORD", "description": "Wazuh Daily Triage (read-only + daily-triage-*)"}'
+  -d '{"password": "A_STRONG_PASSWORD", "description": "Occultera (read-only + daily-triage-*)"}'
 
 curl -sk -u "$AUTH" -X PUT "$IX/_plugins/_security/api/rolesmapping/daily_triage" -H 'Content-Type: application/json' \
   -d '{"users": ["daily-triage"]}'

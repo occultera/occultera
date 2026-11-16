@@ -1,7 +1,7 @@
 # Rule lifecycle: from draft to a rule that is proven live
 
 **For:** administrators who approve rule changes. The reference with the exact API permissions is
-[docs/rule-deployment.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/rule-deployment.md).
+[docs/rule-deployment.md](https://github.com/occultera/occultera/blob/main/docs/rule-deployment.md).
 
 A rule draft is XML written by a model (or by you). Approving it is a human decision. The checks below catch
 syntax errors, ID collisions and silencing; they do not catch wrong logic. Read the draft.

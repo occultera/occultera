@@ -27,7 +27,7 @@ LABEL_COLORS = {"real_incident": "red", "investigate": "amber", "detection_gap":
 USER_STATUSES = ["new", "acknowledged", "false_positive", "closed", "baseline"]
 HEALTH_COLORS = {"ok": "green", "warn": "amber", "critical": "red", "error": "red"}
 # AGPL-3.0 §13: users interacting over a network must be offered the corresponding source.
-SOURCE_URL = os.environ.get("SOURCE_URL", "https://github.com/dururustem68/wazuh-daily-triage")
+SOURCE_URL = os.environ.get("SOURCE_URL", "https://github.com/occultera/occultera")
 
 _tz = UTC
 

@@ -18,7 +18,7 @@ varsayılan ya da yeni bir gerekliliktir; bu yüzden önce sürüm notları okun
 ## Yükseltmeden önce
 
 1. Kendi sürümünüzden hedef sürüme kadar
-   [CHANGELOG.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/CHANGELOG.md) dosyasını ve
+   [CHANGELOG.md](https://github.com/occultera/occultera/blob/main/CHANGELOG.md) dosyasını ve
    aşağıdaki sürüm notlarını okuyun.
 2. Çalışan sürümü (**Hakkında** sayfası) ve kullanılan imaj etiketini ya da digest'ini not edin.
 3. Yedek alın: **Ayarlar → Yedekleme** bölümünden oluşturup indirin ve parolayı bulabileceğiniz bir yerde
@@ -39,8 +39,8 @@ docker compose exec triage python -m app.check
 
 ```sh
 # Helm
-helm upgrade wazuh-daily-triage wazuh-daily-triage/wazuh-daily-triage \
-  --namespace wazuh-daily-triage --version <chart sürümü> -f my-values.yaml
+helm upgrade occultera occultera/occultera \
+  --namespace occultera --version <chart sürümü> -f my-values.yaml
 ```
 
 Kustomize'da overlay'inizdeki uzak base'in `?ref=` değerini ve imaj etiketini değiştirip `kubectl apply -k .`
@@ -60,8 +60,8 @@ Kustomize'da overlay'inizdeki uzak base'in `?ref=` değerini ve imaj etiketini d
 
 ```sh
 # Helm
-helm -n wazuh-daily-triage history wazuh-daily-triage
-helm -n wazuh-daily-triage rollback wazuh-daily-triage <revizyon>
+helm -n occultera history occultera
+helm -n occultera rollback occultera <revizyon>
 ```
 
 Compose'da önceki etiketi yazıp `docker compose up -d` çalıştırın.
@@ -71,6 +71,25 @@ ve eski sürüm bilmediği alanları yok sayabilir. Yalnız yeni sürümde bulun
 etkisizdir. Eski sürüm yeni veriyle düzgün çalışmazsa yükseltmeden önce aldığınız yedeği içe aktarın.
 
 ## Sürüm notları
+
+### 0.12.0
+
+- **Projenin adı artık Occultera.** Başka hiçbir şey değişmedi: yeni ayar yok, veri taşıma yok.
+- **Yeni imaj adresi:** `ghcr.io/occultera/occultera:0.12.0`. Yükseltirken `image:` (Compose), `images.newName`
+  (Kustomize) ya da `image.repository` (Helm değerleri) satırını değiştirin. Eski etiketler
+  `ghcr.io/dururustem68/wazuh-daily-triage` adresinde kalır.
+- **Kustomize uzak tabanları:** `https://github.com/occultera/occultera//deploy/kubernetes/base?ref=v0.12.0`. Eski
+  adres yönlendirilmeye devam eder.
+- **Helm:** chart'ın adı artık `occultera` (chart 0.4.0), adresi `https://occultera.github.io/occultera`
+  (`helm repo add occultera …`, `helm install occultera occultera/occultera`). Kaynak adları release adını izler.
+  Eski `wazuh-daily-triage` chart'ıyla kurulmuş bir release yenisine yükseltilmez: yeni chart'ı yeni bir release
+  olarak kurun, sonra eskisini kaldırın.
+- **Yedek arşivleri** artık `occultera-<ortam>-<zaman>.occbak` adında ve yeni bir biçim işaretiyle yazılıyor;
+  0.11.x'in yazdığı arşivler içe aktarılamaz. Varsayılan S3 anahtar öneki `occultera`. Yükseltmeden sonra yeni
+  bir yedek alın.
+- **Maskeleme profili dışa aktarımı** `format: occultera-mask-profile` taşıyor.
+- **Bildirim başlıkları** artık `[Occultera]` ile başlıyor. Eski konuya göre süzen e-posta kurallarını güncelleyin.
+- Yapılandırmanızda `title: Wazuh Daily Triage` varsa değiştirin ya da satırı silin, yeni ad görünsün.
 
 ### 0.11.1
 

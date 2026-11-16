@@ -108,7 +108,7 @@ otherwise                → single-environment mode from WAZUH_* variables
 | `WEBHOOK_URL`, `WEBHOOK_TOKEN` | *(empty)* | Generic JSON webhook; the token becomes `Authorization: Bearer`. |
 | `NTFY_TOPIC`, `NTFY_TOKEN` | *(empty)* | ntfy push. |
 
-A channel is on when its fields are set. See [docs/notifications.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/notifications.md).
+A channel is on when its fields are set. See [docs/notifications.md](https://github.com/occultera/occultera/blob/main/docs/notifications.md).
 
 ### Single environment (`WAZUH_*`)
 
@@ -143,7 +143,7 @@ A channel is on when its fields are set. See [docs/notifications.md](https://git
 | `MAIL_MAX_PER_HOUR`, `MAIL_ALERT_LEVEL` | *(unset)*, `7` | Mail channel analysis (your `ossec.conf` limits). |
 
 `WDT_ALLOW_INSECURE_TLS=1`, `WDT_ALLOW_INSECURE_COOKIE=1` and `WDT_ALLOW_INSECURE_SMTP=1` are deliberate lab overrides for the production
-startup checks; see [docs/security-exceptions.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/security-exceptions.md).
+startup checks; see [docs/security-exceptions.md](https://github.com/occultera/occultera/blob/main/docs/security-exceptions.md).
 
 ## The YAML file
 
@@ -153,7 +153,7 @@ startup checks; see [docs/security-exceptions.md](https://github.com/dururustem6
 app:
   timezone: ${TZ:-UTC}
   language: ${APP_LANGUAGE:-en}     # en | tr | es | de
-  title: Wazuh Daily Triage
+  title: Occultera
 
 llm:                                 # omit the block to use LLM_* variables
   provider: anthropic

@@ -1,4 +1,8 @@
-# Wazuh Daily Triage
+<p align="center"><img src="docs/assets/occultera-lockup.svg" alt="Occultera — Find the signal in the dark" width="560"></p>
+
+# Occultera
+
+*Find the signal in the dark.* Formerly **wazuh-daily-triage** — [why the new name](https://github.com/occultera/occultera/wiki/Name-and-Logo).
 
 **An on-call companion for [Wazuh](https://wazuh.com) SIEM.** A rule-based watch tells you within minutes when
 something urgent happens, without calling an AI. Once or twice a day an AI round checks that the SIEM is
@@ -10,9 +14,9 @@ LiteLLM). One Docker container, read-only towards Wazuh by default, personal dat
 model.
 
 [English](README.md) · [Türkçe](README.tr.md) · [Deutsch](README.de.md) · [Español](README.es.md) ·
-**[Wiki](https://github.com/dururustem68/wazuh-daily-triage/wiki)** ·
-[Getting started](https://github.com/dururustem68/wazuh-daily-triage/wiki/Getting-Started) ·
-[Security model](https://github.com/dururustem68/wazuh-daily-triage/wiki/Security-Model) ·
+**[Wiki](https://github.com/occultera/occultera/wiki)** ·
+[Getting started](https://github.com/occultera/occultera/wiki/Getting-Started) ·
+[Security model](https://github.com/occultera/occultera/wiki/Security-Model) ·
 [Changelog](CHANGELOG.md)
 
 ![Dashboard](docs/screenshot-dashboard.png)
@@ -65,14 +69,14 @@ instead of silencing.
   SSO group.
 - **Multi-environment, multi-language** (English, Turkish, Spanish, German), Docker Compose or Kubernetes.
 
-Every feature is described in the [wiki](https://github.com/dururustem68/wazuh-daily-triage/wiki).
+Every feature is described in the [wiki](https://github.com/occultera/occultera/wiki).
 
 ## Quick start
 
 ### Try the demo (no Wazuh, no model needed)
 
 ```sh
-git clone https://github.com/dururustem68/wazuh-daily-triage.git && cd wazuh-daily-triage
+git clone https://github.com/occultera/occultera.git && cd occultera
 cp .env.demo .env
 docker compose up -d --build
 # open http://127.0.0.1:8080 and sign in with: demo-password-change-me
@@ -97,15 +101,15 @@ suggestions.
 3. Press **Run check now** and check the first report.
 
 The step-by-step version with expected results and common errors is
-**[Getting started](https://github.com/dururustem68/wazuh-daily-triage/wiki/Getting-Started)**. Before
+**[Getting started](https://github.com/occultera/occultera/wiki/Getting-Started)**. Before
 production, go through the
-[security checklist](https://github.com/dururustem68/wazuh-daily-triage/wiki/Security-Checklist).
+[security checklist](https://github.com/occultera/occultera/wiki/Security-Checklist).
 
 ### Kubernetes
 
-A [Helm chart](deploy/helm/wazuh-daily-triage) and a [Kustomize base](deploy/kubernetes/README.md) with optional
+A [Helm chart](deploy/helm/occultera) and a [Kustomize base](deploy/kubernetes/README.md) with optional
 components: single replica, non-root, read-only filesystem, no PVC. Production guide:
-[Kubernetes](https://github.com/dururustem68/wazuh-daily-triage/wiki/Kubernetes).
+[Kubernetes](https://github.com/occultera/occultera/wiki/Kubernetes).
 
 ## AI providers
 
@@ -134,24 +138,24 @@ for data that must not leave your network. Model names and parameter quirks: [do
 - **Production startup refuses** example passwords, a missing `APP_SECRET`, insecure cookies and disabled TLS
   verification. State-changing requests are written to a hash-chained audit trail.
 
-Details: [Security model](https://github.com/dururustem68/wazuh-daily-triage/wiki/Security-Model) ·
-[Privacy](https://github.com/dururustem68/wazuh-daily-triage/wiki/Privacy) ·
+Details: [Security model](https://github.com/occultera/occultera/wiki/Security-Model) ·
+[Privacy](https://github.com/occultera/occultera/wiki/Privacy) ·
 [docs/security-exceptions.md](docs/security-exceptions.md). Report vulnerabilities privately: [SECURITY.md](SECURITY.md).
 
 ## Documentation
 
-This README is the short version. The [wiki](https://github.com/dururustem68/wazuh-daily-triage/wiki) is the
+This README is the short version. The [wiki](https://github.com/occultera/occultera/wiki) is the
 handbook; the `docs/` folder holds the reference documents the wiki links to.
 
 | Topic | Where |
 |---|---|
-| From the demo to a first real report | [Getting started](https://github.com/dururustem68/wazuh-daily-triage/wiki/Getting-Started) |
-| Installation and configuration | [Installation](https://github.com/dururustem68/wazuh-daily-triage/wiki/Installation), [Configuration](https://github.com/dururustem68/wazuh-daily-triage/wiki/Configuration), [Kubernetes](https://github.com/dururustem68/wazuh-daily-triage/wiki/Kubernetes) |
-| Daily use | [User guide](https://github.com/dururustem68/wazuh-daily-triage/wiki/User-Guide), [Rule lifecycle](https://github.com/dururustem68/wazuh-daily-triage/wiki/Rule-Lifecycle), [Watch](https://github.com/dururustem68/wazuh-daily-triage/wiki/Watch), [MCP](https://github.com/dururustem68/wazuh-daily-triage/wiki/MCP) |
-| Security and privacy | [Security model](https://github.com/dururustem68/wazuh-daily-triage/wiki/Security-Model), [Privacy](https://github.com/dururustem68/wazuh-daily-triage/wiki/Privacy), [Security checklist](https://github.com/dururustem68/wazuh-daily-triage/wiki/Security-Checklist) |
-| Operations | [Troubleshooting](https://github.com/dururustem68/wazuh-daily-triage/wiki/Troubleshooting), [Backup](https://github.com/dururustem68/wazuh-daily-triage/wiki/Backup), [Upgrade](https://github.com/dururustem68/wazuh-daily-triage/wiki/Upgrade) |
-| Versions and limits | [Compatibility](https://github.com/dururustem68/wazuh-daily-triage/wiki/Compatibility) |
-| Examples, FAQ, glossary | [Scenarios](https://github.com/dururustem68/wazuh-daily-triage/wiki/Scenarios), [FAQ](https://github.com/dururustem68/wazuh-daily-triage/wiki/FAQ) |
+| From the demo to a first real report | [Getting started](https://github.com/occultera/occultera/wiki/Getting-Started) |
+| Installation and configuration | [Installation](https://github.com/occultera/occultera/wiki/Installation), [Configuration](https://github.com/occultera/occultera/wiki/Configuration), [Kubernetes](https://github.com/occultera/occultera/wiki/Kubernetes) |
+| Daily use | [User guide](https://github.com/occultera/occultera/wiki/User-Guide), [Rule lifecycle](https://github.com/occultera/occultera/wiki/Rule-Lifecycle), [Watch](https://github.com/occultera/occultera/wiki/Watch), [MCP](https://github.com/occultera/occultera/wiki/MCP) |
+| Security and privacy | [Security model](https://github.com/occultera/occultera/wiki/Security-Model), [Privacy](https://github.com/occultera/occultera/wiki/Privacy), [Security checklist](https://github.com/occultera/occultera/wiki/Security-Checklist) |
+| Operations | [Troubleshooting](https://github.com/occultera/occultera/wiki/Troubleshooting), [Backup](https://github.com/occultera/occultera/wiki/Backup), [Upgrade](https://github.com/occultera/occultera/wiki/Upgrade) |
+| Versions and limits | [Compatibility](https://github.com/occultera/occultera/wiki/Compatibility) |
+| Examples, FAQ, glossary | [Scenarios](https://github.com/occultera/occultera/wiki/Scenarios), [FAQ](https://github.com/occultera/occultera/wiki/FAQ) |
 | Reference | [permissions](docs/permissions.md), [rule deployment](docs/rule-deployment.md), [notifications](docs/notifications.md), [providers](docs/providers.md), [sources](docs/sources.md), [architecture](docs/architecture.md), [eval](docs/eval.md) |
 
 ## Compatibility
@@ -162,7 +166,7 @@ handbook; the `docs/` folder holds the reference documents the wiki links to.
 - Python **3.11–3.15**.
 
 What is tested, what is expected and what is not supported:
-[Compatibility](https://github.com/dururustem68/wazuh-daily-triage/wiki/Compatibility).
+[Compatibility](https://github.com/occultera/occultera/wiki/Compatibility).
 
 ## Development
 
@@ -176,7 +180,7 @@ WDT_DEMO=true APP_PASSWORD=x uvicorn app.main:app --reload
 
 The test suite runs on a built-in demo engine and needs no cluster. There are no marketing numbers here: measure
 a model on days you reviewed yourself with `python -m app.eval` ([docs/eval.md](docs/eval.md)). More:
-[Development](https://github.com/dururustem68/wazuh-daily-triage/wiki/Development) ·
+[Development](https://github.com/occultera/occultera/wiki/Development) ·
 [CONTRIBUTING.md](CONTRIBUTING.md) · [ROADMAP.md](ROADMAP.md).
 
 ## Acknowledgements

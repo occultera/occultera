@@ -475,7 +475,7 @@ def test_archive_encryption():
         B.decrypt(blob, "another passphrase!")
     with pytest.raises(B.BackupError, match="wrong passphrase"):
         B.decrypt(blob[:-1] + bytes([blob[-1] ^ 1]), "correct horse battery")    # tampered
-    with pytest.raises(B.BackupError, match="not a wazuh-daily-triage"):
+    with pytest.raises(B.BackupError, match="not an Occultera"):
         B.decrypt(b"PK\x03\x04 something else entirely, long enough to pass the size check", "x" * 12)
     with pytest.raises(B.BackupError, match="at least"):
         B.encrypt({}, "short")
@@ -555,7 +555,7 @@ async def test_export_to_s3_and_failure_is_reported():
 
     res = await rt.backup_export("demo", "correct horse battery", "admin", to_s3=True,
                                  transport=httpx.MockTransport(ok))
-    assert res["s3"].startswith("s3://b/wazuh-daily-triage/demo/wdt-demo-") and seen["body"] == res["blob"]
+    assert res["s3"].startswith("s3://b/occultera/demo/occultera-demo-") and seen["body"] == res["blob"]
     res = await rt.backup_export("demo", "correct horse battery", "admin", to_s3=True,
                                  transport=httpx.MockTransport(lambda r: httpx.Response(403)))
     assert res["s3"] is None and "403" in res["s3_error"]
@@ -680,7 +680,7 @@ def test_mask_profile_api(c):
     assert r.status_code == 200 and r.json()["settings"]["mask"]["version"] == 2
     assert c.post("/api/e/demo/settings", json={"mask": {**prof, "disabled": ["password"]}, "confirm": True}).status_code == 400
     y = c.get("/api/e/demo/settings/mask.yaml")
-    assert y.status_code == 200 and "x_cust" in y.text and "wazuh-daily-triage-mask-profile" in y.text
+    assert y.status_code == 200 and "x_cust" in y.text and "occultera-mask-profile" in y.text
     r = c.post("/api/e/demo/settings/mask/import", json={"text": "custom: []\nallow: ['svc@example\\.org']\ndisabled: []\n"})
     assert r.status_code == 200 and r.json()["settings"]["mask"]["allow"] == ["svc@example\\.org"]
     assert c.post("/api/e/demo/settings/mask/import", json={"text": "- just\n- a list"}).status_code == 400
@@ -692,7 +692,7 @@ def test_backup_api_round_trip(c):
     assert r.status_code == 200
     j = r.json()
     blob = base64.b64decode(j["data_b64"])
-    assert j["filename"].endswith(".wdtbak") and blob.startswith(B.MAGIC) and j["bytes"] == len(blob)
+    assert j["filename"].endswith(".occbak") and blob.startswith(B.MAGIC) and j["bytes"] == len(blob)
     r = c.post("/api/e/demo/backup/import", json={"data_b64": j["data_b64"], "passphrase": "correct horse battery"})
     assert r.status_code == 200 and r.json()["dry_run"] is True and r.json()["other_env"] is False
     assert c.post("/api/e/demo/backup/import",

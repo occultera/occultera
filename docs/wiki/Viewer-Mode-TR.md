@@ -129,7 +129,7 @@ Grup başlığı adları, vekil yapılandırması ve hiçbir listede olmayan kul
   # {'ok': True, 'lines': 42, 'broken': None, 'file': 'logs/audit.jsonl'}
   ```
 
-Wazuh'un en az yetkili hesapları ve denetim biçimi için [docs/permissions.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/permissions.md).
+Wazuh'un en az yetkili hesapları ve denetim biçimi için [docs/permissions.md](https://github.com/occultera/occultera/blob/main/docs/permissions.md).
 
 ---
 

@@ -1,10 +1,10 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 FROM python:3.15-slim
 
-LABEL org.opencontainers.image.title="wazuh-daily-triage" \
+LABEL org.opencontainers.image.title="occultera" \
       org.opencontainers.image.description="AI-assisted daily triage for Wazuh SIEM" \
       org.opencontainers.image.licenses="AGPL-3.0-only" \
-      org.opencontainers.image.source="https://github.com/dururustem68/wazuh-daily-triage"
+      org.opencontainers.image.source="https://github.com/occultera/occultera"
 
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1 \
     WDT_CONFIG=/app/config/environments.yaml \

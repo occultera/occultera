@@ -1,4 +1,8 @@
-# Wazuh Daily Triage
+<p align="center"><img src="docs/assets/occultera-lockup.svg" alt="Occultera — Find the signal in the dark" width="560"></p>
+
+# Occultera
+
+*Find the signal in the dark.* Eski adı **wazuh-daily-triage** — [neden bu ad](https://github.com/occultera/occultera/wiki/Name-and-Logo-TR).
 
 **[Wazuh](https://wazuh.com) SIEM için nöbet yardımcısı.** Kural tabanlı nöbet, acil bir durum olduğunda
 dakikalar içinde ve yapay zekâ çağırmadan haber verir. Günde bir ya da iki kez çalışan AI turu ise SIEM'in
@@ -10,9 +14,9 @@ LiteLLM). Tek Docker konteyner; varsayılan olarak Wazuh'a karşı salt okunur; 
 maskelenir.
 
 [English](README.md) · [Türkçe](README.tr.md) · [Deutsch](README.de.md) · [Español](README.es.md) ·
-**[Wiki](https://github.com/dururustem68/wazuh-daily-triage/wiki/Home-TR)** ·
-[Başlangıç](https://github.com/dururustem68/wazuh-daily-triage/wiki/Getting-Started-TR) ·
-[Güvenlik modeli](https://github.com/dururustem68/wazuh-daily-triage/wiki/Security-Model-TR) ·
+**[Wiki](https://github.com/occultera/occultera/wiki/Home-TR)** ·
+[Başlangıç](https://github.com/occultera/occultera/wiki/Getting-Started-TR) ·
+[Güvenlik modeli](https://github.com/occultera/occultera/wiki/Security-Model-TR) ·
 [Değişiklik günlüğü](CHANGELOG.md)
 
 ![Pano](docs/screenshot-dashboard-tr.png)
@@ -64,14 +68,14 @@ aynı sayı bir besleme olayıdır", "sıfır, kuralın çalıştığını göst
   arkasında SSO grubuyla.
 - **Çok ortam, çok dil** (İngilizce, Türkçe, İspanyolca, Almanca); Docker Compose ya da Kubernetes.
 
-Her özellik [wiki](https://github.com/dururustem68/wazuh-daily-triage/wiki/Home-TR)'de anlatılır.
+Her özellik [wiki](https://github.com/occultera/occultera/wiki/Home-TR)'de anlatılır.
 
 ## Hızlı başlangıç
 
 ### Demoyu deneyin (Wazuh ve model gerekmez)
 
 ```sh
-git clone https://github.com/dururustem68/wazuh-daily-triage.git && cd wazuh-daily-triage
+git clone https://github.com/occultera/occultera.git && cd occultera
 cp .env.demo .env
 docker compose up -d --build
 # http://127.0.0.1:8080 adresini açın, parola: demo-password-change-me
@@ -96,15 +100,15 @@ Demo sentetik veri ve mock model kullanır; bitmiş bir rapor, nöbet olayları 
 3. **Şimdi kontrol et** düğmesine basın ve ilk raporu denetleyin.
 
 Beklenen sonuçlar ve sık hatalarla adım adım anlatım:
-**[Başlangıç](https://github.com/dururustem68/wazuh-daily-triage/wiki/Getting-Started-TR)**. Üretime almadan
-önce [güvenlik kontrol listesi](https://github.com/dururustem68/wazuh-daily-triage/wiki/Security-Checklist-TR)nin
+**[Başlangıç](https://github.com/occultera/occultera/wiki/Getting-Started-TR)**. Üretime almadan
+önce [güvenlik kontrol listesi](https://github.com/occultera/occultera/wiki/Security-Checklist-TR)nin
 üzerinden geçin.
 
 ### Kubernetes
 
-[Helm chart](deploy/helm/wazuh-daily-triage) ve isteğe bağlı bileşenleriyle
+[Helm chart](deploy/helm/occultera) ve isteğe bağlı bileşenleriyle
 [Kustomize base](deploy/kubernetes/README.md): tek replika, root olmayan kullanıcı, salt okunur dosya sistemi,
-PVC yok. Üretim rehberi: [Kubernetes](https://github.com/dururustem68/wazuh-daily-triage/wiki/Kubernetes-TR).
+PVC yok. Üretim rehberi: [Kubernetes](https://github.com/occultera/occultera/wiki/Kubernetes-TR).
 
 ## Yapay zekâ sağlayıcıları
 
@@ -135,25 +139,25 @@ Model araç (fonksiyon) çağırmayı desteklemelidir. Her ortam kendi modelini 
 - **Üretim modunda uygulama** örnek parolayla, eksik `APP_SECRET` ile, güvensiz çerezle ve kapatılmış TLS
   doğrulamasıyla açılmaz. Durum değiştiren istekler özet zincirli bir denetim izine yazılır.
 
-Ayrıntı: [Güvenlik modeli](https://github.com/dururustem68/wazuh-daily-triage/wiki/Security-Model-TR) ·
-[Gizlilik](https://github.com/dururustem68/wazuh-daily-triage/wiki/Privacy-TR) ·
+Ayrıntı: [Güvenlik modeli](https://github.com/occultera/occultera/wiki/Security-Model-TR) ·
+[Gizlilik](https://github.com/occultera/occultera/wiki/Privacy-TR) ·
 [docs/security-exceptions.md](docs/security-exceptions.md). Güvenlik açıklarını özel olarak bildirin:
 [SECURITY.md](SECURITY.md).
 
 ## Dokümantasyon
 
-Bu README kısa sürümdür. El kitabı [wiki](https://github.com/dururustem68/wazuh-daily-triage/wiki/Home-TR)'dir;
+Bu README kısa sürümdür. El kitabı [wiki](https://github.com/occultera/occultera/wiki/Home-TR)'dir;
 `docs/` dizini wiki'nin bağlantı verdiği başvuru belgelerini tutar.
 
 | Konu | Nerede |
 |---|---|
-| Demodan ilk gerçek rapora | [Başlangıç](https://github.com/dururustem68/wazuh-daily-triage/wiki/Getting-Started-TR) |
-| Kurulum ve yapılandırma | [Kurulum](https://github.com/dururustem68/wazuh-daily-triage/wiki/Installation-TR), [Yapılandırma](https://github.com/dururustem68/wazuh-daily-triage/wiki/Configuration-TR), [Kubernetes](https://github.com/dururustem68/wazuh-daily-triage/wiki/Kubernetes-TR) |
-| Günlük kullanım | [Kullanıcı rehberi](https://github.com/dururustem68/wazuh-daily-triage/wiki/User-Guide-TR), [Kural yaşam döngüsü](https://github.com/dururustem68/wazuh-daily-triage/wiki/Rule-Lifecycle-TR), [Nöbet](https://github.com/dururustem68/wazuh-daily-triage/wiki/Watch-TR), [MCP](https://github.com/dururustem68/wazuh-daily-triage/wiki/MCP-TR) |
-| Güvenlik ve gizlilik | [Güvenlik modeli](https://github.com/dururustem68/wazuh-daily-triage/wiki/Security-Model-TR), [Gizlilik](https://github.com/dururustem68/wazuh-daily-triage/wiki/Privacy-TR), [Güvenlik kontrol listesi](https://github.com/dururustem68/wazuh-daily-triage/wiki/Security-Checklist-TR) |
-| İşletim | [Sorun giderme](https://github.com/dururustem68/wazuh-daily-triage/wiki/Troubleshooting-TR), [Yedekleme](https://github.com/dururustem68/wazuh-daily-triage/wiki/Backup-TR), [Yükseltme](https://github.com/dururustem68/wazuh-daily-triage/wiki/Upgrade-TR) |
-| Sürümler ve sınırlar | [Uyumluluk](https://github.com/dururustem68/wazuh-daily-triage/wiki/Compatibility-TR) |
-| Örnekler, SSS, sözlük | [Örnek senaryolar](https://github.com/dururustem68/wazuh-daily-triage/wiki/Scenarios-TR), [SSS](https://github.com/dururustem68/wazuh-daily-triage/wiki/FAQ-TR) |
+| Demodan ilk gerçek rapora | [Başlangıç](https://github.com/occultera/occultera/wiki/Getting-Started-TR) |
+| Kurulum ve yapılandırma | [Kurulum](https://github.com/occultera/occultera/wiki/Installation-TR), [Yapılandırma](https://github.com/occultera/occultera/wiki/Configuration-TR), [Kubernetes](https://github.com/occultera/occultera/wiki/Kubernetes-TR) |
+| Günlük kullanım | [Kullanıcı rehberi](https://github.com/occultera/occultera/wiki/User-Guide-TR), [Kural yaşam döngüsü](https://github.com/occultera/occultera/wiki/Rule-Lifecycle-TR), [Nöbet](https://github.com/occultera/occultera/wiki/Watch-TR), [MCP](https://github.com/occultera/occultera/wiki/MCP-TR) |
+| Güvenlik ve gizlilik | [Güvenlik modeli](https://github.com/occultera/occultera/wiki/Security-Model-TR), [Gizlilik](https://github.com/occultera/occultera/wiki/Privacy-TR), [Güvenlik kontrol listesi](https://github.com/occultera/occultera/wiki/Security-Checklist-TR) |
+| İşletim | [Sorun giderme](https://github.com/occultera/occultera/wiki/Troubleshooting-TR), [Yedekleme](https://github.com/occultera/occultera/wiki/Backup-TR), [Yükseltme](https://github.com/occultera/occultera/wiki/Upgrade-TR) |
+| Sürümler ve sınırlar | [Uyumluluk](https://github.com/occultera/occultera/wiki/Compatibility-TR) |
+| Örnekler, SSS, sözlük | [Örnek senaryolar](https://github.com/occultera/occultera/wiki/Scenarios-TR), [SSS](https://github.com/occultera/occultera/wiki/FAQ-TR) |
 | Başvuru (İngilizce) | [yetkiler](docs/permissions.md), [kural dağıtımı](docs/rule-deployment.md), [bildirimler](docs/notifications.md), [sağlayıcılar](docs/providers.tr.md), [kaynaklar](docs/sources.md), [mimari](docs/architecture.md), [eval](docs/eval.md) |
 
 ## Uyumluluk
@@ -164,7 +168,7 @@ Bu README kısa sürümdür. El kitabı [wiki](https://github.com/dururustem68/w
 - Python **3.11–3.15**.
 
 Neyin test edildiği, neyin beklendiği ve neyin desteklenmediği:
-[Uyumluluk](https://github.com/dururustem68/wazuh-daily-triage/wiki/Compatibility-TR).
+[Uyumluluk](https://github.com/occultera/occultera/wiki/Compatibility-TR).
 
 ## Geliştirme
 
@@ -178,7 +182,7 @@ WDT_DEMO=true APP_PASSWORD=x uvicorn app.main:app --reload
 
 Test paketi yerleşik bir demo motorunda çalışır ve cluster istemez. Burada pazarlama rakamı yoktur: bir modeli
 kendi incelediğiniz günlerde `python -m app.eval` ile ölçün ([docs/eval.md](docs/eval.md)). Devamı:
-[Geliştirme](https://github.com/dururustem68/wazuh-daily-triage/wiki/Development-TR) ·
+[Geliştirme](https://github.com/occultera/occultera/wiki/Development-TR) ·
 [CONTRIBUTING.md](CONTRIBUTING.md) · [ROADMAP.md](ROADMAP.md).
 
 ## Teşekkür

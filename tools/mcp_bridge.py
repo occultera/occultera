@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: AGPL-3.0-only
 # Copyright (C) 2026 Rüstem Duru
-"""stdio ↔ HTTP bridge for the wazuh-daily-triage MCP endpoint (standard library only).
+"""stdio ↔ HTTP bridge for the Occultera MCP endpoint (standard library only).
 
 MCP clients that start local servers over stdio (e.g. Claude Desktop) run this script; it forwards each
 JSON-RPC message to https://<your-host>/mcp with the bearer token and prints the answer.

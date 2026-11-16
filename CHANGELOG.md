@@ -5,6 +5,37 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.12.0] — 2026-11-16
+
+The project is now called **Occultera** — *Find the signal in the dark.* No functional changes.
+
+### Changed
+- **Name and home.** The repository moved from `dururustem68/wazuh-daily-triage` to
+  [`occultera/occultera`](https://github.com/occultera/occultera); GitHub redirects the old address. New images are
+  published as `ghcr.io/occultera/occultera`; images up to 0.11.1 stay at `ghcr.io/dururustem68/wazuh-daily-triage`.
+  The Helm chart is now called `occultera` (chart 0.4.0, `deploy/helm/occultera`) and is published at
+  `https://occultera.github.io/occultera` (`helm repo add occultera …`).
+- **Backup archives** use a new marker and format (`occultera-backup`), the file name
+  `occultera-<env>-<time>.occbak` and the default S3 key prefix `occultera`. Archives written by 0.11.x cannot be
+  imported; take a new backup after the upgrade.
+- The masking-profile export carries `format: occultera-mask-profile`.
+- **Logo and favicon.** A total eclipse with one bright flash at the rim, locked on by the watch
+  (`app/static/icon.svg`, `app/static/logo.svg`, `docs/assets/`). The About page shows it with a link to the new wiki
+  page *Name and logo*.
+- **Visible name.** Page titles, footer, PDF reports, notification titles (`[Occultera] <env> — …`), the Discord
+  user name, the MCP server name (`serverInfo.name: occultera`) and its `WWW-Authenticate` realm. Mail filters
+  that match `[Wazuh Daily Triage]` in the subject must be updated. Environments that set `title:` in their
+  configuration keep their own title.
+- Python package name `occultera`; OCI image title `occultera`.
+
+### Added
+- About page: a MITRE ATT&CK row that opens each environment's matrix.
+
+### Unchanged on purpose
+- Environment variables (`WDT_*`), index names (`daily-triage-*`), metric names (`wdt_*`), the Kustomize
+  resource names and the rule group written to Wazuh (`wazuh-daily-triage`). Existing Kustomize and Compose
+  installations upgrade in place; no data moves.
+
 ## [0.11.1] — 2026-11-12
 
 ### Fixed
@@ -119,7 +150,7 @@ All notable changes to this project are documented here. The format follows
   after failed attempts from the same source, a sudden increase in volume and agents that stopped reporting.
   Events are sorted out (mute list, known noise from the knowledge base, repeat window), announced at once
   as "rule-based alert — not reviewed by AI" and kept in `<prefix>-events`. Off by default
-  ([wiki: Watch](https://github.com/dururustem68/wazuh-daily-triage/wiki/Watch)).
+  ([wiki: Watch](https://github.com/occultera/occultera/wiki/Watch)).
 - **AI round**: the scheduled run receives all watch events in one call and returns a verdict per event
   (`event_verdicts`) plus tuning suggestions. A suggestion changes nothing until an administrator accepts it.
   The round times (one or two a day) can be set in the UI.
@@ -130,7 +161,7 @@ All notable changes to this project are documented here. The format follows
   can switch off non-secret detectors (confirmation + audit). Preview, YAML import/export, and each run
   records the profile version. Custom patterns are compiled with RE2 when `google-re2` is installed,
   otherwise only a conservative subset is accepted and timed against repetitive input.
-- **Backup** ([wiki: Backup](https://github.com/dururustem68/wazuh-daily-triage/wiki/Backup)): encrypted export (scrypt + AES-256-GCM) as a download and
+- **Backup** ([wiki: Backup](https://github.com/occultera/occultera/wiki/Backup)): encrypted export (scrypt + AES-256-GCM) as a download and
   optionally to S3; import with a preview and "add what is missing" / "overwrite"; automatic backups only
   with S3 and `BACKUP_PASSPHRASE`; reminder after 30 days. Imported rule drafts need approval again.
 - **Storage safety**: a missing storage index is no longer recreated silently — the loss is recorded, raises

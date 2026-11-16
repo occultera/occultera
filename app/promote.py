@@ -42,7 +42,7 @@ def rule_table(xml: str) -> list[dict]:
 def block(entry: dict, xml: str) -> str:
     title = re.sub(r"-{2,}", "-", entry.get("title", ""))[:150]
     return (f"<!-- {_ts('')} — {title}\n"
-            f"     source: wazuh-daily-triage {entry.get('id')}; rationale, protected cases and risk acceptance:\n"
+            f"     source: Occultera {entry.get('id')}; rationale, protected cases and risk acceptance:\n"
             f"     see the alert catalogue. -->\n{xml.strip()}\n")
 
 
@@ -83,7 +83,7 @@ def script(env: Environment, entry: dict, xml: str, ids: list[str]) -> str:
     first = ids[0] if ids else ""
     q = shlex.quote
     head = ["#!/usr/bin/env bash",
-            f"# wazuh-daily-triage — promote {kid} ({', '.join(ids)}) into {c.rules_file}",
+            f"# Occultera — promote {kid} ({', '.join(ids)}) into {c.rules_file}",
             "# Generated; read it before running. Re-running is safe: it stops if the rule is already there.",
             "set -euo pipefail",
             f"KID={q(kid)}; FIRST_ID={q(first)}",
@@ -102,7 +102,7 @@ def script(env: Environment, entry: dict, xml: str, ids: list[str]) -> str:
             '[ -f "$F" ] || { echo "rules file $F not found"; exit 1; }',
             'if grep -q "id=\\"$FIRST_ID\\"" "$F"; then echo "rule $FIRST_ID is already in $F — nothing to do"; exit 0; fi',
             'if k exec "$POD" -- grep -q "wdt:begin $KID" "$DEPLOY_FILE" 2>/dev/null; then',
-            '  echo "the draft is still deployed in $DEPLOY_FILE — press Remove in wazuh-daily-triage first"; exit 1; fi',
+            '  echo "the draft is still deployed in $DEPLOY_FILE — press Remove in Occultera first"; exit 1; fi',
             'echo "== 2. backup + append"',
             'mkdir -p "${BACKUP_DIR:-.wdt-backup}"; cp -p "$F" "${BACKUP_DIR:-.wdt-backup}/$(basename "$F").before-$STAMP"',
             'printf "\\n%s\\n" "$BLOCK" >> "$F"',
@@ -127,7 +127,7 @@ def script(env: Environment, entry: dict, xml: str, ids: list[str]) -> str:
             'echo "== 6. loaded?"',
             'k exec "$POD" -- grep -l "id=\\"$FIRST_ID\\"" /var/ossec/etc/rules/ -r',
             'k exec "$POD" -- sh -c "tail -n 300 /var/ossec/logs/ossec.log | grep -E \'CRITICAL|7617|7619|5107\' || echo \'   no rule errors in ossec.log\'"',
-            'echo "done — log: $OUT. Next: add the catalogue §, then mark the draft as promoted in wazuh-daily-triage."',
+            'echo "done — log: $OUT. Next: add the catalogue §, then mark the draft as promoted in Occultera."',
         ]
     else:
         body = [
@@ -138,7 +138,7 @@ def script(env: Environment, entry: dict, xml: str, ids: list[str]) -> str:
             '[ -f "$F" ] || { echo "rules file $F not found"; exit 1; }',
             'if grep -q "id=\\"$FIRST_ID\\"" "$F"; then echo "rule $FIRST_ID is already in $F — nothing to do"; exit 0; fi',
             'if grep -q "wdt:begin $KID" "$DEPLOY_FILE" 2>/dev/null; then',
-            '  echo "the draft is still deployed in $DEPLOY_FILE — press Remove in wazuh-daily-triage first"; exit 1; fi',
+            '  echo "the draft is still deployed in $DEPLOY_FILE — press Remove in Occultera first"; exit 1; fi',
             'echo "== 2. backup (outside etc/rules: every file there is loaded) + append"',
             'mkdir -p /var/ossec/backup; cp -p "$F" "/var/ossec/backup/$(basename "$F").before-$STAMP"',
             'printf "\\n%s\\n" "$BLOCK" >> "$F"',

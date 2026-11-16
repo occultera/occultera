@@ -14,7 +14,7 @@ report from your own Wazuh, follow [Getting started](Getting-Started).
 
 1. **Wazuh access.** The Indexer (9200) is required; the Wazuh API (55000) is optional but enables agent,
    daemon, rule and logtest checks. Create the read-only accounts from
-   [docs/permissions.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/permissions.md) — do not use admin credentials.
+   [docs/permissions.md](https://github.com/occultera/occultera/blob/main/docs/permissions.md) — do not use admin credentials.
 2. **A model.** An API key for Anthropic or any OpenAI-compatible endpoint, or a local model (Ollama, vLLM,
    LM Studio). `LLM_PROVIDER=mock` is only for demos.
 3. **TLS.** The UI has a password and a signed cookie; expose it through HTTPS, never plain HTTP on a shared
@@ -27,8 +27,8 @@ report from your own Wazuh, follow [Getting started](Getting-Started).
 ### A1. Demo (no Wazuh, no model)
 
 ```sh
-git clone https://github.com/dururustem68/wazuh-daily-triage.git
-cd wazuh-daily-triage
+git clone https://github.com/occultera/occultera.git
+cd occultera
 cp .env.demo .env
 docker compose up -d --build
 ```
@@ -105,7 +105,7 @@ run. Notifications have their own **Test notifications** button.
 > part of the value.
 
 > **Pin the image for production.** `docker-compose.yml` uses `:latest` so the demo always works. Replace it with
-> `ghcr.io/dururustem68/wazuh-daily-triage:0.11.1` (or your own digest) so an upgrade is a deliberate change.
+> `ghcr.io/occultera/occultera:0.12.0` (or your own digest) so an upgrade is a deliberate change.
 
 ### A3. Several Wazuh environments
 
@@ -150,7 +150,7 @@ filesystem, no PVC (state lives in the Wazuh Indexer), `/healthz` liveness and `
 ### B1. Helm
 
 ```sh
-helm repo add wazuh-daily-triage https://dururustem68.github.io/wazuh-daily-triage
+helm repo add occultera https://occultera.github.io/occultera
 helm repo update
 ```
 
@@ -170,11 +170,11 @@ app:
 ```
 
 ```sh
-helm install wazuh-daily-triage wazuh-daily-triage/wazuh-daily-triage \
-  --version 0.3.1 -f my-values.yaml
+helm install occultera occultera/occultera \
+  --version 0.4.0 -f my-values.yaml
 ```
 
-Or install straight from a checkout: `helm install wazuh-daily-triage ./deploy/helm/wazuh-daily-triage -f my-values.yaml`.
+Or install straight from a checkout: `helm install occultera ./deploy/helm/occultera -f my-values.yaml`.
 
 Every key under `secret:` becomes an environment variable in the pod, so `VIEWER_PASSWORD`, `MCP_TOKEN` and
 `METRICS_TOKEN` go there too. Non-secret switches (`AUTH_DISABLED`, `LOG_LEVEL`, `ADMIN_ENVS`, …) go under
@@ -187,7 +187,7 @@ placeholders.
 cp -r deploy/kubernetes/example ~/triage-overlay
 cd ~/triage-overlay
 # outside the repository the relative "../base" no longer resolves — point it at the pinned remote base:
-sed -i 's#^  - ../base.*#  - https://github.com/dururustem68/wazuh-daily-triage//deploy/kubernetes/base?ref=v0.11.1#' kustomization.yaml
+sed -i 's#^  - ../base.*#  - https://github.com/occultera/occultera//deploy/kubernetes/base?ref=v0.12.0#' kustomization.yaml
 cp secret.env.example secret.env
 vi secret.env environments.yaml context.md
 kubectl apply -k .
@@ -197,7 +197,7 @@ kubectl -n wazuh-daily-triage exec deploy/wazuh-daily-triage -- python -m app.ch
 
 Optional components in `deploy/kubernetes/components/`: `networkpolicy`, `ingress-nginx`,
 `ingress-traefik-authentik` and `rbac-readonly`. See
-[deploy/kubernetes/README.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/deploy/kubernetes/README.md).
+[deploy/kubernetes/README.md](https://github.com/occultera/occultera/blob/main/deploy/kubernetes/README.md).
 
 > **One replica only.** The scheduler runs inside the process; a second replica would run every check twice.
 > The Deployment uses the `Recreate` strategy for the same reason. Set `WDT_SCHEDULER=false` if you run extra
@@ -283,7 +283,7 @@ A successful startup logs the configured environments, the schedule, the audit f
 In production, `app/security.py` **refuses to start** on: `WDT_DEMO=true`, a missing or example `APP_PASSWORD`,
 a missing `APP_SECRET`, `VIEWER_PASSWORD` equal to the admin password, `COOKIE_SECURE=false`, TLS verification
 disabled for an endpoint, or `rule_deploy.enabled` without credentials. See
-[docs/security-exceptions.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/security-exceptions.md) for the two deliberate lab overrides.
+[docs/security-exceptions.md](https://github.com/occultera/occultera/blob/main/docs/security-exceptions.md) for the two deliberate lab overrides.
 
 ## Upgrade and rollback
 
@@ -299,9 +299,9 @@ docker compose up -d
 docker compose exec triage python -m app.check
 
 # Helm
-helm upgrade wazuh-daily-triage wazuh-daily-triage/wazuh-daily-triage \
-  --version 0.3.1 -f my-values.yaml
-helm rollback wazuh-daily-triage 1     # if needed
+helm upgrade occultera occultera/occultera \
+  --version 0.4.0 -f my-values.yaml
+helm rollback occultera 1     # if needed
 ```
 
 ### Upgrading to 0.10
@@ -315,7 +315,7 @@ helm rollback wazuh-daily-triage 1     # if needed
 - **Docker Compose**: the audit trail moved from `./logs` to the volume `audit`.
 - Take a first backup (**Settings → Backup**) — the reminder counts from the upgrade.
 
-Read [CHANGELOG.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/CHANGELOG.md) before upgrading: configuration keys occasionally change. Existing
+Read [CHANGELOG.md](https://github.com/occultera/occultera/blob/main/CHANGELOG.md) before upgrading: configuration keys occasionally change. Existing
 runs stay searchable; `run_retention_days` (YAML) prunes old run documents only, never the knowledge base.
 
 ## Troubleshooting

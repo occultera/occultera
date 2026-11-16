@@ -171,7 +171,7 @@ def test_mcp_endpoint(monkeypatch):
         h = {"Authorization": "Bearer s3cret-token"}
         r = c.post("/mcp", headers=h, json={"jsonrpc": "2.0", "id": 1, "method": "initialize",
                                             "params": {"protocolVersion": "2025-06-18"}}).json()
-        assert r["result"]["serverInfo"]["name"] == "wazuh-daily-triage"
+        assert r["result"]["serverInfo"]["name"] == "occultera"
         assert c.post("/mcp", headers=h, json={"jsonrpc": "2.0", "method": "notifications/initialized"}).status_code == 202
         tools = c.post("/mcp", headers=h, json={"jsonrpc": "2.0", "id": 2, "method": "tools/list"}).json()["result"]["tools"]
         names = {x["name"] for x in tools}

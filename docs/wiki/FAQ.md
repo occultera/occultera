@@ -56,8 +56,8 @@ No. It is independent and not affiliated with Wazuh, Inc. The licence is AGPL-3.
 for users over a network, you must offer them its source.
 
 **Where do I ask for help or report a bug?**
-[GitHub issues](https://github.com/dururustem68/wazuh-daily-triage/issues). Security problems go privately
-through [security advisories](https://github.com/dururustem68/wazuh-daily-triage/security/advisories/new).
+[GitHub issues](https://github.com/occultera/occultera/issues). Security problems go privately
+through [security advisories](https://github.com/occultera/occultera/security/advisories/new).
 
 ## Glossary
 

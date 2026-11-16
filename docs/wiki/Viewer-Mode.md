@@ -131,7 +131,7 @@ Group header names, proxy configuration and the default role for users in no lis
   # {'ok': True, 'lines': 42, 'broken': None, 'file': 'logs/audit.jsonl'}
   ```
 
-See also [docs/permissions.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/permissions.md) for the least-privilege Wazuh accounts and the audit format.
+See also [docs/permissions.md](https://github.com/occultera/occultera/blob/main/docs/permissions.md) for the least-privilege Wazuh accounts and the audit format.
 
 ---
 

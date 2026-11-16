@@ -31,7 +31,7 @@ POST _plugins/_ism/remove/daily-triage-*
 ## Dışa aktarma
 
 **Ayarlar → Yedekleme → Oluştur ve indir.** Bir parola seçersiniz (en az 12 karakter); arşiv
-(`wdt-<ortam>-<zaman>.wdtbak`) sıkıştırılır ve scrypt + AES-256-GCM ile şifrelenir. Parola olmadan açılamaz;
+(`occultera-<ortam>-<zaman>.occbak`) sıkıştırılır ve scrypt + AES-256-GCM ile şifrelenir. Parola olmadan açılamaz;
 bozulmuş ya da değiştirilmiş dosya reddedilir. Arşivde kimlik bilgisi yoktur. Rota `admin` izni ister ve her
 dışa aktarım denetim kaydına yazılır.
 
@@ -44,7 +44,7 @@ Yapılandırmada (asla arayüzde değil) bir kova tanımlayın; dışa aktarma f
 | `BACKUP_S3_ENDPOINT` | `https://s3.eu-central-1.amazonaws.com`, MinIO/Ceph/Hetzner uç noktası … |
 | `BACKUP_S3_BUCKET`, `BACKUP_S3_REGION` | kova ve bölge (sağlayıcıda bölge yoksa `us-east-1`) |
 | `BACKUP_S3_ACCESS_KEY`, `BACKUP_S3_SECRET_KEY` | o kovaya yalnızca `PutObject` yapabilen bir anahtar |
-| `BACKUP_S3_PREFIX` | anahtar öneki, varsayılan `wazuh-daily-triage` |
+| `BACKUP_S3_PREFIX` | anahtar öneki, varsayılan `occultera` |
 | `BACKUP_S3_PATH_STYLE` | `https://host/kova/anahtar` için `true` (varsayılan), `https://kova.host/anahtar` için `false` |
 | `BACKUP_PASSPHRASE` | yalnızca **otomatik** yedek için gerekir |
 

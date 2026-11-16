@@ -1,6 +1,8 @@
-# Wazuh Daily Triage — Wiki (Türkçe)
+# Occultera — Wiki (Türkçe)
 
 [English](Home) · **Türkçe** · [Español](Home-ES) · [Français](Home-FR)
+
+*Find the signal in the dark.* Occultera'nın 0.11.1'e kadarki adı **wazuh-daily-triage** idi — bkz. [Ad ve logo](Name-and-Logo-TR).
 
 **Wazuh için bir nöbet programı.** Alarmlarınızı gece gündüz izler, acil bir şey olduğunda dakikalar içinde
 haber verir — yapay zekâya sormadan. Günde bir ya da iki kez bir AI turu, nöbetin gördüğü her şeyi inceler,
@@ -20,7 +22,7 @@ açıklar ve neyin ayarlanması gerektiğini önerir. Kararı siz verirsiniz; on
 
 ![Nöbet panosu](images/dashboard.png)
 
-**Sürüm:** 0.11.1 · **Lisans:** AGPL-3.0-only · **Python:** 3.11–3.15 · **Wazuh:** 4.x
+**Sürüm:** 0.12.0 · **Lisans:** AGPL-3.0-only · **Python:** 3.11–3.15 · **Wazuh:** 4.x
 
 ## Nedir, ne değildir
 
@@ -105,8 +107,8 @@ bekletilir. Nöbet **Ayarlar → Nöbet** bölümünden açılır. → [Nöbet](
 ## Beş dakikalık demo (Wazuh gerekmez)
 
 ```sh
-git clone https://github.com/dururustem68/wazuh-daily-triage.git
-cd wazuh-daily-triage
+git clone https://github.com/occultera/occultera.git
+cd occultera
 cp .env.demo .env
 docker compose up -d --build
 ```
@@ -137,20 +139,20 @@ flowchart LR
 
 - **Bu wiki** el kitabıdır: aracın kurulması, kullanılması, güvenliği ve işletimi.
 - **README** kısa sürümdür: ne olduğu ve nasıl başlanacağı
-  ([English](https://github.com/dururustem68/wazuh-daily-triage/blob/main/README.md), [Türkçe](https://github.com/dururustem68/wazuh-daily-triage/blob/main/README.tr.md),
-  [Deutsch](https://github.com/dururustem68/wazuh-daily-triage/blob/main/README.de.md), [Español](https://github.com/dururustem68/wazuh-daily-triage/blob/main/README.es.md)).
+  ([English](https://github.com/occultera/occultera/blob/main/README.md), [Türkçe](https://github.com/occultera/occultera/blob/main/README.tr.md),
+  [Deutsch](https://github.com/occultera/occultera/blob/main/README.de.md), [Español](https://github.com/occultera/occultera/blob/main/README.es.md)).
 - **Depodaki başvuru belgeleri**, wiki'nin bağlantı verdiği kesin ayrıntıları tutar:
-  [izinler](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/permissions.md), [kural dağıtımı](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/rule-deployment.md),
-  [bildirimler](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/notifications.md), [sağlayıcılar](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/providers.md),
-  [kaynaklar](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/sources.md), [mimari](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/architecture.md),
-  [güvenlik istisnaları](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/security-exceptions.md).
+  [izinler](https://github.com/occultera/occultera/blob/main/docs/permissions.md), [kural dağıtımı](https://github.com/occultera/occultera/blob/main/docs/rule-deployment.md),
+  [bildirimler](https://github.com/occultera/occultera/blob/main/docs/notifications.md), [sağlayıcılar](https://github.com/occultera/occultera/blob/main/docs/providers.md),
+  [kaynaklar](https://github.com/occultera/occultera/blob/main/docs/sources.md), [mimari](https://github.com/occultera/occultera/blob/main/docs/architecture.md),
+  [güvenlik istisnaları](https://github.com/occultera/occultera/blob/main/docs/security-exceptions.md).
 
 ## Yardım ve hata bildirimi
 
-- Sorular ve hatalar: [GitHub kayıtları](https://github.com/dururustem68/wazuh-daily-triage/issues). Önce sunucu adlarını, IP adreslerini ve belirteçleri
+- Sorular ve hatalar: [GitHub kayıtları](https://github.com/occultera/occultera/issues). Önce sunucu adlarını, IP adreslerini ve belirteçleri
   çıkarın.
-- Güvenlik sorunları: özel olarak, [güvenlik bildirimleri](https://github.com/dururustem68/wazuh-daily-triage/security/advisories/new) üzerinden.
-- Neler değişti: [CHANGELOG](https://github.com/dururustem68/wazuh-daily-triage/blob/main/CHANGELOG.md) · neler planlanıyor: [ROADMAP](https://github.com/dururustem68/wazuh-daily-triage/blob/main/ROADMAP.md).
+- Güvenlik sorunları: özel olarak, [güvenlik bildirimleri](https://github.com/occultera/occultera/security/advisories/new) üzerinden.
+- Neler değişti: [CHANGELOG](https://github.com/occultera/occultera/blob/main/CHANGELOG.md) · neler planlanıyor: [ROADMAP](https://github.com/occultera/occultera/blob/main/ROADMAP.md).
 
 > Sayfaların altındaki dil bağlantıları İngilizce ve Türkçe wiki sürümleri arasında geçiş yapar; ana sayfa
 > ayrıca [Español](Home-ES) ve [Français](Home-FR) dillerinde de var.

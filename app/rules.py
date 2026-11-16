@@ -217,7 +217,7 @@ def block(kid: str, xml: str, title: str = "") -> str:
 def with_block(content: str | None, kid: str, xml: str, title: str = "") -> str:
     base = remove_block(content or "", kid)
     if not base.strip():
-        base = "<!-- Managed by wazuh-daily-triage: approved rule drafts. Edit with care. -->\n"
+        base = "<!-- Managed by Occultera: approved rule drafts. Edit with care. -->\n"
     return base.rstrip("\n") + "\n\n" + block(kid, xml, title)
 
 
@@ -231,7 +231,7 @@ def commands(kid: str, xml: str, cfg: RuleDeployCfg, title: str = "", ids: list[
     f = f"/var/ossec/etc/rules/{cfg.file}"
     first = (ids or ["?"])[0]
     lines = [
-        f"# wazuh-daily-triage — {title}",
+        f"# Occultera — {title}",
         "# Run as root on the Wazuh manager (the MASTER node in a cluster; workers receive rules from it).",
         "# Kubernetes/Docker: kubectl exec -it <master-pod> -- bash, then paste.",
         f'F={f}; B="$F.bak.$(date +%Y%m%d-%H%M%S)"',
@@ -374,7 +374,7 @@ async def apply(api: WazuhAPI, cfg: RuleDeployCfg, kid: str, xml: str, ids: list
                 try:
                     await api.rule_file_delete(cfg.file)
                 except WazuhAPIError:
-                    await api.rule_file_put(cfg.file, "<!-- Managed by wazuh-daily-triage. -->\n")
+                    await api.rule_file_put(cfg.file, "<!-- Managed by Occultera. -->\n")
             v = await api.config_validation(cluster)
             if not all(x.get("status") == "OK" for x in v):
                 step("rollback validation", False, v)

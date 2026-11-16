@@ -177,7 +177,7 @@ class _NumberedCanvas(canvas.Canvas):
         self.line(MARGIN, 12 * mm, PAGE_W - MARGIN, 12 * mm)
         self.setFont(_FONT, 7.5)
         self.setFillColor(MUTED)
-        self.drawString(MARGIN, 8 * mm, "Wazuh Daily Triage — " + self._label)
+        self.drawString(MARGIN, 8 * mm, "Occultera — " + self._label)
         self.drawRightString(PAGE_W - MARGIN, 8 * mm, f"page {self._pageNumber} / {total}")
         self.restoreState()
 
@@ -195,7 +195,7 @@ def audit_pdf(d: dict, lang: str = "en") -> bytes:
     title = t(L, "au.title", env=env, m=month) if (env and month) else d.get("title", "")
     buf = io.BytesIO()
     doc = SimpleDocTemplate(buf, pagesize=A4, title=_esc(title),
-                            author="Wazuh Daily Triage", margins=(MARGIN, MARGIN, 18 * mm, 16 * mm))
+                            author="Occultera", margins=(MARGIN, MARGIN, 18 * mm, 16 * mm))
     story = []
 
     subtitle = f"{t(L, 'au.period')}: {from_date} – {to_date}   ·   {t(L, 'au.generated')}: {generated} UTC"

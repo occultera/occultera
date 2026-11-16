@@ -1,7 +1,7 @@
 # Kural yaşam döngüsü: taslaktan canlıda kanıtlanmış kurala
 
 **Kimin için:** kural değişikliklerini onaylayan yöneticiler. API yetkilerinin tam listesiyle başvuru belgesi:
-[docs/rule-deployment.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/rule-deployment.md).
+[docs/rule-deployment.md](https://github.com/occultera/occultera/blob/main/docs/rule-deployment.md).
 
 Kural taslağı, bir modelin (ya da sizin) yazdığı XML'dir. Onaylamak bir insan kararıdır. Aşağıdaki denetimler
 sözdizimi hatalarını, ID çakışmalarını ve susturmayı yakalar; yanlış mantığı yakalamaz. Taslağı okuyun.

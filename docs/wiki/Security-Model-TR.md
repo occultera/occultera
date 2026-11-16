@@ -2,7 +2,7 @@
 
 **Kimin için:** güvenlik sorumluları, veri koruma görevlileri, denetçiler ve "bu araç ne yapabilir, verimiz
 nereye gider?" sorusunu cevaplaması gereken operatörler. Hesap yetkilerinin tam listesi
-[docs/permissions.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/permissions.md)
+[docs/permissions.md](https://github.com/occultera/occultera/blob/main/docs/permissions.md)
 belgesindedir; bu sayfa genel bakıştır.
 
 ## Varsayılan duruş
@@ -39,7 +39,7 @@ flowchart LR
   subgraph sizin[Sizin ağınız]
     IX[(Wazuh Indexer)]
     API[Wazuh API]
-    APP[wazuh-daily-triage]
+    APP[Occultera]
     AUD[(audit.jsonl)]
   end
   IX -->|alarmlar, zafiyetler: okuma| APP
@@ -135,9 +135,9 @@ kapsar.
 ## Güvenlik açığı bildirimi
 
 Özel olarak,
-[GitHub güvenlik bildirimleri](https://github.com/dururustem68/wazuh-daily-triage/security/advisories/new)
+[GitHub güvenlik bildirimleri](https://github.com/occultera/occultera/security/advisories/new)
 üzerinden. Bilinçli istisnalar ve kabul edilmiş riskler
-[docs/security-exceptions.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/security-exceptions.md)
+[docs/security-exceptions.md](https://github.com/occultera/occultera/blob/main/docs/security-exceptions.md)
 belgesindedir.
 
 Ayrıca: [Güvenlik kontrol listesi](Security-Checklist-TR) · [Gizlilik](Privacy-TR) ·

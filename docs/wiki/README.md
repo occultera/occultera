@@ -1,6 +1,6 @@
 # Wiki source (bilingual)
 
-This folder holds the source of the project wiki: 22 pages in English, each with a Turkish version, the home
+This folder holds the source of the project wiki: 23 pages in English, each with a Turkish version, the home
 page also in Spanish and French, and one screenshot folder. The pages are plain Markdown and are published to the GitHub wiki repository; they are not built by
 any tool.
 
@@ -28,6 +28,7 @@ any tool.
 | Development | [`Development.md`](Development.md) | [`Development-TR.md`](Development-TR.md) | contributor |
 | Scenarios | [`Scenarios.md`](Scenarios.md) | [`Scenarios-TR.md`](Scenarios-TR.md) | new user |
 | FAQ and glossary | [`FAQ.md`](FAQ.md) | [`FAQ-TR.md`](FAQ-TR.md) | everyone |
+| Name and logo | [`Name-and-Logo.md`](Name-and-Logo.md) | [`Name-and-Logo-TR.md`](Name-and-Logo-TR.md) | everyone |
 
 `_Sidebar.md` is the navigation that GitHub renders on every wiki page. `images/` holds the screenshots,
 taken from a running 0.11.0 demo instance.
@@ -77,7 +78,7 @@ across whenever they change.
 3. Clone it next to the project:
 
    ```sh
-   git clone https://github.com/dururustem68/wazuh-daily-triage.wiki.git
+   git clone https://github.com/occultera/occultera.wiki.git
    ```
 
 ### Every update
@@ -86,7 +87,7 @@ across whenever they change.
 
 ```sh
 # from the project root
-WIKI=../wazuh-daily-triage.wiki
+WIKI=../occultera.wiki
 for p in docs/wiki/*.md; do
   [ "$(basename "$p")" = README.md ] || cp "$p" "$WIKI/"
 done
@@ -102,7 +103,7 @@ git push
 In PowerShell:
 
 ```powershell
-$wiki = '..\wazuh-daily-triage.wiki'
+$wiki = '..\occultera.wiki'
 Get-ChildItem docs\wiki\*.md | Where-Object Name -ne 'README.md' |
   ForEach-Object { Copy-Item $_.FullName $wiki -Force }
 New-Item -ItemType Directory -Force "$wiki\images" | Out-Null
@@ -131,7 +132,7 @@ otherwise the next sync silently reverts it.
 - README and wiki do not repeat each other: the README is the short version and links here; exact reference
   material (permissions, deployment API, notification fields) stays in `docs/*.md` and is linked, not copied.
 - Every page ends with `[English](Page) · [Türkçe](Page-TR)`.
-- Keep commands copy-pasteable and version-pinned: `0.11.1`, chart `0.3.1`.
+- Keep commands copy-pasteable and version-pinned: `0.12.0`, chart `0.4.0`.
 - Update the version string in `Home.md`, `Home-TR.md`, `_Sidebar.md` when the release changes.
 - Never put a real password, token, hostname or customer alert in a page or a screenshot.
 
@@ -141,7 +142,7 @@ otherwise the next sync silently reverts it.
 
 `docs/wiki/` bu wiki'nin kaynağıdır: 22 İngilizce sayfa, her birinin Türkçe eşi ve `images/` altında ekran görüntüleri.
 Yayınlamak için GitHub'da wiki'yi bir kez açın (Settings → Wikis ve Wiki sekmesinde ilk sayfa), sonra
-`wazuh-daily-triage.wiki.git` deposunu klonlayıp bu dizindeki `*.md` ve `images/` içeriğini kopyalayın, commit
+`occultera.wiki.git` deposunu klonlayıp bu dizindeki `*.md` ve `images/` içeriğini kopyalayın, commit
 edip push edin. Sayfa bağlantıları `Configuration` gibi çıplak adlarla yazılır (`.md` eklenmez); depo
 belgelerine giden bağlantılar ise wiki ayrı bir depo olduğu için mutlak GitHub adresi olarak durur. Ekran
 görüntüleri 0.11.0 demo örneğinden alınmıştır; gerçek müşteri verisi içeren görüntü kullanmayın.

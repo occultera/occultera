@@ -2,7 +2,7 @@
 
 **For:** security leads, DPOs, auditors, and operators who must answer "what can this tool do, and where does
 our data go?". The exact account permissions are in
-[docs/permissions.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/permissions.md); this page
+[docs/permissions.md](https://github.com/occultera/occultera/blob/main/docs/permissions.md); this page
 is the overview.
 
 ## The default posture
@@ -38,7 +38,7 @@ flowchart LR
   subgraph yours[Your network]
     IX[(Wazuh Indexer)]
     API[Wazuh API]
-    APP[wazuh-daily-triage]
+    APP[Occultera]
     AUD[(audit.jsonl)]
   end
   IX -->|alerts, vulnerabilities: read| APP
@@ -131,9 +131,9 @@ ISO 27001 compliant or certified, and it only covers what this application obser
 ## Reporting a vulnerability
 
 Privately, through
-[GitHub security advisories](https://github.com/dururustem68/wazuh-daily-triage/security/advisories/new).
+[GitHub security advisories](https://github.com/occultera/occultera/security/advisories/new).
 Deliberate overrides and accepted risks are listed in
-[docs/security-exceptions.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/security-exceptions.md).
+[docs/security-exceptions.md](https://github.com/occultera/occultera/blob/main/docs/security-exceptions.md).
 
 See also: [Security checklist](Security-Checklist) · [Privacy](Privacy) · [Rule lifecycle](Rule-Lifecycle)
 

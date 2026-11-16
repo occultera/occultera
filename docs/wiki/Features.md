@@ -29,7 +29,7 @@ rule_deploy:
 ```
 
 The deploy user's exact RBAC policy is in
-[docs/rule-deployment.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/rule-deployment.md).
+[docs/rule-deployment.md](https://github.com/occultera/occultera/blob/main/docs/rule-deployment.md).
 Every deploy and undeploy is audited and, with `notify.on_rule_deploy: true`, notified. **Verify** later
 checks live alerts to confirm that a deployed rule really fires.
 
@@ -128,7 +128,7 @@ sources:
 ```
 
 Secrets and configmaps are never read. Also allow the egress in your NetworkPolicy. See
-[docs/sources.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/sources.md).
+[docs/sources.md](https://github.com/occultera/occultera/blob/main/docs/sources.md).
 
 ## Health without the AI
 
@@ -217,7 +217,7 @@ kubectl exec -i deploy/wazuh-daily-triage -- python -m app.eval - < cases.yaml
 ```
 
 Eval replays past windows and scores recall against `expect` cases and noise against `forbid` cases. Nothing is
-written. `config/eval/demo.yaml` is a worked example. See [docs/eval.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/eval.md).
+written. `config/eval/demo.yaml` is a worked example. See [docs/eval.md](https://github.com/occultera/occultera/blob/main/docs/eval.md).
 
 ## Query guard
 

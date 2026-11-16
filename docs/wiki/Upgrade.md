@@ -17,7 +17,7 @@ default or a new requirement, which is why the release notes come first.
 
 ## Before you upgrade
 
-1. Read [CHANGELOG.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/CHANGELOG.md) from your
+1. Read [CHANGELOG.md](https://github.com/occultera/occultera/blob/main/CHANGELOG.md) from your
    version to the target, including the version notes below.
 2. Note the running version (the **About** page) and the image tag or digest in use.
 3. Take a backup: **Settings → Backup → Create and download**, and store the passphrase where you will find it.
@@ -37,8 +37,8 @@ docker compose exec triage python -m app.check
 
 ```sh
 # Helm
-helm upgrade wazuh-daily-triage wazuh-daily-triage/wazuh-daily-triage \
-  --namespace wazuh-daily-triage --version <chart version> -f my-values.yaml
+helm upgrade occultera occultera/occultera \
+  --namespace occultera --version <chart version> -f my-values.yaml
 ```
 
 For Kustomize, change the `?ref=` of the remote base and the image tag in your overlay, then `kubectl apply -k .`.
@@ -57,8 +57,8 @@ Deploy the previous image tag or digest with the previous configuration:
 
 ```sh
 # Helm
-helm -n wazuh-daily-triage history wazuh-daily-triage
-helm -n wazuh-daily-triage rollback wazuh-daily-triage <revision>
+helm -n occultera history occultera
+helm -n occultera rollback occultera <revision>
 ```
 
 With Compose, set the previous tag and run `docker compose up -d`.
@@ -69,6 +69,24 @@ version have no effect after a rollback. If the older version misbehaves on the 
 you took before the upgrade.
 
 ## Version notes
+
+### 0.12.0
+
+- **The project is now called Occultera.** Nothing else changes: no new settings, no data migration.
+- **New image address:** `ghcr.io/occultera/occultera:0.12.0`. Change `image:` (Compose), `images.newName`
+  (Kustomize) or `image.repository` (Helm values) when you upgrade. Older tags stay at
+  `ghcr.io/dururustem68/wazuh-daily-triage`.
+- **Kustomize remote bases:** `https://github.com/occultera/occultera//deploy/kubernetes/base?ref=v0.12.0`. The old
+  address still redirects.
+- **Helm:** the chart is now called `occultera` (chart 0.4.0) and lives at
+  `https://occultera.github.io/occultera` (`helm repo add occultera …`, `helm install occultera occultera/occultera`).
+  Resource names follow the release name. A release of the old `wazuh-daily-triage` chart does not upgrade into the
+  new one: install the new chart as a new release, then remove the old one.
+- **Backup archives** are now `occultera-<env>-<time>.occbak` with a new format marker; archives written by 0.11.x
+  cannot be imported. The default S3 key prefix is `occultera`. Take a new backup after the upgrade.
+- **Masking profile export** carries `format: occultera-mask-profile`.
+- **Notifications** now start with `[Occultera]`. Update mail rules that match the old subject.
+- If your configuration sets `title: Wazuh Daily Triage`, change it or remove the line to show the new name.
 
 ### 0.11.1
 

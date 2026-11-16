@@ -1,6 +1,6 @@
 # AI providers
 
-Wazuh Daily Triage talks to two API styles: **Anthropic Messages** (`LLM_PROVIDER=anthropic`) and
+Occultera talks to two API styles: **Anthropic Messages** (`LLM_PROVIDER=anthropic`) and
 **OpenAI Chat Completions** (`LLM_PROVIDER=openai`, any compatible endpoint). The model must support
 **tool / function calling** — the agent drives its investigation through tools.
 

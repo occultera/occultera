@@ -488,3 +488,8 @@ a.ttag:hover { text-decoration: none; border-color: var(--accent); }
 @media (max-width: 1100px) { .dgrid { grid-template-columns: 1fr 1fr; } .dgrid .span2 { grid-column: span 2; } }
 @media (max-width: 760px) { .dgrid { grid-template-columns: 1fr; } .dgrid .span2 { grid-column: auto; }
   .tstrip { grid-template-columns: repeat(2, minmax(0, 1fr)); } .ktiles { grid-template-columns: repeat(2, 1fr); } }
+
+/* 0.12.0: Occultera brand card on the About page */
+.brand-card { display: flex; align-items: center; gap: 18px; padding: 16px 20px; }
+.brand-card img { flex: none; border-radius: 50%; background: #0A0F1A; }
+.brand-slogan { font-size: 1.15rem; font-weight: 600; margin-bottom: 4px; }

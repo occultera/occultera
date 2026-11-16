@@ -14,7 +14,7 @@ application stops asking for a password. Since 0.11 the **groups decide the role
 ```mermaid
 flowchart LR
   U[Browser] -->|HTTPS| P[Keycloak + oauth2-proxy<br/>or Authentik forward auth]
-  P -->|user + groups headers| A[Wazuh Daily Triage]
+  P -->|user + groups headers| A[Occultera]
   M[MCP client] -->|Authorization: Bearer MCP_TOKEN| A
   A --> W[Wazuh Indexer / API]
 ```
@@ -183,7 +183,7 @@ Restart, then log out of Keycloak and back in: the sidebar shows your name and r
 ## Option 2 — Authentik forward auth (Traefik)
 
 Authentik's **embedded outpost** can act as a forward-auth server. The repository ships a ready component:
-[`deploy/kubernetes/components/ingress-traefik-authentik`](https://github.com/dururustem68/wazuh-daily-triage/blob/main/deploy/kubernetes/components/ingress-traefik-authentik).
+[`deploy/kubernetes/components/ingress-traefik-authentik`](https://github.com/occultera/occultera/blob/main/deploy/kubernetes/components/ingress-traefik-authentik).
 
 ### 1. Authentik
 
@@ -250,8 +250,8 @@ Enable it in your overlay:
 
 ```yaml
 components:   # remote, pinned — or copy the folders next to your overlay to edit the host names
-  - https://github.com/dururustem68/wazuh-daily-triage//deploy/kubernetes/components/networkpolicy?ref=v0.11.1
-  - https://github.com/dururustem68/wazuh-daily-triage//deploy/kubernetes/components/ingress-traefik-authentik?ref=v0.11.1
+  - https://github.com/occultera/occultera//deploy/kubernetes/components/networkpolicy?ref=v0.12.0
+  - https://github.com/occultera/occultera//deploy/kubernetes/components/ingress-traefik-authentik?ref=v0.12.0
 ```
 
 The component already sets `AUTH_DISABLED=true`, `COOKIE_SECURE=true` and `NOTIFY_UI_URL` (edit the host). Add

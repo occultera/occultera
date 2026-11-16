@@ -14,7 +14,7 @@ artık parola sormaz. 0.11'den beri **rolü gruplar belirler**: `SSO_ADMIN_GROUP
 ```mermaid
 flowchart LR
   U[Tarayıcı] -->|HTTPS| P[Keycloak + oauth2-proxy<br/>veya Authentik forward auth]
-  P -->|kullanıcı + grup başlıkları| A[Wazuh Daily Triage]
+  P -->|kullanıcı + grup başlıkları| A[Occultera]
   M[MCP istemcisi] -->|Authorization: Bearer MCP_TOKEN| A
   A --> W[Wazuh Indexer / API]
 ```
@@ -182,7 +182,7 @@ Yeniden başlatın, Keycloak oturumunu kapatıp yeniden açın: kenar çubuğu a
 ## Seçenek 2 — Authentik forward auth (Traefik)
 
 Authentik'in **gömülü outpost**'u forward-auth sunucusu olarak çalışabilir. Depoda hazır bileşen var:
-[`deploy/kubernetes/components/ingress-traefik-authentik`](https://github.com/dururustem68/wazuh-daily-triage/blob/main/deploy/kubernetes/components/ingress-traefik-authentik).
+[`deploy/kubernetes/components/ingress-traefik-authentik`](https://github.com/occultera/occultera/blob/main/deploy/kubernetes/components/ingress-traefik-authentik).
 
 ### 1. Authentik
 
@@ -247,8 +247,8 @@ Overlay'de etkinleştirin:
 
 ```yaml
 components:   # uzak ve sürümü sabit — host adlarını düzenlemek için klasörleri overlay'in yanına kopyalayın
-  - https://github.com/dururustem68/wazuh-daily-triage//deploy/kubernetes/components/networkpolicy?ref=v0.11.1
-  - https://github.com/dururustem68/wazuh-daily-triage//deploy/kubernetes/components/ingress-traefik-authentik?ref=v0.11.1
+  - https://github.com/occultera/occultera//deploy/kubernetes/components/networkpolicy?ref=v0.12.0
+  - https://github.com/occultera/occultera//deploy/kubernetes/components/ingress-traefik-authentik?ref=v0.12.0
 ```
 
 Bileşen `AUTH_DISABLED=true`, `COOKIE_SECURE=true` ve `NOTIFY_UI_URL` değerlerini zaten ayarlar (host'u

@@ -1,4 +1,4 @@
-# Wazuh Daily Triage — copy to config/environments.yaml and edit.
+# Occultera — copy to config/environments.yaml and edit.
 # ${VAR} and ${VAR:-default} are expanded from environment variables (.env), so keep secrets there.
 #
 # Single environment? You can skip this file entirely and use WAZUH_* variables in .env instead.
@@ -6,7 +6,7 @@
 app:
   timezone: ${TZ:-UTC}          # schedule times and UI timestamps use this zone
   language: ${APP_LANGUAGE:-en} # en | tr | es | de — default UI and report language
-  title: Wazuh Daily Triage
+  title: Occultera
 
 llm:
   # anthropic | openai (any OpenAI-compatible endpoint: OpenAI, Azure OpenAI, Ollama, vLLM, LM Studio, LiteLLM...) | mock

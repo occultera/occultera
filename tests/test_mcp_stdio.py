@@ -37,7 +37,7 @@ def test_serve_answers_requests_only(monkeypatch):
     asyncio.run(go())
     res = [json.loads(x) for x in out.getvalue().splitlines()]
     assert len(res) == 4                                   # no answer to the notification or the blank line
-    assert res[0]["result"]["serverInfo"]["name"] == "wazuh-daily-triage"
+    assert res[0]["result"]["serverInfo"]["name"] == "occultera"
     assert res[1]["error"]["code"] == -32700
     names = {t["name"] for t in res[2][0]["result"]["tools"]}
     assert {"list_environments", "search_alerts", "get_report"} <= names and "submit_report" not in names

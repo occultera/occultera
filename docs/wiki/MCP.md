@@ -60,7 +60,7 @@ teardown). Clients fall back to plain request/response.
 ### Claude Desktop (stdio bridge)
 
 Claude Desktop starts local MCP servers over stdio; the repository ships a standard-library bridge,
-[`tools/mcp_bridge.py`](https://github.com/dururustem68/wazuh-daily-triage/blob/main/tools/mcp_bridge.py), that forwards stdio to `/mcp`.
+[`tools/mcp_bridge.py`](https://github.com/occultera/occultera/blob/main/tools/mcp_bridge.py), that forwards stdio to `/mcp`.
 
 ```sh
 printf '%s' "$MCP_TOKEN" > ~/.wdt-mcp-token
@@ -75,7 +75,7 @@ chmod 600 ~/.wdt-mcp-token
     "wazuh-prod": {
       "command": "python3",
       "args": [
-        "/path/to/wazuh-daily-triage/tools/mcp_bridge.py",
+        "/path/to/occultera/tools/mcp_bridge.py",
         "https://triage.example.com/mcp",
         "--token-file", "/home/you/.wdt-mcp-token"
       ]
@@ -96,8 +96,8 @@ no token. Useful for a first look from any MCP client and for MCP directories th
 tools.
 
 ```sh
-docker build -t wazuh-daily-triage .
-docker run -i --rm -e WDT_DEMO=true wazuh-daily-triage python -m app.mcp_stdio
+docker build -t occultera .
+docker run -i --rm -e WDT_DEMO=true occultera python -m app.mcp_stdio
 ```
 
 Client configuration (Claude Desktop, Cursor, VS Code … — any client that starts stdio servers):
@@ -107,7 +107,7 @@ Client configuration (Claude Desktop, Cursor, VS Code … — any client that st
   "mcpServers": {
     "wazuh-demo": {
       "command": "docker",
-      "args": ["run", "-i", "--rm", "-e", "WDT_DEMO=true", "wazuh-daily-triage", "python", "-m", "app.mcp_stdio"]
+      "args": ["run", "-i", "--rm", "-e", "WDT_DEMO=true", "occultera", "python", "-m", "app.mcp_stdio"]
     }
   }
 }

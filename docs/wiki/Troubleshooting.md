@@ -99,11 +99,11 @@ Without the API, alert analysis still works.
 | *The model did not submit a report* | the model stopped without calling the report tool, or ran out of steps | raise `max_tool_steps`; try a stronger model |
 | A note "output limit reached" | the answer was cut at the token limit | raise `max_tokens` |
 | `400` from an OpenAI reasoning model | parameter names differ | `LLM_TOKEN_PARAM=max_completion_tokens`, `LLM_TEMPERATURE=none` |
-| `401` / `404` from the provider | wrong key, base URL or model ID | check `LLM_*` against [docs/providers.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/providers.md) |
+| `401` / `404` from the provider | wrong key, base URL or model ID | check `LLM_*` against [docs/providers.md](https://github.com/occultera/occultera/blob/main/docs/providers.md) |
 | Cost is higher than expected | many tool steps per run, or many runs | lower `max_tool_steps`; one or two AI rounds a day; the watch and the liveness check never call the model |
 
 Compare models with numbers instead of impressions: `python -m app.eval`
-([docs/eval.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/eval.md)).
+([docs/eval.md](https://github.com/occultera/occultera/blob/main/docs/eval.md)).
 
 ## Notifications
 
@@ -170,7 +170,7 @@ Readiness and liveness never depend on Wazuh. A pod that is ready while Wazuh is
 
 Open an issue with the version (About page), how it is deployed, the request ID, and the relevant log lines.
 Remove host names, IP addresses and tokens first. Security problems go privately through
-[GitHub security advisories](https://github.com/dururustem68/wazuh-daily-triage/security/advisories/new).
+[GitHub security advisories](https://github.com/occultera/occultera/security/advisories/new).
 
 *Applies to 0.11.1 · reviewed 2026-11-12*
 

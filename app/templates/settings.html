@@ -156,7 +156,7 @@
 
   <h3>{{ _('bk.import') }}</h3>
   <form class="sform" data-backup-import="/api/e/{{ env.id }}/backup/import">
-    <div class="frow"><input type="file" name="file" accept=".wdtbak" required>
+    <div class="frow"><input type="file" name="file" accept=".occbak" required>
       <label>{{ _('bk.pass') }} <input type="password" name="passphrase" autocomplete="off" required></label></div>
     <div class="frow"><label class="chk"><input type="radio" name="mode" value="missing" checked> {{ _('bk.mode_missing') }}</label>
       <label class="chk"><input type="radio" name="mode" value="overwrite"> {{ _('bk.mode_overwrite') }}</label></div>

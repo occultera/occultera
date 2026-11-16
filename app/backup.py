@@ -40,8 +40,8 @@ if TYPE_CHECKING:
 
 log = logging.getLogger("wdt.backup")
 
-MAGIC = b"WDTBAK1\n"
-FORMAT = "wazuh-daily-triage-backup"
+MAGIC = b"OCCBAK1\n"
+FORMAT = "occultera-backup"
 MIN_PASSPHRASE = 12
 MAX_ARCHIVE = 200 * 1024 * 1024
 MAX_RUNS = 2000
@@ -80,7 +80,7 @@ def decrypt(blob: bytes, passphrase: str) -> dict:
     if len(blob) > MAX_ARCHIVE:
         raise BackupError("the archive is too large")
     if not blob.startswith(MAGIC) or len(blob) < len(MAGIC) + 28 + 16:
-        raise BackupError("this is not a wazuh-daily-triage backup archive")
+        raise BackupError("this is not an Occultera backup archive")
     body = blob[len(MAGIC):]
     salt, nonce, ct = body[:16], body[16:28], body[28:]
     try:
@@ -211,7 +211,7 @@ class BackupMixin:
         rt = self.get(env_id)
         archive = await self.backup_build(env_id, include_runs)
         blob = encrypt(archive, passphrase)
-        name = f"wdt-{env_id}-{datetime.now(UTC):%Y%m%dT%H%M%SZ}.wdtbak"
+        name = f"occultera-{env_id}-{datetime.now(UTC):%Y%m%dT%H%M%SZ}.occbak"
         s3_url, s3_err = None, None
         cfg = self.backup_cfg()
         if to_s3:

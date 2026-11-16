@@ -1,9 +1,9 @@
-# Default values for wazuh-daily-triage.
+# Default values for the Occultera chart.
 # Everything secret goes under `secret:` (a Kubernetes Secret); the application
 # reads them through ${VAR} placeholders in `config.environments`.
 
 image:
-  repository: ghcr.io/dururustem68/wazuh-daily-triage
+  repository: ghcr.io/occultera/occultera
   tag: ""                 # defaults to .Chart.AppVersion
   pullPolicy: IfNotPresent
 

@@ -65,8 +65,8 @@ Without the Wazuh API the alert analysis is unaffected; the report's agent, daem
 
 The test suite uses the mock provider. How well a particular model does on **your** alerts is not something the
 project can test for you; measure it with `python -m app.eval`
-([docs/eval.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/eval.md)). Model names and
-parameter quirks: [docs/providers.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/providers.md).
+([docs/eval.md](https://github.com/occultera/occultera/blob/main/docs/eval.md)). Model names and
+parameter quirks: [docs/providers.md](https://github.com/occultera/occultera/blob/main/docs/providers.md).
 
 ## Integrations
 
@@ -100,7 +100,7 @@ parameter quirks: [docs/providers.md](https://github.com/dururustem68/wazuh-dail
 - **The audit trail** is rotated at 20 MB with three generations, and lives on the application's volume.
 
 The repository copy of this matrix:
-[docs/compatibility.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/compatibility.md).
+[docs/compatibility.md](https://github.com/occultera/occultera/blob/main/docs/compatibility.md).
 
 *Applies to 0.11.0 · reviewed 2026-11-11*
 

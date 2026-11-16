@@ -33,7 +33,7 @@ POST _plugins/_ism/remove/daily-triage-*
 ## Export
 
 **Settings → Backup → Create and download.** You choose a passphrase (at least 12 characters); the
-archive (`wdt-<env>-<time>.wdtbak`) is compressed and encrypted with scrypt + AES-256-GCM. Without the
+archive (`occultera-<env>-<time>.occbak`) is compressed and encrypted with scrypt + AES-256-GCM. Without the
 passphrase it cannot be opened, and a damaged or modified file is refused. The archive contains no
 credentials. The route needs the `admin` permission and every export is written to the audit trail.
 
@@ -46,7 +46,7 @@ Define a bucket in the configuration (never in the UI) and the export form offer
 | `BACKUP_S3_ENDPOINT` | `https://s3.eu-central-1.amazonaws.com`, a MinIO/Ceph/Hetzner endpoint … |
 | `BACKUP_S3_BUCKET`, `BACKUP_S3_REGION` | bucket and region (`us-east-1` when the provider has none) |
 | `BACKUP_S3_ACCESS_KEY`, `BACKUP_S3_SECRET_KEY` | a key that may only `PutObject` into that bucket |
-| `BACKUP_S3_PREFIX` | key prefix, default `wazuh-daily-triage` |
+| `BACKUP_S3_PREFIX` | key prefix, default `occultera` |
 | `BACKUP_S3_PATH_STYLE` | `true` (default) for `https://host/bucket/key`, `false` for `https://bucket.host/key` |
 | `BACKUP_PASSPHRASE` | needed only for **automatic** backups |
 

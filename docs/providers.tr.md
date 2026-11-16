@@ -1,6 +1,6 @@
 # Yapay zekâ sağlayıcıları
 
-Wazuh Daily Triage iki API türüyle konuşur: **Anthropic Messages** (`LLM_PROVIDER=anthropic`) ve
+Occultera iki API türüyle konuşur: **Anthropic Messages** (`LLM_PROVIDER=anthropic`) ve
 **OpenAI Chat Completions** (`LLM_PROVIDER=openai`, uyumlu her uç nokta). Model **araç kullanımını (tool /
 function calling)** desteklemelidir; ajan incelemesini araçlarla yürütür.
 

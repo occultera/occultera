@@ -11,6 +11,12 @@
   </div>
 </div>
 
+<div class="card brand-card">
+  <img src="/static/logo.svg" alt="" width="88" height="88">
+  <div><div class="brand-slogan">Find the signal in the dark.</div>
+    <div class="muted">{{ _('ab.formerly') }} <a href="{{ links.name }}" target="_blank" rel="noopener">{{ _('ab.name_story') }}</a></div></div>
+</div>
+
 <div class="card table-card">
   <h2 class="pad">{{ _('ab.features') }}</h2>
   <div class="scrollx"><table class="tbl about-tbl">
@@ -24,6 +30,7 @@
     <tr><td>{{ _('ab.f.liveness') }}</td>{% for r in rows %}<td><span class="pill {{ 'green' if r.liveness else 'gray' }}">{{ _('ab.on') if r.liveness else _('ab.off') }}</span></td>{% endfor %}<td><a href="{{ links.features }}" target="_blank" rel="noopener">{{ _('ab.howto') }}</a></td></tr>
     <tr><td>{{ _('ab.f.notify') }}</td>{% for r in rows %}<td>{% for c in r.notify %}<span class="pill blue">{{ c }}</span> {% else %}<span class="pill gray">{{ _('ab.off') }}</span>{% endfor %}</td>{% endfor %}<td><a href="{{ links.config }}" target="_blank" rel="noopener">{{ _('ab.howto') }}</a></td></tr>
     <tr><td>{{ _('ab.f.incident') }}</td>{% for r in rows %}<td>{% for c in r.incident %}<span class="pill blue">{{ c }}</span> {% else %}<span class="pill gray">{{ _('ab.draft_only') }}</span>{% endfor %}</td>{% endfor %}<td><a href="{{ links.features }}" target="_blank" rel="noopener">{{ _('ab.howto') }}</a></td></tr>
+    <tr><td>MITRE ATT&amp;CK</td>{% for r in rows %}<td><a href="/e/{{ r.env.id }}/attack">{{ _('ab.open') }}</a></td>{% endfor %}<td><a href="{{ links.guide }}" target="_blank" rel="noopener">{{ _('ab.howto') }}</a></td></tr>
     <tr><td>MCP</td>{% for r in rows %}<td><span class="pill {{ 'green' if r.mcp else 'gray' }}">{{ _('ab.on') if r.mcp else _('ab.off') }}</span></td>{% endfor %}<td><a href="{{ links.mcp }}" target="_blank" rel="noopener">{{ _('ab.howto') }}</a></td></tr>
   </table></div>
 </div>

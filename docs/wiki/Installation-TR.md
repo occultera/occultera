@@ -13,7 +13,7 @@ denetlenmiş bir rapora kadar adım adım ilk çalıştırma için [Başlangıç
 ## Başlamadan önce
 
 1. **Wazuh erişimi.** Indexer (9200) zorunlu; Wazuh API (55000) isteğe bağlıdır ama ajan, servis, kural ve
-   logtest kontrollerini açar. [docs/permissions.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/permissions.md) sayfasındaki **salt okunur** hesapları
+   logtest kontrollerini açar. [docs/permissions.md](https://github.com/occultera/occultera/blob/main/docs/permissions.md) sayfasındaki **salt okunur** hesapları
    oluşturun — admin kimlik bilgisi kullanmayın.
 2. **Model.** Anthropic anahtarı, OpenAI uyumlu herhangi bir uç nokta veya yerel model (Ollama, vLLM, LM Studio).
    `LLM_PROVIDER=mock` yalnızca demo içindir.
@@ -27,8 +27,8 @@ denetlenmiş bir rapora kadar adım adım ilk çalıştırma için [Başlangıç
 ### A1. Demo (Wazuh ve model gerekmez)
 
 ```sh
-git clone https://github.com/dururustem68/wazuh-daily-triage.git
-cd wazuh-daily-triage
+git clone https://github.com/occultera/occultera.git
+cd occultera
 cp .env.demo .env
 docker compose up -d --build
 ```
@@ -105,7 +105,7 @@ Bildirimlerin kendi **Bildirim testi** düğmesi vardır.
 > parçası sayar.
 
 > **Üretimde imajı sabitleyin.** `docker-compose.yml` demoyu kolaylaştırmak için `:latest` kullanır. Üretimde
-> `ghcr.io/dururustem68/wazuh-daily-triage:0.11.1` (veya kendi digest'inizi) yazın; böylece yükseltme bilinçli
+> `ghcr.io/occultera/occultera:0.12.0` (veya kendi digest'inizi) yazın; böylece yükseltme bilinçli
 > bir adım olur.
 
 ### A3. Birden çok Wazuh ortamı
@@ -151,7 +151,7 @@ okunur kök dosya sistemi, PVC yok (durum Wazuh Indexer'da), `/healthz` liveness
 ### B1. Helm
 
 ```sh
-helm repo add wazuh-daily-triage https://dururustem68.github.io/wazuh-daily-triage
+helm repo add occultera https://occultera.github.io/occultera
 helm repo update
 ```
 
@@ -171,11 +171,11 @@ app:
 ```
 
 ```sh
-helm install wazuh-daily-triage wazuh-daily-triage/wazuh-daily-triage \
-  --version 0.3.1 -f my-values.yaml
+helm install occultera occultera/occultera \
+  --version 0.4.0 -f my-values.yaml
 ```
 
-Depodan doğrudan: `helm install wazuh-daily-triage ./deploy/helm/wazuh-daily-triage -f my-values.yaml`.
+Depodan doğrudan: `helm install occultera ./deploy/helm/occultera -f my-values.yaml`.
 
 `secret:` altındaki her anahtar podda ortam değişkenine dönüşür; `VIEWER_PASSWORD`, `MCP_TOKEN` ve
 `METRICS_TOKEN` da oraya gider. Gizli olmayan anahtarlar (`AUTH_DISABLED`, `LOG_LEVEL`, `ADMIN_ENVS`, …)
@@ -188,7 +188,7 @@ Depodan doğrudan: `helm install wazuh-daily-triage ./deploy/helm/wazuh-daily-tr
 cp -r deploy/kubernetes/example ~/triage-overlay
 cd ~/triage-overlay
 # depo dışında göreli "../base" çözülmez — sürümü sabitlenmiş uzak base'i gösterin:
-sed -i 's#^  - ../base.*#  - https://github.com/dururustem68/wazuh-daily-triage//deploy/kubernetes/base?ref=v0.11.1#' kustomization.yaml
+sed -i 's#^  - ../base.*#  - https://github.com/occultera/occultera//deploy/kubernetes/base?ref=v0.12.0#' kustomization.yaml
 cp secret.env.example secret.env
 vi secret.env environments.yaml context.md
 kubectl apply -k .
@@ -198,7 +198,7 @@ kubectl -n wazuh-daily-triage exec deploy/wazuh-daily-triage -- python -m app.ch
 
 `deploy/kubernetes/components/` altındaki isteğe bağlı bileşenler: `networkpolicy`, `ingress-nginx`,
 `ingress-traefik-authentik`, `rbac-readonly`. Ayrıntılar:
-[deploy/kubernetes/README.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/deploy/kubernetes/README.md).
+[deploy/kubernetes/README.md](https://github.com/occultera/occultera/blob/main/deploy/kubernetes/README.md).
 
 > **Yalnızca tek replika.** Zamanlayıcı süreç içinde çalışır; ikinci replika her kontrolü iki kez çalıştırır.
 > Deployment bu yüzden `Recreate` stratejisini kullanır. Ek replikaları yalnızca erişilebilirlik için
@@ -285,7 +285,7 @@ Başarılı açılış; ortamları, zamanlamayı, denetim dosyasını ve güvenl
 `app/security.py` şu durumlarda **açılmayı reddeder**: `WDT_DEMO=true`, eksik veya örnek `APP_PASSWORD`, eksik
 `APP_SECRET`, `VIEWER_PASSWORD`'ın admin parolasıyla aynı olması, `COOKIE_SECURE=false`, bir uç noktada TLS
 doğrulamasının kapatılması veya `rule_deploy.enabled` için kimlik bilgisi eksikliği. İki bilinçli laboratuvar
-istisnası için [docs/security-exceptions.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/security-exceptions.md).
+istisnası için [docs/security-exceptions.md](https://github.com/occultera/occultera/blob/main/docs/security-exceptions.md).
 
 ## Yükseltme ve geri dönüş
 
@@ -302,9 +302,9 @@ docker compose up -d
 docker compose exec triage python -m app.check
 
 # Helm
-helm upgrade wazuh-daily-triage wazuh-daily-triage/wazuh-daily-triage \
-  --version 0.3.1 -f my-values.yaml
-helm rollback wazuh-daily-triage 1     # gerekirse
+helm upgrade occultera occultera/occultera \
+  --version 0.4.0 -f my-values.yaml
+helm rollback occultera 1     # gerekirse
 ```
 
 ### 0.10'a yükseltme
@@ -318,7 +318,7 @@ helm rollback wazuh-daily-triage 1     # gerekirse
 - **Docker Compose**: denetim kaydı `./logs` yerine `audit` adlı volume'da.
 - İlk yedeği alın (**Ayarlar → Yedekleme**) — hatırlatma yükseltme tarihinden itibaren sayılır.
 
-Yükseltmeden önce [CHANGELOG.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/CHANGELOG.md) okuyun: yapılandırma anahtarları zaman zaman değişir.
+Yükseltmeden önce [CHANGELOG.md](https://github.com/occultera/occultera/blob/main/CHANGELOG.md) okuyun: yapılandırma anahtarları zaman zaman değişir.
 Mevcut koşular aranabilir kalır; `run_retention_days` (YAML) yalnızca eski koşu belgelerini siler, bilgi tabanına
 dokunmaz.
 

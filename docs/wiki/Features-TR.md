@@ -29,7 +29,7 @@ rule_deploy:
 ```
 
 Dağıtım kullanıcısının tam RBAC politikası
-[docs/rule-deployment.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/rule-deployment.md)
+[docs/rule-deployment.md](https://github.com/occultera/occultera/blob/main/docs/rule-deployment.md)
 belgesindedir. Her dağıtım ve geri alma denetim kaydına yazılır; `notify.on_rule_deploy: true` ise bildirim de
 gider. **Verify**, dağıtılan kuralın canlı alarmlarda gerçekten tetiklendiğini sonradan kontrol eder.
 
@@ -128,7 +128,7 @@ sources:
 ```
 
 Secret ve configmap asla okunmaz. NetworkPolicy'de çıkış izni vermeyi unutmayın. Bkz.
-[docs/sources.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/sources.md).
+[docs/sources.md](https://github.com/occultera/occultera/blob/main/docs/sources.md).
 
 ## Yapay zekâsız sağlık kontrolleri
 
@@ -218,7 +218,7 @@ kubectl exec -i deploy/wazuh-daily-triage -- python -m app.eval - < cases.yaml
 
 Eval geçmiş pencereleri yeniden oynatır; `expect` vakalarına göre yakalama oranını (recall), `forbid` vakalarına
 göre gürültüyü puanlar. Hiçbir şey yazılmaz. Çalışan bir örnek `config/eval/demo.yaml` dosyasındadır. Bkz.
-[docs/eval.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/eval.md).
+[docs/eval.md](https://github.com/occultera/occultera/blob/main/docs/eval.md).
 
 ## Sorgu koruması
 

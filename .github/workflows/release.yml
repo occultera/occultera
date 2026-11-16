@@ -51,5 +51,5 @@ jobs:
         with:
           image: ghcr.io/${{ github.repository }}:${{ steps.meta.outputs.version }}
           format: spdx-json
-          artifact-name: wazuh-daily-triage-sbom.spdx.json
+          artifact-name: occultera-sbom.spdx.json
           github-token: ${{ secrets.GITHUB_TOKEN }}

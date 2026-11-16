@@ -139,9 +139,9 @@ async def api_mask_preview(request: Request, env_id: str, body: PreviewReq):
 async def api_mask_export(request: Request, env_id: str):
     er = _env(request, env_id)
     st = await _rt(request).env_settings(er, fresh=True)
-    doc = {"format": "wazuh-daily-triage-mask-profile", "version": st.mask.version, **st.mask.content()}
+    doc = {"format": "occultera-mask-profile", "version": st.mask.version, **st.mask.content()}
     return Response(yaml.safe_dump(doc, allow_unicode=True, sort_keys=False), media_type="application/yaml",
-                    headers={"Content-Disposition": f'attachment; filename="mask-profile-{env_id}.yaml"'})
+                    headers={"Content-Disposition": f'attachment; filename="occultera-mask-profile-{env_id}.yaml"'})
 
 
 class MaskImportReq(BaseModel):

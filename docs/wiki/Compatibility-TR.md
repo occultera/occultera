@@ -64,8 +64,8 @@ Wazuh API olmadan alarm analizi etkilenmez; raporun ajan, daemon ve kural bölü
 
 Test paketi mock sağlayıcıyı kullanır. Belirli bir modelin **sizin** alarmlarınızda ne kadar iyi olduğunu proje
 sizin yerinize test edemez; `python -m app.eval` ile ölçün
-([docs/eval.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/eval.md)). Model adları ve
-parametre farkları: [docs/providers.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/providers.md).
+([docs/eval.md](https://github.com/occultera/occultera/blob/main/docs/eval.md)). Model adları ve
+parametre farkları: [docs/providers.md](https://github.com/occultera/occultera/blob/main/docs/providers.md).
 
 ## Entegrasyonlar
 
@@ -100,7 +100,7 @@ parametre farkları: [docs/providers.md](https://github.com/dururustem68/wazuh-d
 - **Denetim izi** 20 MB'ta üç kuşakla döner ve uygulamanın biriminde durur.
 
 Bu matrisin depodaki kopyası:
-[docs/compatibility.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/compatibility.md).
+[docs/compatibility.md](https://github.com/occultera/occultera/blob/main/docs/compatibility.md).
 
 *0.11.0 için geçerlidir · gözden geçirme: 2026-11-11*
 

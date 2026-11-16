@@ -56,8 +56,8 @@ Hayır. Bağımsızdır ve Wazuh, Inc. ile bağlantısı yoktur. Lisans AGPL-3.0
 üzerinden kullanıcılara sunuyorsanız kaynak kodunu da sunmanız gerekir.
 
 **Nereden yardım ister ya da hata bildiririm?**
-[GitHub kayıtları](https://github.com/dururustem68/wazuh-daily-triage/issues). Güvenlik sorunları
-[güvenlik bildirimleri](https://github.com/dururustem68/wazuh-daily-triage/security/advisories/new) üzerinden
+[GitHub kayıtları](https://github.com/occultera/occultera/issues). Güvenlik sorunları
+[güvenlik bildirimleri](https://github.com/occultera/occultera/security/advisories/new) üzerinden
 özel olarak iletilir.
 
 ## Sözlük

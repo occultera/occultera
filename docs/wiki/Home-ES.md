@@ -1,4 +1,4 @@
-# Wazuh Daily Triage — Wiki (Español)
+# Occultera — Wiki (Español)
 
 [English](Home) · [Türkçe](Home-TR) · **Español** · [Français](Home-FR)
 
@@ -20,7 +20,7 @@ lo explica y propone qué ajustar. Usted decide; nada cambia en Wazuh sin su apr
 
 ![Panel de guardia](images/dashboard.png)
 
-**Versión:** 0.11.1 · **Licencia:** AGPL-3.0-only · **Python:** 3.11–3.15 · **Wazuh:** 4.x
+**Versión:** 0.12.0 · **Licencia:** AGPL-3.0-only · **Python:** 3.11–3.15 · **Wazuh:** 4.x
 
 ## Qué es y qué no es
 
@@ -77,8 +77,8 @@ silencioso retiene todo salvo los eventos críticos. La vigilancia se activa en 
 ## Demo en cinco minutos (sin Wazuh)
 
 ```sh
-git clone https://github.com/dururustem68/wazuh-daily-triage.git
-cd wazuh-daily-triage
+git clone https://github.com/occultera/occultera.git
+cd occultera
 cp .env.demo .env
 docker compose up -d --build
 ```
@@ -117,9 +117,9 @@ Las páginas detalladas del wiki están en inglés y en turco.
 | Ver ejemplos, respuestas rápidas y glosario | [Scenarios](Scenarios), [FAQ](FAQ) |
 | Contribuir | [Development](Development) |
 
-El README del repositorio está también en español: [README.es.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/README.es.md).
-Preguntas y errores: [GitHub issues](https://github.com/dururustem68/wazuh-daily-triage/issues). Problemas de seguridad, en privado:
-[security advisories](https://github.com/dururustem68/wazuh-daily-triage/security/advisories/new).
+El README del repositorio está también en español: [README.es.md](https://github.com/occultera/occultera/blob/main/README.es.md).
+Preguntas y errores: [GitHub issues](https://github.com/occultera/occultera/issues). Problemas de seguridad, en privado:
+[security advisories](https://github.com/occultera/occultera/security/advisories/new).
 
 ---
 

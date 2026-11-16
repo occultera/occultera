@@ -4,19 +4,19 @@
 from __future__ import annotations
 
 EN: dict[str, str] = {
-    "notify.title": "[Wazuh Daily Triage] {env} — CRITICAL", "notify.kind.flag": "Health", "notify.kind.finding": "Finding",
+    "notify.title": "[Occultera] {env} — CRITICAL", "notify.kind.flag": "Health", "notify.kind.finding": "Finding",
     "notify.kind.error": "Run failed", "notify.kind.test": "Test",
-    "notify.test_title": "[Wazuh Daily Triage] {env} — notification test", "notify.test_text": "If you can read this, the channel works.",
-    "notify.summary_title": "[Wazuh Daily Triage] {env} — report: {health}",
+    "notify.test_title": "[Occultera] {env} — notification test", "notify.test_text": "If you can read this, the channel works.",
+    "notify.summary_title": "[Occultera] {env} — report: {health}",
     "notify.sum_counts": "{total} alerts, {high} at level {lvl}+", "notify.sum_findings": "{n} findings: {labels}",
     "notify.sum_inbox": "{n} recommendations waiting for a decision", "notify.sum_ai_error": "AI analysis failed — deterministic report only",
-    "notify.rule_title": "[Wazuh Daily Triage] {env} — rule {state}", "notify.rule_ids": "rules {ids} · {file} · by {by}",
+    "notify.rule_title": "[Occultera] {env} — rule {state}", "notify.rule_ids": "rules {ids} · {file} · by {by}",
     "env.notify_test": "Test notifications", "env.notify_none": "No notification channel configured.",
     "nav.inbox": "Recommendations",
     "live.indexer_down": "Wazuh indexer unreachable: {e}", "live.api_down": "Wazuh API unreachable: {e}",
     "live.query_failed": "Alert query failed: {e}",
-    "live.title_problem": "[Wazuh Daily Triage] {env} — LIVENESS PROBLEM", "live.title_still": "[Wazuh Daily Triage] {env} — still failing",
-    "live.title_ok": "[Wazuh Daily Triage] {env} — recovered", "live.since": "since {t}", "live.lasted": "{text} (lasted {m} min)",
+    "live.title_problem": "[Occultera] {env} — LIVENESS PROBLEM", "live.title_still": "[Occultera] {env} — still failing",
+    "live.title_ok": "[Occultera] {env} — recovered", "live.since": "since {t}", "live.lasted": "{text} (lasted {m} min)",
     "live.ok": "Liveness OK", "live.bad": "Liveness: {n} problem(s)", "live.checked": "checked {t}",
     "dash.urgent_label": "urgent", "dash.q_label": "open questions", "dash.open_all": "all",
     "dash.has_checks": "{n} check(s) to run on a server", "dash.q_title": "Questions waiting for your answer",
@@ -346,19 +346,19 @@ EN: dict[str, str] = {
 }
 
 TR: dict[str, str] = {
-    "notify.title": "[Wazuh Daily Triage] {env} — KRİTİK", "notify.kind.flag": "Sağlık", "notify.kind.finding": "Bulgu",
+    "notify.title": "[Occultera] {env} — KRİTİK", "notify.kind.flag": "Sağlık", "notify.kind.finding": "Bulgu",
     "notify.kind.error": "Koşu başarısız", "notify.kind.test": "Test",
-    "notify.test_title": "[Wazuh Daily Triage] {env} — bildirim testi", "notify.test_text": "Bunu okuyabiliyorsanız kanal çalışıyor.",
-    "notify.summary_title": "[Wazuh Daily Triage] {env} — rapor: {health}",
+    "notify.test_title": "[Occultera] {env} — bildirim testi", "notify.test_text": "Bunu okuyabiliyorsanız kanal çalışıyor.",
+    "notify.summary_title": "[Occultera] {env} — rapor: {health}",
     "notify.sum_counts": "{total} alarm, seviye {lvl}+ {high}", "notify.sum_findings": "{n} bulgu: {labels}",
     "notify.sum_inbox": "{n} öneri karar bekliyor", "notify.sum_ai_error": "Yapay zekâ analizi başarısız — yalnız deterministik rapor",
-    "notify.rule_title": "[Wazuh Daily Triage] {env} — kural: {state}", "notify.rule_ids": "kurallar {ids} · {file} · {by}",
+    "notify.rule_title": "[Occultera] {env} — kural: {state}", "notify.rule_ids": "kurallar {ids} · {file} · {by}",
     "env.notify_test": "Bildirim testi", "env.notify_none": "Yapılandırılmış bildirim kanalı yok.",
     "nav.inbox": "Öneriler",
     "live.indexer_down": "Wazuh indexer'a ulaşılamıyor: {e}", "live.api_down": "Wazuh API'ye ulaşılamıyor: {e}",
     "live.query_failed": "Alarm sorgusu başarısız: {e}",
-    "live.title_problem": "[Wazuh Daily Triage] {env} — CANLILIK SORUNU", "live.title_still": "[Wazuh Daily Triage] {env} — sorun sürüyor",
-    "live.title_ok": "[Wazuh Daily Triage] {env} — düzeldi", "live.since": "{t}'den beri", "live.lasted": "{text} ({m} dk sürdü)",
+    "live.title_problem": "[Occultera] {env} — CANLILIK SORUNU", "live.title_still": "[Occultera] {env} — sorun sürüyor",
+    "live.title_ok": "[Occultera] {env} — düzeldi", "live.since": "{t}'den beri", "live.lasted": "{text} ({m} dk sürdü)",
     "live.ok": "Canlılık OK", "live.bad": "Canlılık: {n} sorun", "live.checked": "son kontrol {t}",
     "dash.urgent_label": "acil", "dash.q_label": "açık soru", "dash.open_all": "tümü",
     "dash.has_checks": "sunucuda çalıştırılacak {n} kontrol", "dash.q_title": "Cevabınızı bekleyen sorular",
@@ -679,19 +679,19 @@ TR: dict[str, str] = {
 }
 
 ES: dict[str, str] = {
-    "notify.title": "[Wazuh Daily Triage] {env} — CRÍTICO", "notify.kind.flag": "Salud", "notify.kind.finding": "Hallazgo",
+    "notify.title": "[Occultera] {env} — CRÍTICO", "notify.kind.flag": "Salud", "notify.kind.finding": "Hallazgo",
     "notify.kind.error": "Ejecución fallida", "notify.kind.test": "Prueba",
-    "notify.test_title": "[Wazuh Daily Triage] {env} — prueba de notificación", "notify.test_text": "Si puedes leer esto, el canal funciona.",
-    "notify.summary_title": "[Wazuh Daily Triage] {env} — informe: {health}",
+    "notify.test_title": "[Occultera] {env} — prueba de notificación", "notify.test_text": "Si puedes leer esto, el canal funciona.",
+    "notify.summary_title": "[Occultera] {env} — informe: {health}",
     "notify.sum_counts": "{total} alertas, {high} de nivel {lvl}+", "notify.sum_findings": "{n} hallazgos: {labels}",
     "notify.sum_inbox": "{n} recomendaciones esperando decisión", "notify.sum_ai_error": "El análisis de IA falló — solo informe determinista",
-    "notify.rule_title": "[Wazuh Daily Triage] {env} — regla {state}", "notify.rule_ids": "reglas {ids} · {file} · por {by}",
+    "notify.rule_title": "[Occultera] {env} — regla {state}", "notify.rule_ids": "reglas {ids} · {file} · por {by}",
     "env.notify_test": "Probar notificaciones", "env.notify_none": "No hay ningún canal de notificación configurado.",
     "nav.inbox": "Recomendaciones",
     "live.indexer_down": "Índice de Wazuh inaccesible: {e}", "live.api_down": "API de Wazuh inaccesible: {e}",
     "live.query_failed": "La consulta de alertas falló: {e}",
-    "live.title_problem": "[Wazuh Daily Triage] {env} — PROBLEMA DE VITALIDAD", "live.title_still": "[Wazuh Daily Triage] {env} — sigue fallando",
-    "live.title_ok": "[Wazuh Daily Triage] {env} — recuperado", "live.since": "desde {t}", "live.lasted": "{text} (duró {m} min)",
+    "live.title_problem": "[Occultera] {env} — PROBLEMA DE VITALIDAD", "live.title_still": "[Occultera] {env} — sigue fallando",
+    "live.title_ok": "[Occultera] {env} — recuperado", "live.since": "desde {t}", "live.lasted": "{text} (duró {m} min)",
     "live.ok": "Vitalidad OK", "live.bad": "Vitalidad: {n} problema(s)", "live.checked": "comprobado {t}",
     "dash.urgent_label": "urgente", "dash.q_label": "preguntas abiertas", "dash.open_all": "todo",
     "dash.has_checks": "{n} comprobación(es) para ejecutar en un servidor", "dash.q_title": "Preguntas pendientes de tu respuesta",
@@ -1012,19 +1012,19 @@ ES: dict[str, str] = {
 }
 
 DE: dict[str, str] = {
-    "notify.title": "[Wazuh Daily Triage] {env} — KRITISCH", "notify.kind.flag": "Gesundheit", "notify.kind.finding": "Fund",
+    "notify.title": "[Occultera] {env} — KRITISCH", "notify.kind.flag": "Gesundheit", "notify.kind.finding": "Fund",
     "notify.kind.error": "Lauf fehlgeschlagen", "notify.kind.test": "Test",
-    "notify.test_title": "[Wazuh Daily Triage] {env} — Benachrichtigungstest", "notify.test_text": "Wenn du das lesen kannst, funktioniert der Kanal.",
-    "notify.summary_title": "[Wazuh Daily Triage] {env} — Bericht: {health}",
+    "notify.test_title": "[Occultera] {env} — Benachrichtigungstest", "notify.test_text": "Wenn du das lesen kannst, funktioniert der Kanal.",
+    "notify.summary_title": "[Occultera] {env} — Bericht: {health}",
     "notify.sum_counts": "{total} Alarme, {high} ab Stufe {lvl}+", "notify.sum_findings": "{n} Funde: {labels}",
     "notify.sum_inbox": "{n} Empfehlungen warten auf Entscheidung", "notify.sum_ai_error": "KI-Analyse fehlgeschlagen — nur deterministischer Bericht",
-    "notify.rule_title": "[Wazuh Daily Triage] {env} — Regel {state}", "notify.rule_ids": "Regeln {ids} · {file} · von {by}",
+    "notify.rule_title": "[Occultera] {env} — Regel {state}", "notify.rule_ids": "Regeln {ids} · {file} · von {by}",
     "env.notify_test": "Benachrichtigungen testen", "env.notify_none": "Kein Benachrichtigungskanal konfiguriert.",
     "nav.inbox": "Empfehlungen",
     "live.indexer_down": "Wazuh-Indexer nicht erreichbar: {e}", "live.api_down": "Wazuh-API nicht erreichbar: {e}",
     "live.query_failed": "Alarmabfrage fehlgeschlagen: {e}",
-    "live.title_problem": "[Wazuh Daily Triage] {env} — LIVE-PROBLEM", "live.title_still": "[Wazuh Daily Triage] {env} — weiterhin gestört",
-    "live.title_ok": "[Wazuh Daily Triage] {env} — erholt", "live.since": "seit {t}", "live.lasted": "{text} (dauerte {m} min)",
+    "live.title_problem": "[Occultera] {env} — LIVE-PROBLEM", "live.title_still": "[Occultera] {env} — weiterhin gestört",
+    "live.title_ok": "[Occultera] {env} — erholt", "live.since": "seit {t}", "live.lasted": "{text} (dauerte {m} min)",
     "live.ok": "Live-Status OK", "live.bad": "Live-Status: {n} Problem(e)", "live.checked": "geprüft {t}",
     "dash.urgent_label": "dringend", "dash.q_label": "offene Fragen", "dash.open_all": "alle",
     "dash.has_checks": "{n} Prüfung(en) auf einem Server auszuführen", "dash.q_title": "Fragen, die auf deine Antwort warten",
@@ -1357,6 +1357,10 @@ for _lang, _msgs in _V11.items():
 from .i18n_v111 import EXTRA as _V111  # noqa: E402 - 0.11.1 messages (background jobs)
 
 for _lang, _msgs in _V111.items():
+    CATALOG[_lang].update(_msgs)
+from .i18n_v120 import EXTRA as _V120  # noqa: E402 - 0.12.0 messages (Occultera name, about page)
+
+for _lang, _msgs in _V120.items():
     CATALOG[_lang].update(_msgs)
 LANG_NAMES = {"en": "English", "tr": "Türkçe", "es": "Español", "de": "Deutsch"}
 OUTPUT_LANGUAGE = {"en": "English", "tr": "Turkish", "es": "Spanish", "de": "German"}

@@ -1,9 +1,9 @@
 # Development and contributing
 
 **For:** contributors. The binding rules are in
-[CONTRIBUTING.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/CONTRIBUTING.md); the module map
+[CONTRIBUTING.md](https://github.com/occultera/occultera/blob/main/CONTRIBUTING.md); the module map
 and request flow are in
-[docs/architecture.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/architecture.md).
+[docs/architecture.md](https://github.com/occultera/occultera/blob/main/docs/architecture.md).
 
 ## Ground rules
 
@@ -57,7 +57,7 @@ python -m app.eval cases.yaml --repeat 3 --out results.json
 ```
 
 It reports recall, missed items, noise reported as incidents, tool steps, tokens and time per case
-([docs/eval.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/eval.md)). CI does not run it:
+([docs/eval.md](https://github.com/occultera/occultera/blob/main/docs/eval.md)). CI does not run it:
 it needs a model and your data.
 
 ## Adding things
@@ -66,7 +66,7 @@ it needs a model and your data.
 |---|---|
 | A tool for the model | a handler and a spec in `app/agent/tools.py`; new fields go to the allow-list in `app/query_guard.py`. MCP exposes it automatically. It must be read-only |
 | A data source | a client in `app/sources.py`, registered on the environment runtime, exposed through a tool |
-| A notification channel | configuration and a sender in `app/notify.py` ([docs/notifications.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/notifications.md)) |
+| A notification channel | configuration and a sender in `app/notify.py` ([docs/notifications.md](https://github.com/occultera/occultera/blob/main/docs/notifications.md)) |
 | A model provider | most providers work through the OpenAI-compatible client; a different wire format is a new client in `app/llm/` |
 | A watch trigger | `app/watch.py`; it must decide locally, without a model call |
 
@@ -90,7 +90,7 @@ UI strings are dictionaries in `app/i18n.py` and `app/i18n_v10.py`. Add a dictio
 ## Documentation
 
 - The wiki source is `docs/wiki/` in the main repository; the wiki repository is a copy. Edit there and sync
-  ([docs/wiki/README.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/wiki/README.md)).
+  ([docs/wiki/README.md](https://github.com/occultera/occultera/blob/main/docs/wiki/README.md)).
 - Every page has an English and a Turkish version and is listed in `_Sidebar.md`.
 - A page states who it is for, gives commands that were run against the stated version, and ends with the
   version and review date.

@@ -64,13 +64,13 @@ async def lifespan(app: FastAPI):
                 log.exception("demo: could not create the sample data")
     if os.environ.get("WDT_SCHEDULER", "true").lower() not in ("0", "false", "no"):
         rt.start_scheduler()
-    log.info("wazuh-daily-triage %s started — %d environment(s)%s", __version__, len(settings.environments),
+    log.info("occultera %s started — %d environment(s)%s", __version__, len(settings.environments),
              " (DEMO)" if demo else "")
     yield
     await rt.close()
 
 
-app = FastAPI(title="Wazuh Daily Triage", version=__version__, lifespan=lifespan, docs_url=None, redoc_url=None)
+app = FastAPI(title="Occultera", version=__version__, lifespan=lifespan, docs_url=None, redoc_url=None)
 app.mount("/static", StaticFiles(directory=APP_DIR / "static"), name="static")
 
 auth_routes.install(app)

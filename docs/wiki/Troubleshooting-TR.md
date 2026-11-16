@@ -96,11 +96,11 @@ API olmadan alarm analizi yine çalışır.
 | *Model rapor teslim etmedi* | model rapor aracını çağırmadan durdu ya da adım sınırına takıldı | `max_tool_steps` değerini yükseltin; daha güçlü bir model deneyin |
 | "output limit reached" notu | cevap belirteç sınırında kesildi | `max_tokens` değerini yükseltin |
 | OpenAI akıl yürütme modelinden `400` | parametre adları farklı | `LLM_TOKEN_PARAM=max_completion_tokens`, `LLM_TEMPERATURE=none` |
-| Sağlayıcıdan `401` / `404` | yanlış anahtar, temel adres ya da model kimliği | `LLM_*` değerlerini [docs/providers.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/providers.md) ile karşılaştırın |
+| Sağlayıcıdan `401` / `404` | yanlış anahtar, temel adres ya da model kimliği | `LLM_*` değerlerini [docs/providers.md](https://github.com/occultera/occultera/blob/main/docs/providers.md) ile karşılaştırın |
 | Maliyet beklenenden yüksek | koşu başına çok araç adımı ya da çok koşu | `max_tool_steps` değerini düşürün; günde bir ya da iki AI turu; nöbet ve canlılık kontrolü modeli hiç çağırmaz |
 
 Modelleri izlenimle değil sayıyla karşılaştırın: `python -m app.eval`
-([docs/eval.md](https://github.com/dururustem68/wazuh-daily-triage/blob/main/docs/eval.md)).
+([docs/eval.md](https://github.com/occultera/occultera/blob/main/docs/eval.md)).
 
 ## Bildirimler
 
@@ -169,7 +169,7 @@ davranıştır.
 
 Sürümü (Hakkında sayfası), kurulum biçimini, istek kimliğini ve ilgili log satırlarını içeren bir kayıt açın.
 Önce sunucu adlarını, IP adreslerini ve belirteçleri çıkarın. Güvenlik sorunları
-[GitHub güvenlik bildirimleri](https://github.com/dururustem68/wazuh-daily-triage/security/advisories/new)
+[GitHub güvenlik bildirimleri](https://github.com/occultera/occultera/security/advisories/new)
 üzerinden özel olarak iletilir.
 
 *0.11.1 için geçerlidir · gözden geçirme: 2026-11-12*

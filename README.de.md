@@ -1,4 +1,8 @@
-# Wazuh Daily Triage
+<p align="center"><img src="docs/assets/occultera-lockup.svg" alt="Occultera — Find the signal in the dark" width="560"></p>
+
+# Occultera
+
+*Find the signal in the dark.* Früher **wazuh-daily-triage** — [warum der neue Name](https://github.com/occultera/occultera/wiki/Name-and-Logo).
 
 **Ein Bereitschaftsbegleiter für das SIEM [Wazuh](https://wazuh.com).** Eine regelbasierte Wache meldet
 innerhalb von Minuten, wenn etwas Dringendes passiert, ohne eine KI aufzurufen. Ein- oder zweimal am Tag prüft
@@ -11,9 +15,9 @@ Bringen Sie Ihr eigenes Modell mit: Anthropic, OpenAI, Azure OpenAI oder jeden O
 personenbezogene Daten werden maskiert, bevor sie das Modell erreichen.
 
 [English](README.md) · [Türkçe](README.tr.md) · [Deutsch](README.de.md) · [Español](README.es.md) ·
-**[Wiki](https://github.com/dururustem68/wazuh-daily-triage/wiki)** ·
-[Erste Schritte](https://github.com/dururustem68/wazuh-daily-triage/wiki/Getting-Started) ·
-[Sicherheitsmodell](https://github.com/dururustem68/wazuh-daily-triage/wiki/Security-Model) ·
+**[Wiki](https://github.com/occultera/occultera/wiki)** ·
+[Erste Schritte](https://github.com/occultera/occultera/wiki/Getting-Started) ·
+[Sicherheitsmodell](https://github.com/occultera/occultera/wiki/Security-Model) ·
 [Änderungsprotokoll](CHANGELOG.md)
 
 ![Dashboard](docs/screenshot-dashboard.png)
@@ -70,7 +74,7 @@ heißt nicht, dass die Regel funktioniert“, Stufe senken statt stummschalten.
 - **Mehrere Umgebungen, mehrere Sprachen** (Englisch, Türkisch, Spanisch, Deutsch); Docker Compose oder
   Kubernetes.
 
-Jede Funktion ist im [Wiki](https://github.com/dururustem68/wazuh-daily-triage/wiki) beschrieben (Englisch und
+Jede Funktion ist im [Wiki](https://github.com/occultera/occultera/wiki) beschrieben (Englisch und
 Türkisch).
 
 ## Schnellstart
@@ -78,7 +82,7 @@ Türkisch).
 ### Demo ausprobieren (weder Wazuh noch Modell nötig)
 
 ```sh
-git clone https://github.com/dururustem68/wazuh-daily-triage.git && cd wazuh-daily-triage
+git clone https://github.com/occultera/occultera.git && cd occultera
 cp .env.demo .env
 docker compose up -d --build
 # http://127.0.0.1:8080 öffnen und anmelden mit: demo-password-change-me
@@ -104,15 +108,15 @@ Wache und wartenden Vorschlägen.
 3. Klicken Sie auf **Jetzt prüfen** und kontrollieren Sie den ersten Bericht.
 
 Die Schritt-für-Schritt-Fassung mit erwarteten Ergebnissen und häufigen Fehlern:
-**[Getting started](https://github.com/dururustem68/wazuh-daily-triage/wiki/Getting-Started)**. Gehen Sie vor
+**[Getting started](https://github.com/occultera/occultera/wiki/Getting-Started)**. Gehen Sie vor
 dem Produktivbetrieb die
-[Sicherheits-Checkliste](https://github.com/dururustem68/wazuh-daily-triage/wiki/Security-Checklist) durch.
+[Sicherheits-Checkliste](https://github.com/occultera/occultera/wiki/Security-Checklist) durch.
 
 ### Kubernetes
 
-Ein [Helm-Chart](deploy/helm/wazuh-daily-triage) und eine [Kustomize-Basis](deploy/kubernetes/README.md) mit
+Ein [Helm-Chart](deploy/helm/occultera) und eine [Kustomize-Basis](deploy/kubernetes/README.md) mit
 optionalen Komponenten: ein Replikat, kein Root, schreibgeschütztes Dateisystem, kein PVC. Leitfaden für den
-Produktivbetrieb: [Kubernetes](https://github.com/dururustem68/wazuh-daily-triage/wiki/Kubernetes).
+Produktivbetrieb: [Kubernetes](https://github.com/occultera/occultera/wiki/Kubernetes).
 
 ## KI-Anbieter
 
@@ -145,25 +149,25 @@ etwa ein lokales für Daten, die Ihr Netz nicht verlassen dürfen. Modellnamen u
   unsicheren Cookies und abgeschalteter TLS-Prüfung. Zustandsändernde Anfragen werden in ein Audit-Protokoll mit
   Hash-Kette geschrieben.
 
-Details: [Security model](https://github.com/dururustem68/wazuh-daily-triage/wiki/Security-Model) ·
-[Privacy](https://github.com/dururustem68/wazuh-daily-triage/wiki/Privacy) ·
+Details: [Security model](https://github.com/occultera/occultera/wiki/Security-Model) ·
+[Privacy](https://github.com/occultera/occultera/wiki/Privacy) ·
 [docs/security-exceptions.md](docs/security-exceptions.md). Schwachstellen bitte vertraulich melden:
 [SECURITY.md](SECURITY.md).
 
 ## Dokumentation
 
-Dieses README ist die Kurzfassung. Das [Wiki](https://github.com/dururustem68/wazuh-daily-triage/wiki) ist das
+Dieses README ist die Kurzfassung. Das [Wiki](https://github.com/occultera/occultera/wiki) ist das
 Handbuch (Englisch und Türkisch); der Ordner `docs/` enthält die Referenzdokumente.
 
 | Thema | Wo |
 |---|---|
-| Von der Demo zum ersten echten Bericht | [Getting started](https://github.com/dururustem68/wazuh-daily-triage/wiki/Getting-Started) |
-| Installation und Konfiguration | [Installation](https://github.com/dururustem68/wazuh-daily-triage/wiki/Installation), [Configuration](https://github.com/dururustem68/wazuh-daily-triage/wiki/Configuration), [Kubernetes](https://github.com/dururustem68/wazuh-daily-triage/wiki/Kubernetes) |
-| Tägliche Nutzung | [User guide](https://github.com/dururustem68/wazuh-daily-triage/wiki/User-Guide), [Rule lifecycle](https://github.com/dururustem68/wazuh-daily-triage/wiki/Rule-Lifecycle), [Watch](https://github.com/dururustem68/wazuh-daily-triage/wiki/Watch), [MCP](https://github.com/dururustem68/wazuh-daily-triage/wiki/MCP) |
-| Sicherheit und Datenschutz | [Security model](https://github.com/dururustem68/wazuh-daily-triage/wiki/Security-Model), [Privacy](https://github.com/dururustem68/wazuh-daily-triage/wiki/Privacy), [Security checklist](https://github.com/dururustem68/wazuh-daily-triage/wiki/Security-Checklist) |
-| Betrieb | [Troubleshooting](https://github.com/dururustem68/wazuh-daily-triage/wiki/Troubleshooting), [Backup](https://github.com/dururustem68/wazuh-daily-triage/wiki/Backup), [Upgrade](https://github.com/dururustem68/wazuh-daily-triage/wiki/Upgrade) |
-| Versionen und Grenzen | [Compatibility](https://github.com/dururustem68/wazuh-daily-triage/wiki/Compatibility) |
-| Beispiele, FAQ, Glossar | [Scenarios](https://github.com/dururustem68/wazuh-daily-triage/wiki/Scenarios), [FAQ](https://github.com/dururustem68/wazuh-daily-triage/wiki/FAQ) |
+| Von der Demo zum ersten echten Bericht | [Getting started](https://github.com/occultera/occultera/wiki/Getting-Started) |
+| Installation und Konfiguration | [Installation](https://github.com/occultera/occultera/wiki/Installation), [Configuration](https://github.com/occultera/occultera/wiki/Configuration), [Kubernetes](https://github.com/occultera/occultera/wiki/Kubernetes) |
+| Tägliche Nutzung | [User guide](https://github.com/occultera/occultera/wiki/User-Guide), [Rule lifecycle](https://github.com/occultera/occultera/wiki/Rule-Lifecycle), [Watch](https://github.com/occultera/occultera/wiki/Watch), [MCP](https://github.com/occultera/occultera/wiki/MCP) |
+| Sicherheit und Datenschutz | [Security model](https://github.com/occultera/occultera/wiki/Security-Model), [Privacy](https://github.com/occultera/occultera/wiki/Privacy), [Security checklist](https://github.com/occultera/occultera/wiki/Security-Checklist) |
+| Betrieb | [Troubleshooting](https://github.com/occultera/occultera/wiki/Troubleshooting), [Backup](https://github.com/occultera/occultera/wiki/Backup), [Upgrade](https://github.com/occultera/occultera/wiki/Upgrade) |
+| Versionen und Grenzen | [Compatibility](https://github.com/occultera/occultera/wiki/Compatibility) |
+| Beispiele, FAQ, Glossar | [Scenarios](https://github.com/occultera/occultera/wiki/Scenarios), [FAQ](https://github.com/occultera/occultera/wiki/FAQ) |
 | Referenz | [Berechtigungen](docs/permissions.md), [Regelbereitstellung](docs/rule-deployment.md), [Benachrichtigungen](docs/notifications.md), [Anbieter](docs/providers.md), [Quellen](docs/sources.md), [Architektur](docs/architecture.md), [Eval](docs/eval.md) |
 
 ## Kompatibilität
@@ -175,7 +179,7 @@ Handbuch (Englisch und Türkisch); der Ordner `docs/` enthält die Referenzdokum
 - Python **3.11–3.15**.
 
 Was getestet ist, was erwartet wird und was nicht unterstützt wird:
-[Compatibility](https://github.com/dururustem68/wazuh-daily-triage/wiki/Compatibility).
+[Compatibility](https://github.com/occultera/occultera/wiki/Compatibility).
 
 ## Entwicklung
 
@@ -190,7 +194,7 @@ WDT_DEMO=true APP_PASSWORD=x uvicorn app.main:app --reload
 Die Tests laufen auf einer eingebauten Demo-Engine und brauchen keinen Cluster. Hier stehen keine
 Marketingzahlen: Messen Sie ein Modell an Tagen, die Sie selbst geprüft haben, mit `python -m app.eval`
 ([docs/eval.md](docs/eval.md)). Mehr:
-[Development](https://github.com/dururustem68/wazuh-daily-triage/wiki/Development) ·
+[Development](https://github.com/occultera/occultera/wiki/Development) ·
 [CONTRIBUTING.md](CONTRIBUTING.md) · [ROADMAP.md](ROADMAP.md).
 
 ## Danksagungen

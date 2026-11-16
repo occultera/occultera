@@ -24,7 +24,7 @@ jobs:
           version: v3.15.0
       - name: Publish the chart to the gh-pages Helm repository
         env:
-          PAGES_URL: https://dururustem68.github.io/wazuh-daily-triage
+          PAGES_URL: https://occultera.github.io/occultera
         run: |
           set -euo pipefail
           CHART_DIR=$(ls -d deploy/helm/*/ | head -n1)
