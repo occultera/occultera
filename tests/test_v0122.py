@@ -100,3 +100,117 @@ def test_egress_texts():
     for lang in ("en", "tr", "es", "de"):
         assert CATALOG[lang]["watch.trigger.egress"] and "{wl}" in CATALOG[lang]["watch.ev.egress"]
     assert W.fmt_bytes(999) == "999 B" and W.fmt_bytes(1.5e6) == "1.5 MB" and W.fmt_bytes(12e9) == "12 GB"
+
+
+# ---------------------------------------------------------------- cluster pulse
+from app import pulse as P  # noqa: E402
+
+
+class PulseProm:
+    """Answers the pulse queries by the metric they read; ``fail`` makes one metric raise."""
+
+    def __init__(self, kong=True, empty=False, fail=""):
+        self.kong, self.empty, self.fail = kong, empty, fail
+        self.queries: list[str] = []
+
+    def _rows(self, expr: str) -> list[tuple[dict, float]]:
+        if self.empty:
+            return []
+        if self.fail and self.fail in expr:
+            raise RuntimeError("boom")
+        if expr.startswith("count(kong_http_requests_total)"):
+            return [({}, 120.0)] if self.kong else []
+        if expr.startswith("count(traefik_router_requests_total)"):
+            return [({}, 40.0)]
+        if expr.startswith("count(") and "requests" in expr:
+            return []
+        if "kong_http_requests_total" in expr or "traefik_router_requests_total" in expr:
+            rl = "route" if self.kong else "router"
+            if "sum by (code)" in expr:
+                base = "offset 1d" in expr
+                k = 6 if base else 1
+                return [({"code": "200"}, 100_000.0 * k), ({"code": "403"}, 600.0 * 6 if base else 9_000.0),
+                        ({"code": "502"}, 50.0 * k)]
+            if f"sum by ({rl}, code)" in expr:
+                return [({rl: "auth.sso", "code": "403"}, 8_000.0), ({rl: "auth.sso", "code": "502"}, 30.0),
+                        ({rl: "shop.web", "code": "404"}, 700.0)]
+            if f"topk(8, sum by ({rl})" in expr:
+                return [({rl: "shop.web"}, 700.0), ({rl: "auth.sso"}, 8_030.0)]
+        if "certmanager_certificate_expiration" in expr:
+            return [({"exported_namespace": "shop", "name": "web-tls", "issuer_name": "le"}, 5 * 86400.0),
+                    ({"exported_namespace": "auth", "name": "sso-tls", "issuer_name": "le"}, 60 * 86400.0),
+                    ({"exported_namespace": "ci", "name": "ci-tls", "issuer_name": "le"}, 15 * 86400.0)]
+        if "certmanager_certificate_ready_status" in expr:
+            return [({"exported_namespace": "auth", "name": "sso-tls"}, 1.0)]
+        if expr == "count(up)":
+            return [({}, 50.0)]
+        if expr == "up == 0":
+            return [({"job": "pods", "instance": "198.51.100.7:9100", "namespace": "erp", "pod": "x-1"}, 0.0)]
+        if "container_network_transmit" in expr and expr.startswith("topk(8"):
+            return [({"namespace": "erp", "workload": "export"}, 5e9), ({"namespace": "shop", "workload": "web"}, 1e9)]
+        if "container_network_transmit" in expr and "and on" in expr:
+            return [({"namespace": "erp", "workload": "export"}, 6 * 0.2e9), ({"namespace": "shop", "workload": "web"}, 6 * 1e9)]
+        if "container_network_transmit" in expr:
+            return [({}, 7e9 if "offset" not in expr else 6 * 3e9)]
+        return []
+
+    async def query(self, expr, at=None):
+        self.queries.append(expr)
+        return {"series": [{"labels": lab, "value": str(v)} for lab, v in self._rows(expr)]}
+
+    async def query_range(self, expr, start, end, step):
+        self.queries.append(expr)
+        rows = self._rows(expr) if not self.empty else []
+        return {"series": [{"labels": {}, "points": [["11-16 10:00", "1"], ["11-16 11:00", "3"]]}] if rows or not self.empty else []}
+
+
+async def test_pulse_panels():
+    p = await P.Pulse(PulseProm(), ["kube-system"], NOW).collect()
+    assert p["errors"] == []
+    ig = p["ingress"]
+    assert ig["source"] == "Kong" and ig["cur"]["auth"] == 9_000 and ig["prev"]["auth"] == 600
+    assert ig["status_auth"] == "bad" and ig["rows"][0]["route"] == "auth.sso" and ig["rows"][0]["403"] == 8_000
+    assert ig["rows"][0]["5xx"] == 30
+    ce = p["certs"]
+    assert [r["name"] for r in ce["rows"]] == ["web-tls", "ci-tls", "sso-tls"]
+    assert [r["status"] for r in ce["rows"]] == ["bad", "warn", "bad"] and ce["rows"][2]["ready"] is False
+    assert p["targets"]["down"] == 1 and p["targets"]["total"] == 50 and p["targets"]["status"] == "warn"
+    eg = p["egress"]
+    assert eg["rows"][0]["workload"] == "export" and eg["rows"][0]["status"] == "bad"      # 5 GB vs 0.2 GB a day: 25×
+    assert eg["rows"][1]["status"] == "ok" and eg["spark"] == [1.0, 3.0]
+    assert p["status"] == "bad" and p["dns"] == {"empty": True}
+
+
+async def test_pulse_traefik_empty_and_partial():
+    p = await P.Pulse(PulseProm(kong=False), [], NOW).collect()
+    assert p["ingress"]["source"] == "Traefik" and p["ingress"]["rows"][0]["route"] == "auth.sso"
+    empty = await P.Pulse(PulseProm(empty=True), [], NOW).collect()
+    assert all(empty[k] == {"empty": True} for k in ("egress", "ingress", "secrets", "dns", "cpu", "restarts", "certs",
+                                                     "targets"))
+    assert empty["status"] == "ok" and empty["errors"] == []
+    broken = await P.Pulse(PulseProm(fail="certmanager"), [], NOW).collect()
+    assert broken["errors"] == ["certs"] and "error" in broken["certs"] and broken["targets"]["down"] == 1
+
+
+def test_pulse_rules():
+    assert P.ratio_status(100, 50, floor=500) == "ok"          # small numbers never raise a flag
+    assert P.ratio_status(2_000, 100) == "bad" and P.ratio_status(400, 100) == "warn" and P.ratio_status(200, 100) == "ok"
+    assert P.ratio_status(2_000, 0) == "warn"
+    assert P.cert_status(30) == "ok" and P.cert_status(20) == "warn" and P.cert_status(6) == "bad"
+    assert P.cert_status(90, ready=False) == "bad"
+    assert P.worst("ok", "warn") == "warn" and P.worst("warn", "bad") == "bad" and P.worst() == "ok"
+    assert P.code_class("503") == "5xx" and P.code_class("x") == "other"
+
+
+def test_pulse_page():
+    from fastapi.testclient import TestClient
+
+    from app.main import app
+    with TestClient(app) as c:
+        c.post("/login", data={"password": "pw"})
+        r = c.get("/e/demo/pulse")
+        assert r.status_code == 200
+        assert "Cluster pulse" in r.text and "report-export" in r.text and "sso-example-tls" in r.text
+        assert 'href="/e/demo/pulse"' in c.get("/e/demo/attack").text
+        c.post("/lang", data={"lang": "tr"})
+        assert "Küme nabzı" in c.get("/e/demo/pulse").text

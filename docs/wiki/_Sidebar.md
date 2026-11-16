@@ -21,6 +21,7 @@
 - [User guide: dashboard, ATT&CK](User-Guide)
 - [Rule lifecycle](Rule-Lifecycle)
 - [Watch (urgent alerts)](Watch)
+- [Cluster pulse (Prometheus)](Cluster-Pulse)
 - [MCP server](MCP)
 - [Features](Features)
 

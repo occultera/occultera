@@ -77,6 +77,9 @@ etkisizdir. Eski sürüm yeni veriyle düzgün çalışmazsa yükseltmeden önce
 - **Yeni nöbet tetikleyicisi: olağan dışı dışarı aktarım** (olası veri sızıntısı). Varsayılan olarak kapalı;
   Prometheus kaynağı gerekir. Ayarlar → Nöbet bölümünden açılana kadar hiçbir şey değişmez. Bkz.
   [Nöbet](Watch-TR#olağan-dışı-dışarı-aktarım).
+- **Yeni sayfa: küme nabzı** (Prometheus). Dışarı aktarım, girişte 401/403/5xx, secret okumaları, DNS, CPU
+  sapmaları, yeniden başlatmalar, sertifikalar ve düşük izleme hedefleri. Yalnız `sources.prometheus` tanımlı
+  ortamlarda görünür. Bkz. [Küme nabzı](Cluster-Pulse-TR).
 - Hakkında sayfası: ad ve logonun hikâyesini anlatan kısa bir satır.
 
 ### 0.12.1

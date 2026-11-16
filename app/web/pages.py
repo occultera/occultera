@@ -87,6 +87,23 @@ async def attack_page(request: Request, env_id: str, days: int = 7, tactic: str 
                                                              tactic=tactic))
 
 
+@router.get("/e/{env_id}/pulse", response_class=HTMLResponse)
+async def pulse_page(request: Request, env_id: str):
+    from ..pulse import pulse
+    from ..settingsdoc import EGRESS_EXCLUDE
+    er = _env(request, env_id)
+    prom = (er.sources or {}).get("prometheus")
+    if prom is None and _rt(request).demo:
+        from ..demo_pulse import DemoPrometheus
+        prom = DemoPrometheus()
+    if prom is None:
+        raise HTTPException(404, "no Prometheus source for this environment")
+    st = await _safe(_rt(request).env_settings(er), None, request=request)
+    exclude = st.watch.egress_excluded() if st else list(EGRESS_EXCLUDE)
+    p = await _safe(pulse(er.env.id, prom, exclude), None, request=request)
+    return tpl.TemplateResponse(request, "pulse.html", _ctx(request, er=er, env=er.env, p=p))
+
+
 @router.get("/e/{env_id}", response_class=HTMLResponse)
 async def env_page(request: Request, env_id: str):
     er = _env(request, env_id)

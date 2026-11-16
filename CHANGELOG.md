@@ -16,6 +16,12 @@ All notable changes to this project are documented here. The format follows
   at half the size or more in the last 7 days is kept silent as *recurring* (backups, sync jobs). Cluster plumbing
   namespaces are left out (`egress_exclude_namespaces`; `-` leaves out nothing). Volume only, never content. **Off by
   default**; the checkbox in Settings → Watch needs `sources.prometheus`.
+- **Cluster pulse page** (`/e/<env>/pulse`, menu entry only where `sources.prometheus` is set): security-relevant
+  signals from Prometheus for the last 24 h against the daily average of the six days before — outbound transfer per
+  workload, ingress 401/403/404/5xx and the routes behind them (Kong, Traefik or ingress-nginx), Kubernetes API reads
+  of secrets, DNS volume and NXDOMAIN share, CPU outliers against their own average, restarts and termination
+  reasons, cert-manager certificates (days left, not ready) and scrape targets that are down. Every panel has a
+  fixed-threshold status; a missing metric or a failing query only affects its own panel. Cached for a minute.
 - The AI round may suggest `egress_factor`, `egress_min_mb` and `spike_min_level`; the prompt tells it to check what
   a workload normally sends before calling a transfer a leak.
 

@@ -74,6 +74,9 @@ you took before the upgrade.
 
 - **New watch trigger: unusual outbound transfer** (possible data leak). Off by default; needs a Prometheus
   source. Nothing changes until you turn it on in Settings → Watch. See [Watch](Watch#unusual-outbound-transfer).
+- **New page: cluster pulse** (Prometheus). Outbound transfer, ingress 401/403/5xx, secret reads, DNS, CPU
+  outliers, restarts, certificates and scrape targets that are down. Shown only where `sources.prometheus` is set.
+  See [Cluster pulse](Cluster-Pulse).
 - About page: a short story line about the name and the logo.
 
 ### 0.12.1

@@ -77,6 +77,11 @@ def hourly_chart(hourly, label: str, name: str):
                        height=150, xlabel=_xlabel("24h"))
 
 
+def _fmt_bytes(n) -> str:
+    from ..watch import fmt_bytes
+    return fmt_bytes(float(n or 0))
+
+
 def delta(v):
     """``+12 %`` / ``−8 %`` for a ratio, ``—`` when there is no previous value."""
     if v is None:
@@ -93,4 +98,5 @@ tpl.env.filters["n"] = num
 tpl.env.globals.update(LABEL_COLORS=LABEL_COLORS, USER_STATUSES=USER_STATUSES, HEALTH_COLORS=HEALTH_COLORS,
                        KINDS=list(KNOWLEDGE_KINDS), LANGS=LANG_NAMES, version=__version__, SOURCE_URL=SOURCE_URL,
                        LABELS=LABELS, SEVERITIES=SEVERITIES, chart=charts, volume_chart=volume_chart,
-                       hourly_chart=hourly_chart, delta=delta, attack_url=_attack_url)
+                       hourly_chart=hourly_chart, delta=delta, attack_url=_attack_url,
+                       fmt_bytes=_fmt_bytes)

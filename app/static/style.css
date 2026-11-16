@@ -494,3 +494,15 @@ a.ttag:hover { text-decoration: none; border-color: var(--accent); }
 .brand-card img { flex: none; border-radius: 50%; background: #0A0F1A; }
 .brand-slogan { font-size: 1.15rem; font-weight: 600; margin-bottom: 4px; }
 .brand-story { margin-bottom: 6px; }
+
+/* cluster pulse */
+.ktile.ps-warn::before { background: #f5a524; } .ktile.ps-bad::before { background: var(--red); }
+.ktile.ps-bad .kval { color: var(--red); }
+.pulse-tiles { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+tr.warnrow td { background: var(--amber-bg); }
+td.route { max-width: 420px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--mono, monospace); font-size: 12.5px; }
+.codebar { display: flex; flex-wrap: wrap; gap: 6px 18px; padding: 4px 18px 10px; font-variant-numeric: tabular-nums; }
+.codebar b { font-size: 16px; }
+dl.kv { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; margin: 0 0 10px; }
+dl.kv dt { color: var(--muted); } dl.kv dd { margin: 0; font-variant-numeric: tabular-nums; }
+.tbl.compact td, .tbl.compact th { padding-top: 6px; padding-bottom: 6px; }

@@ -243,7 +243,10 @@ def ctx(request: Request, **kw):
             "storage_lost": [{**x, "env": r.env.id} for r in visible(request)
                              for x in (getattr(r.store, "health", None) or {}).get("lost") or []],
             "ftext": lambda f, context=None: finding_text(f, lang, context),
-            "qtext": lambda q, context=None: question_text(q, lang, context), **kw}
+            "qtext": lambda q, context=None: question_text(q, lang, context),
+            "pulse_ids": {r.env.id for r in visible(request)
+                          if rt.demo or (getattr(r, "sources", None) or {}).get("prometheus")},
+            **kw}
 
 
 def runtime(request: Request) -> Runtime:
