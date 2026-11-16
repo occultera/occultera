@@ -41,7 +41,8 @@ RATE_WARN_X, RATE_BAD_X = 3.0, 10.0
 INGRESS = (("Kong", "kong_http_requests_total", "code", "route"),
            ("Traefik", "traefik_router_requests_total", "code", "router"),
            ("Traefik", "traefik_service_requests_total", "code", "service"),
-           ("ingress-nginx", "nginx_ingress_controller_requests", "status", "ingress"))
+           ("ingress-nginx", "nginx_ingress_controller_requests", "status", "ingress"),
+           ("OpenShift router", "haproxy_backend_http_responses_total", "code", "route"))
 
 
 class Panel(dict):
@@ -166,9 +167,9 @@ class Pulse:
         codes, base, routes, rcodes, s4, s5 = await asyncio.gather(
             self.vec(f"sum by ({cl}) (increase({m}[24h]))"), self.vec(f"sum by ({cl}) (increase({m}{BASE}))"),
             self.vec(f"topk(8, sum by ({rl}) (increase({sel('4..|5..')}[24h])))"),
-            self.vec(f"sum by ({rl}, {cl}) (increase({sel('401|403|404|5..')}[24h])) and on ({rl}) "
+            self.vec(f"sum by ({rl}, {cl}) (increase({sel('401|403|404|4xx|5..')}[24h])) and on ({rl}) "
                      f"topk(8, sum by ({rl}) (increase({sel('4..|5..')}[24h])))"),
-            self.hourly(f"sum(increase({sel('401|403')}[1h]))"),
+            self.hourly(f"sum(increase({sel('401|403|4xx')}[1h]))"),
             self.hourly(f"sum(increase({sel('5..')}[1h]))"))
         if not codes:
             return {"empty": True}
@@ -187,20 +188,25 @@ class Pulse:
                     g["404"] += v
             return g
         cur, prev = group(codes), {k: v / BASE_DAYS for k, v in group(base).items()}
+        # the OpenShift router counts by class only ("4xx"): there is no 401/403, so the 4xx class stands in
+        classes = all(str(lab.get(cl) or "").endswith("xx") for lab, _ in codes)
+        ak = "4xx" if classes else "auth"
         per: dict[str, dict] = {}
         for lab, v in rcodes:
             r = str(lab.get(rl) or "")
             c = str(lab.get(cl) or "")
-            d = per.setdefault(r, {"401": 0, "403": 0, "404": 0, "5xx": 0})
+            d = per.setdefault(r, {"401": 0, "403": 0, "404": 0, "4xx": 0, "5xx": 0})
             if c.startswith("5"):
                 d["5xx"] += v
             else:
                 d[c] = d.get(c, 0) + v
         rows = [{"route": str(lab.get(rl) or ""), "errors": v, **per.get(str(lab.get(rl) or ""), {})}
                 for lab, v in sorted(routes, key=lambda x: -x[1])]
-        st_auth = ratio_status(cur["auth"], prev["auth"], floor=500)
+        st_auth = ratio_status(cur[ak], prev[ak], floor=500)
         st_5xx = ratio_status(cur["5xx"], prev["5xx"], floor=500)
         return {"source": name, "cur": cur, "prev": prev, "rows": rows, "spark_auth": s4, "spark_5xx": s5,
+                "classes_only": classes, "auth": cur[ak], "auth_prev": prev[ak],
+                "auth_label": "pl.k.4xx" if classes else "pl.k.auth",
                 "status_auth": st_auth, "status_5xx": st_5xx, "status": worst(st_auth, st_5xx)}
 
     async def secrets(self) -> dict:

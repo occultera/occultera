@@ -101,8 +101,9 @@ def _event(env_id: str, key: str, trigger: str, severity: str, **kw) -> dict:
 class Scanner:
     """The local rules. Stateless except for what the caller passes in; never writes anything."""
 
-    def __init__(self, env, ix, api, cfg: WatchSettings, lang: str = "en", prom=None):
+    def __init__(self, env, ix, api, cfg: WatchSettings, lang: str = "en", prom=None, clusters: dict | None = None):
         self.env, self.ix, self.api, self.cfg, self.lang, self.prom = env, ix, api, cfg, lang, prom
+        self.clusters = clusters or ({"default": prom} if prom is not None else {})
         self.rules = {str(x) for x in (cfg.rules if cfg.rules is not None else env.watch_rules)}
         self.groups = {str(x) for x in (cfg.groups if cfg.groups is not None else env.watch_groups)}
         self.errors: list[str] = []
@@ -318,9 +319,28 @@ class Scanner:
         and a transfer the same workload already made in the last 7 days is kept silent as *recurring*.
         Volume only, never content: the event says what to check, the AI round and a human decide.
         """
-        cfg = self.cfg
-        if not cfg.on("egress") or self.prom is None:
+        if not self.cfg.on("egress") or not self.clusters:
             return []
+        many = len(self.clusters) > 1
+        out: list[dict] = []
+        for name, prom in self.clusters.items():
+            self.prom = prom
+            try:
+                evs = await self._egress_cluster(frm, to)
+            except Exception as e:  # noqa: BLE001 - one unreachable cluster must not hide the others
+                self.errors.append(f"egress[{name}]: {type(e).__name__}")
+                log.warning("%s: egress on cluster %s failed: %s", self.env.id, name, e)
+                continue
+            for ev in evs:
+                if many:
+                    ev["cluster"] = name
+                    ev["key"] = f"egress:{name}:{ev['workload']}"
+                    ev["title"] = f"[{name}] {ev['title']}"
+                out.append(ev)
+        return out
+
+    async def _egress_cluster(self, frm: datetime, to: datetime) -> list[dict]:
+        cfg = self.cfg
         span = (to - frm).total_seconds()
         if span <= 0:
             return []
@@ -397,8 +417,8 @@ NAME_OK = re.compile(r"[a-z0-9]([a-z0-9.-]*[a-z0-9])?/[a-z0-9]([a-z0-9.-]*[a-z0-
 
 
 def _rx(name: str) -> str:
-    """A Kubernetes name as a literal inside a PromQL regex string (only ``.`` needs escaping)."""
-    return name.replace(".", "\\\\.")
+    """A Kubernetes name as a literal inside a PromQL regex string (only ``.`` needs escaping); ``*`` is a wildcard."""
+    return name.replace(".", "\\\\.").replace("*", ".*")
 
 
 def _num(v) -> float | None:
@@ -485,7 +505,7 @@ def compact_for_ai(ev: dict) -> dict:
     """What the AI round sees of one event (ids and numbers; the sample goes through the masker like all text)."""
     keep = ("id", "trigger", "severity", "title", "rule_ids", "level", "agents", "srcips", "users", "count",
             "first_seen", "last_seen", "baseline", "factor", "successes", "status", "sample", "contributors",
-            "recurring", "workload", "bytes", "baseline_bytes", "peak_7d_bytes")
+            "recurring", "workload", "bytes", "baseline_bytes", "peak_7d_bytes", "cluster")
     return {k: ev[k] for k in keep if ev.get(k) not in (None, "", [])}
 
 
@@ -548,7 +568,8 @@ class WatchMixin:
         if frm >= now:
             return {"enabled": True, "events": 0, "skipped": "clock"}
         known = set(state["disconnected"]) if isinstance(state.get("disconnected"), list) else None
-        sc = Scanner(rt.env, rt.ix, rt.api, cfg, lang, prom=(getattr(rt, "sources", None) or {}).get("prometheus"))
+        from .services import clusters_of
+        sc = Scanner(rt.env, rt.ix, rt.api, cfg, lang, clusters=clusters_of(getattr(rt, "sources", None)))
         found, disconnected = await sc.scan(frm, now, known)
 
         baseline = {str(r) for k in await rt.repo.list_knowledge(kinds=["baseline"], status="active")

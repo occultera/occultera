@@ -81,5 +81,6 @@ class SchedulerMixin:
             await rt.ix.close()
             if rt.api:
                 await rt.api.close()
-            for src in rt.sources.values():
-                await src.close()
+            for key, src in rt.sources.items():
+                if key != "prometheus" or "clusters" not in rt.sources:   # the clusters close the default too
+                    await src.close()

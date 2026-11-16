@@ -130,6 +130,43 @@ sources:
 Secrets and configmaps are never read. Also allow the egress in your NetworkPolicy. See
 [docs/sources.md](https://github.com/occultera/occultera/blob/main/docs/sources.md).
 
+### Several clusters behind one Wazuh
+
+When one Wazuh watches several Kubernetes or OpenShift clusters, give each extra cluster a name. The
+[cluster pulse](Cluster-Pulse) page gets a selector, the watch's outbound-transfer trigger checks every cluster
+(event key `egress:<cluster>:<namespace>/<workload>`) and the AI's `prom_query` / `prom_range` tools take a
+`cluster` argument (`list_environments` lists the names).
+
+```yaml
+sources:
+  prometheus: {name: sfkube, url: "http://prometheus.monitoring:9090"}
+  prometheus_extra:
+    - name: approd                # a-z, 0-9, -; unique
+      url: https://thanos-querier-openshift-monitoring.apps.approd.example.com
+      bearer_token: ${APPROD_THANOS_TOKEN}
+      ca_file: /app/config/approd-ingress-ca.pem   # or verify_tls: false while testing
+```
+
+**OpenShift.** The Thanos Querier route needs a bearer token of a service account with the
+`cluster-monitoring-view` cluster role. On each cluster:
+
+```sh
+oc create serviceaccount occultera-reader -n openshift-monitoring
+oc adm policy add-cluster-role-to-user cluster-monitoring-view -z occultera-reader -n openshift-monitoring
+oc apply -n openshift-monitoring -f - <<'YAML'
+apiVersion: v1
+kind: Secret
+metadata:
+  name: occultera-reader-token
+  annotations: {kubernetes.io/service-account.name: occultera-reader}
+type: kubernetes.io/service-account-token
+YAML
+oc -n openshift-monitoring get secret occultera-reader-token -o jsonpath='{.data.token}' | base64 -d
+```
+
+The OpenShift router counts responses by class only, so the cluster pulse shows 4xx instead of 401/403 there.
+Namespaces matching `openshift-*` are left out of the per-workload panels by default.
+
 ## Health without the AI
 
 - **Liveness.** A check every few minutes, without the LLM. It notifies on a new problem (no alerts, indexer

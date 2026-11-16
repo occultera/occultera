@@ -32,7 +32,7 @@ TUNABLE: dict[str, tuple[float, float]] = {
 SPIKE_EXCLUDE = ("syscheck", "sca", "vulnerability-detector", "rootcheck", "syscollector", "ciscat", "oscap")
 # namespaces whose traffic is cluster plumbing (storage replication, CNI, monitoring, log shipping), not data leaving
 EGRESS_EXCLUDE = ("kube-system", "longhorn-system", "cattle-system", "cattle-fleet-system", "cattle-monitoring-system",
-                  "monitoring", "logging", "calico-system", "tigera-operator", "cert-manager")
+                  "monitoring", "logging", "calico-system", "tigera-operator", "cert-manager", "openshift-*")
 CUSTOM_NAME = re.compile(r"x_[a-z0-9_]{1,24}")
 MAX_CUSTOM = 20
 MAX_PATTERN = 200
@@ -131,7 +131,20 @@ class WatchSettings(BaseModel):
         v = v or {}
         return {k: bool(v.get(k, k not in DEFAULT_OFF)) for k in TRIGGERS}
 
-    @field_validator("rules", "groups", "spike_exclude_groups", "egress_exclude_namespaces", mode="before")
+    @field_validator("egress_exclude_namespaces", mode="before")
+    @classmethod
+    def _ns(cls, v):
+        if v is None:
+            return None
+        if isinstance(v, str):
+            v = re.split(r"[,\s]+", v)
+        out = [str(x).strip() for x in v if str(x).strip()]
+        bad = [x for x in out if not re.fullmatch(r"-|[a-z0-9*][a-z0-9.*-]{0,62}", x)]
+        if bad:
+            raise ValueError(f"invalid namespace: {bad}")
+        return out[:100]
+
+    @field_validator("rules", "groups", "spike_exclude_groups", mode="before")
     @classmethod
     def _list(cls, v):
         if v is None:

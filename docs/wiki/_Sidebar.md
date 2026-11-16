@@ -1,4 +1,4 @@
-**Occultera 0.12.3**
+**Occultera 0.13.0**
 *Find the signal in the dark.*
 
 [English](Home) · [Türkçe](Home-TR) · [Español](Home-ES) · [Français](Home-FR)

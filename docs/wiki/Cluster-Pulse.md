@@ -7,7 +7,8 @@ at the door, who reads secrets, and where the watch is blind. It shows the last 
 of the six days before (the window stays inside a 7-day retention). No AI is involved; every number is a PromQL
 query you can run yourself.
 
-The menu entry appears only for environments with a `sources.prometheus` entry (see [Configuration](Configuration)).
+The menu entry appears only for environments with a `sources.prometheus` or `sources.prometheus_extra` entry (see
+[Features](Features#several-clusters-behind-one-wazuh)); with several clusters a selector at the top switches between them.
 The page is cached for one minute.
 
 ![Cluster pulse](images/pulse.png)
@@ -17,7 +18,7 @@ The page is cached for one minute.
 | Panel | Metric | Why it matters | Flag |
 |---|---|---|---|
 | Outbound transfer | cAdvisor `container_network_transmit_bytes_total`, per namespace and workload | a data leak is mostly volume; the same data as the [watch trigger](Watch#unusual-outbound-transfer) | ≥ 3× (look) or ≥ 10× (act) the daily average, above 1 GB |
-| Ingress | `kong_http_requests_total`, `traefik_router_requests_total`, `traefik_service_requests_total` or `nginx_ingress_controller_requests`, whichever exists | many 401/403 on one route: credential stuffing or scanning; 404/405: path probing; 5xx: a backend that does not answer | 401/403 or 5xx ≥ 3× / 10× the average, above 500 |
+| Ingress | `kong_http_requests_total`, `traefik_router_requests_total`, `traefik_service_requests_total`, `nginx_ingress_controller_requests` or the OpenShift router's `haproxy_backend_http_responses_total` (4xx/5xx classes only), whichever exists | many 401/403 on one route: credential stuffing or scanning; 404/405: path probing; 5xx: a backend that does not answer | 401/403 or 5xx ≥ 3× / 10× the average, above 500 |
 | Kubernetes API: secrets | `apiserver_request_total{resource="secrets"}` | a jump in GET/LIST is reconnaissance or a stolen service-account token | reads ≥ 3× / 10× the average, above 1,000 |
 | DNS | `coredns_dns_responses_total` | volume and NXDOMAIN share against the average: tunnelling or DGA malware | volume ≥ 3×, NXDOMAIN share +15 points, SERVFAIL |
 | CPU against its own average | `container_cpu_usage_seconds_total`, last hour against the 6-day average | sustained CPU far above normal is the classic crypto-miner sign | ≥ 3× its average, above 0.25 cores |

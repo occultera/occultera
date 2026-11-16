@@ -7,7 +7,8 @@ Ortamın Prometheus'undan okunan, güvenlik açısından anlamlı sinyaller sayf
 karşılaştırır (pencere 7 günlük saklama süresinin içinde kalır). Yapay zekâ kullanılmaz; her sayı kendiniz
 çalıştırabileceğiniz bir PromQL sorgusudur.
 
-Menü girişi yalnız `sources.prometheus` tanımlı ortamlarda görünür (bkz. [Yapılandırma](Configuration-TR)). Sayfa
+Menü girişi yalnız `sources.prometheus` ya da `sources.prometheus_extra` tanımlı ortamlarda görünür (bkz.
+[Özellikler](Features-TR#tek-wazuh-arkasında-birden-çok-küme)); birden çok küme varsa üstteki seçici aralarında geçiş yapar. Sayfa
 bir dakika önbellekte tutulur.
 
 ![Küme nabzı](images/pulse.png)
@@ -17,7 +18,7 @@ bir dakika önbellekte tutulur.
 | Panel | Metrik | Neden önemli | İşaret |
 |---|---|---|---|
 | Dışarı aktarım | cAdvisor `container_network_transmit_bytes_total`, namespace ve iş yükü başına | bir veri sızıntısı çoğunlukla hacimdir; [nöbet tetikleyicisiyle](Watch-TR#olağan-dışı-dışarı-aktarım) aynı veri | günlük ortalamanın ≥ 3 katı (bak) ya da ≥ 10 katı (müdahale), 1 GB üstü |
-| Giriş | `kong_http_requests_total`, `traefik_router_requests_total`, `traefik_service_requests_total` ya da `nginx_ingress_controller_requests`, hangisi varsa | bir rotada çok 401/403: parola deneme ya da tarama; 404/405: yol yoklama; 5xx: cevap vermeyen arka uç | 401/403 ya da 5xx ortalamanın ≥ 3 / 10 katı, 500 üstü |
+| Giriş | `kong_http_requests_total`, `traefik_router_requests_total`, `traefik_service_requests_total`, `nginx_ingress_controller_requests` ya da OpenShift router'ın `haproxy_backend_http_responses_total` metriği (yalnız 4xx/5xx sınıfları), hangisi varsa | bir rotada çok 401/403: parola deneme ya da tarama; 404/405: yol yoklama; 5xx: cevap vermeyen arka uç | 401/403 ya da 5xx ortalamanın ≥ 3 / 10 katı, 500 üstü |
 | Kubernetes API: secret'lar | `apiserver_request_total{resource="secrets"}` | GET/LIST'te sıçrama keşif ya da çalınmış bir service-account token'ıdır | okumalar ortalamanın ≥ 3 / 10 katı, 1.000 üstü |
 | DNS | `coredns_dns_responses_total` | hacim ve NXDOMAIN oranının ortalamaya göre değişimi: tünelleme ya da DGA zararlısı | hacim ≥ 3 kat, NXDOMAIN oranı +15 puan, SERVFAIL |
 | Kendi ortalamasına göre CPU | `container_cpu_usage_seconds_total`, son saat ve 6 günlük ortalama | olağanın çok üstünde süren CPU, kripto madencinin klasik izidir | ortalamanın ≥ 3 katı, 0,25 çekirdek üstü |

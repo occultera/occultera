@@ -130,6 +130,43 @@ sources:
 Secret ve configmap asla okunmaz. NetworkPolicy'de çıkış izni vermeyi unutmayın. Bkz.
 [docs/sources.md](https://github.com/occultera/occultera/blob/main/docs/sources.md).
 
+### Tek Wazuh arkasında birden çok küme
+
+Bir Wazuh birden çok Kubernetes ya da OpenShift kümesini izliyorsa her ek kümeye bir ad verin.
+[Küme nabzı](Cluster-Pulse-TR) sayfasına bir seçici gelir, nöbetin dışarı aktarım tetikleyicisi her kümeye bakar
+(olay anahtarı `egress:<küme>:<namespace>/<iş yükü>`) ve yapay zekânın `prom_query` / `prom_range` araçları bir
+`cluster` parametresi alır (adları `list_environments` verir).
+
+```yaml
+sources:
+  prometheus: {name: sfkube, url: "http://prometheus.monitoring:9090"}
+  prometheus_extra:
+    - name: approd                # a-z, 0-9, -; benzersiz
+      url: https://thanos-querier-openshift-monitoring.apps.approd.example.com
+      bearer_token: ${APPROD_THANOS_TOKEN}
+      ca_file: /app/config/approd-ingress-ca.pem   # ya da denerken verify_tls: false
+```
+
+**OpenShift.** Thanos Querier route'u, `cluster-monitoring-view` cluster rolüne sahip bir service account'un
+bearer token'ını ister. Her kümede:
+
+```sh
+oc create serviceaccount occultera-reader -n openshift-monitoring
+oc adm policy add-cluster-role-to-user cluster-monitoring-view -z occultera-reader -n openshift-monitoring
+oc apply -n openshift-monitoring -f - <<'YAML'
+apiVersion: v1
+kind: Secret
+metadata:
+  name: occultera-reader-token
+  annotations: {kubernetes.io/service-account.name: occultera-reader}
+type: kubernetes.io/service-account-token
+YAML
+oc -n openshift-monitoring get secret occultera-reader-token -o jsonpath='{.data.token}' | base64 -d
+```
+
+OpenShift router yanıtları yalnız sınıf olarak sayar; bu yüzden küme nabzı orada 401/403 yerine 4xx gösterir.
+`openshift-*` namespace'leri iş yükü panellerinde varsayılan olarak dışarıda kalır.
+
 ## Yapay zekâsız sağlık kontrolleri
 
 - **Canlılık (liveness).** LLM kullanmadan birkaç dakikada bir çalışan kontrol. Yeni bir sorunda bildirim

@@ -214,8 +214,6 @@ def test_pulse_page():
         assert 'href="/e/demo/pulse"' in c.get("/e/demo/attack").text
         c.post("/lang", data={"lang": "tr"})
         assert "Küme nabzı" in c.get("/e/demo/pulse").text
-<<<<<<< Updated upstream
-=======
 
 
 class DownProm:
@@ -244,4 +242,111 @@ def test_pulse_page_renders_when_prometheus_is_down_or_empty(monkeypatch):
             c.post("/lang", data={"lang": "en"})
             r = c.get("/e/demo/pulse")
             assert r.status_code == 200 and word in r.text
->>>>>>> Stashed changes
+
+
+# ---------------------------------------------------------------- 0.13: several clusters per environment
+class RouterProm(PulseProm):
+    """An OpenShift cluster: the router counts responses by class only."""
+
+    def _rows(self, expr):
+        if expr.startswith("count(haproxy_backend_http_responses_total)"):
+            return [({}, 10.0)]
+        if expr.startswith("count(") and "requests" in expr:
+            return []
+        if "haproxy_backend_http_responses_total" in expr:
+            if "sum by (code)" in expr:
+                base = "offset 1d" in expr
+                return [({"code": "2xx"}, 50_000.0 * (6 if base else 1)), ({"code": "4xx"}, 300.0 * 6 if base else 4_000.0),
+                        ({"code": "5xx"}, 20.0 * (6 if base else 1))]
+            if "sum by (route, code)" in expr:
+                return [({"route": "shop", "code": "4xx"}, 3_500.0), ({"route": "shop", "code": "5xx"}, 12.0)]
+            if "topk(8, sum by (route)" in expr:
+                return [({"route": "shop"}, 3_512.0)]
+        return super()._rows(expr)
+
+
+async def test_pulse_openshift_router():
+    p = await P.Pulse(RouterProm(kong=False), [], NOW).collect()
+    ig = p["ingress"]
+    assert ig["source"] == "OpenShift router" and ig["classes_only"] is True
+    assert ig["auth"] == 4_000 and ig["auth_prev"] == 300 and ig["auth_label"] == "pl.k.4xx" and ig["status_auth"] == "bad"
+    assert ig["rows"][0] == {"route": "shop", "errors": 3_512.0, "401": 0, "403": 0, "404": 0, "4xx": 3_500.0, "5xx": 12.0}
+
+
+def test_sources_several_clusters():
+    from pydantic import ValidationError
+
+    from app.config import SourcesCfg
+    from app.services import Clusters, clusters_of
+    s = SourcesCfg(prometheus={"url": "http://p:9090", "name": "sfkube"},
+                   prometheus_extra=[{"name": "approd", "url": "https://t1", "bearer_token": "x"},
+                                     {"name": "unused", "url": ""}])
+    assert s.prometheus_names() == ["sfkube", "approd"]
+    assert SourcesCfg(prometheus_extra=[{"name": "a", "url": "https://t"}]).prometheus_names() == ["a"]
+    for bad in ([{"url": "https://t"}], [{"name": "Bad Name", "url": "https://t"}],
+                [{"name": "default", "url": "https://t"}]):
+        try:
+            SourcesCfg(prometheus={"url": "http://p"}, prometheus_extra=bad)
+        except ValidationError:
+            continue
+        raise AssertionError(bad)
+    assert clusters_of({}) == {} and clusters_of({"prometheus": 1}) == {"default": 1}
+    assert clusters_of({"prometheus": 1, "clusters": Clusters(a=1, b=2)}) == {"a": 1, "b": 2}
+
+
+async def test_egress_on_several_clusters():
+    env = load_settings(os.path.join(ROOT, "config/demo.yaml")).environments[0]
+    cfg = WatchSettings(enabled=True, triggers={"egress": True})
+    sc = W.Scanner(env, FakeIndexer(alerts=[]), None, cfg, "en",
+                   clusters={"sfkube": FakeProm({("erp", "odoo"): 900 * MB}), "approd": DownProm(),
+                             "scprod": FakeProm({("shop", "web"): 2e9})})
+    evs = await sc.egress(NOW - timedelta(minutes=5), NOW)
+    assert sorted(e["key"] for e in evs) == ["egress:scprod:shop/web", "egress:sfkube:erp/odoo"]
+    assert all(e["title"].startswith("[" + e["cluster"] + "] ") for e in evs)
+    assert sc.errors == ["egress[approd]: RuntimeError"]
+    one = W.Scanner(env, FakeIndexer(alerts=[]), None, cfg, "en", prom=FakeProm({("erp", "odoo"): 900 * MB}))
+    assert [e["key"] for e in await one.egress(NOW - timedelta(minutes=5), NOW)] == ["egress:erp/odoo"]
+
+
+async def test_tools_pick_the_cluster():
+    from app.agent.tools import ToolBox
+    from app.services import Clusters
+    env = load_settings(os.path.join(ROOT, "config/demo.yaml")).environments[0]
+    a, b = FakeProm({}), FakeProm({})
+    tb = ToolBox(env, FakeIndexer(alerts=[]), None, None, sources={"prometheus": a, "clusters": Clusters(sfkube=a, approd=b)})
+    assert tb._prom({}) is a and tb._prom({"cluster": "approd"}) is b
+    try:
+        tb._prom({"cluster": "nope"})
+    except ValueError as e:
+        assert "approd" in str(e)
+    else:
+        raise AssertionError
+    assert "cluster" in str(tb.specs())
+
+
+def test_namespace_wildcards():
+    assert W._rx("openshift-*") == "openshift-.*"
+    assert WatchSettings(egress_exclude_namespaces="openshift-*, velero").egress_excluded() == ["openshift-*", "velero"]
+    assert "openshift-*" in EGRESS_EXCLUDE
+    try:
+        WatchSettings(egress_exclude_namespaces='a"b')
+    except Exception:
+        pass
+    else:
+        raise AssertionError
+
+
+def test_pulse_page_cluster_selector(monkeypatch):
+    from fastapi.testclient import TestClient
+
+    import app.services as S
+    from app.main import app
+    monkeypatch.setattr(S, "clusters_of", lambda src: {"sfkube": PulseProm(kong=False), "approd": RouterProm(kong=False)})
+    P._CACHE.clear()
+    with TestClient(app) as c:
+        c.post("/login", data={"password": "pw"})
+        c.post("/lang", data={"lang": "en"})
+        r = c.get("/e/demo/pulse")
+        assert r.status_code == 200 and 'href="?c=approd"' in r.text and "Traefik" in r.text
+        r = c.get("/e/demo/pulse?c=approd")
+        assert r.status_code == 200 and "OpenShift router" in r.text and "4xx at ingress" in r.text

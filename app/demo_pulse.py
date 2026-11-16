@@ -60,7 +60,8 @@ def _demo() -> dict:
         "at": datetime.now(UTC).isoformat(), "errors": [], "status": "bad",
         "egress": {"total": total, "avg": avg, "change": (total - avg) / avg, "rows": egress_rows, "status": "bad",
                    "spark": _wave(25, 380 * mb, 60 * mb, 19, 2.9 * gb)},
-        "ingress": {"source": "Traefik", "cur": cur, "prev": prev, "status_auth": "bad", "status_5xx": "ok", "status": "bad",
+        "ingress": {"source": "Traefik", "cur": cur, "prev": prev, "auth": cur["auth"], "auth_prev": prev["auth"],
+                    "auth_label": "pl.k.auth", "classes_only": False, "status_auth": "bad", "status_5xx": "ok", "status": "bad",
                     "spark_auth": _wave(25, 300, 120, 21, 18_000), "spark_5xx": _wave(25, 75, 30, phase=1.2),
                     "rows": [
                         {"route": "auth.keycloak.sso.example.com.8080", "errors": 26_900, "401": 2_100, "403": 24_300, "404": 500, "5xx": 0},

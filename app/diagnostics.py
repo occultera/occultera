@@ -61,11 +61,13 @@ class DiagnosticsMixin:
         await step("storage", storage())
         await step("api", api())
         src = rt.sources
-        if src.get("prometheus"):
-            async def prom():
-                r = await src["prometheus"].query("count(up == 1)")
-                return f"{src['prometheus'].c.base_url} — {r['series'][0]['value'] if r['series'] else 0} targets up"
-            await step("prometheus", prom())
+        from .services import clusters_of
+        many = len(clusters_of(src)) > 1
+        for cname, p in clusters_of(src).items():
+            async def prom(p=p):
+                r = await p.query("count(up == 1)")
+                return f"{p.c.base_url} — {r['series'][0]['value'] if r['series'] else 0} targets up"
+            await step(f"prometheus[{cname}]" if many else "prometheus", prom())
         if src.get("loki"):
             async def loki():
                 return f"{src['loki'].c.base_url} — {len(await src['loki'].labels())} labels"

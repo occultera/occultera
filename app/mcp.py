@@ -80,7 +80,9 @@ async def _call(rt, name: str, args: dict) -> str:
     allowed = sorted(authz.mcp_envs(rt.envs))
     if name == "list_environments":
         return json.dumps([{"id": e.env.id, "name": e.env.name, "description": e.env.description,
-                            "sources": sorted(e.sources), "wazuh_api": bool(e.api), "high_level": e.env.high_level}
+                            "sources": sorted(k for k in e.sources if k != "clusters"),
+                            "clusters": e.env.sources.prometheus_names(),
+                            "wazuh_api": bool(e.api), "high_level": e.env.high_level}
                            for e in (rt.envs[i] for i in allowed)], ensure_ascii=False)
     env_id = args.pop("env", None) or (allowed[0] if len(allowed) == 1 else None)
     if env_id not in allowed:

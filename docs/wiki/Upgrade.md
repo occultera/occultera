@@ -70,6 +70,12 @@ you took before the upgrade.
 
 ## Version notes
 
+### 0.13.0
+
+- **Several clusters per environment** with `sources.prometheus_extra` (names required). Nothing changes for an
+  environment with one Prometheus. See [Features](Features#several-clusters-behind-one-wazuh).
+- `openshift-*` namespaces are left out of the outbound-transfer panels and trigger by default.
+
 ### 0.12.3
 
 - Fix: the cluster pulse page no longer fails with HTTP 500 when Prometheus cannot be reached. Nothing to change.

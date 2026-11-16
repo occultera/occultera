@@ -12,13 +12,35 @@ from .store import MemoryStore, Repo
 log = logging.getLogger("wdt")
 
 
+class Clusters(dict):
+    """Every Prometheus of one environment by cluster name (the first is the default)."""
+
+    async def close(self):
+        for p in self.values():
+            await p.close()
+
+
+def clusters_of(sources: dict | None) -> dict:
+    """``{name: Prometheus}`` for an environment's sources (also when only the single ``prometheus`` is set)."""
+    src = sources or {}
+    if src.get("clusters"):
+        return dict(src["clusters"])
+    return {"default": src["prometheus"]} if src.get("prometheus") else {}
+
+
 def build_sources(env: Environment) -> dict:
     """Prometheus / Loki / Kubernetes clients for one environment (only those configured)."""
     from .sources import Kubernetes, Loki, Prometheus, SourceError
     out: dict = {}
     sc = env.sources
+    clusters = Clusters()
     if sc.prometheus:
-        out["prometheus"] = Prometheus(sc.prometheus)
+        out["prometheus"] = clusters[sc.prometheus.name or "default"] = Prometheus(sc.prometheus)
+    for ep in sc.prometheus_extra:
+        clusters[ep.name] = Prometheus(ep)
+    if clusters:
+        out.setdefault("prometheus", next(iter(clusters.values())))   # the default for tools that take one
+        out["clusters"] = clusters
     if sc.loki:
         out["loki"] = Loki(sc.loki)
     if sc.kubernetes.enabled:

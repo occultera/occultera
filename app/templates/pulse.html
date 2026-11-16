@@ -7,7 +7,8 @@
 <div class="page-head">
   <div class="titles"><div class="eyebrow">{{ env.name }}</div><h1>{{ _('pl.title') }}</h1>
     <div class="sub">{{ _('pl.intro') }}</div></div>
-  <div class="tools"><span class="small muted">{{ _('pl.window') }} · {{ p.at|ts }}</span></div>
+  <div class="tools">{% if clusters|length > 1 %}<div class="seg" role="group" aria-label="{{ _('pl.cluster') }}">{% for n in clusters %}<a class="{{ 'on' if n == cluster }}" href="?c={{ n|urlencode }}">{{ n }}</a>{% endfor %}</div>{% endif %}
+    <span class="small muted">{{ _('pl.window') }} · {{ p.at|ts if p else '' }}</span></div>
 </div>
 {% if not p %}<div class="card err">{{ _('pl.error') }}</div>{% else %}
 {% set eg, ig, se, dn, cp, rs, ce, tg = p.egress, p.ingress, p.secrets, p.dns, p.cpu, p.restarts, p.certs, p.targets %}
@@ -15,9 +16,9 @@
   <a class="ktile ps-{{ eg.status or 'ok' }}" href="#egress"><span class="klabel">{{ _('pl.k.egress') }}</span>
     <b class="kval">{{ fmt_bytes(eg.total) if eg.total is not none else '–' }}</b>
     <span class="kdelta">{{ chg(eg.change) }} {{ _('pl.vs_avg') }}</span>{{ chart.spark(eg.spark or [], 'c-total', _('pl.k.egress')) }}</a>
-  <a class="ktile ps-{{ ig.status_auth or 'ok' }}" href="#ingress"><span class="klabel">{{ _('pl.k.auth') }}</span>
-    <b class="kval">{{ ig.cur.auth|round|int|n if ig.cur else '–' }}</b>
-    <span class="kdelta">{{ chg(((ig.cur.auth - ig.prev.auth) / ig.prev.auth) if ig.cur and ig.prev.auth else none) }} {{ _('pl.vs_avg') }}</span>{{ chart.spark(ig.spark_auth or [], 'c-high', _('pl.k.auth')) }}</a>
+  <a class="ktile ps-{{ ig.status_auth or 'ok' }}" href="#ingress"><span class="klabel">{{ _(ig.auth_label or 'pl.k.auth') }}</span>
+    <b class="kval">{{ ig.auth|round|int|n if ig.cur else '–' }}</b>
+    <span class="kdelta">{{ chg(((ig.auth - ig.auth_prev) / ig.auth_prev) if ig.cur and ig.auth_prev else none) }} {{ _('pl.vs_avg') }}</span>{{ chart.spark(ig.spark_auth or [], 'c-high', _('pl.k.auth')) }}</a>
   <a class="ktile ps-{{ ig.status_5xx or 'ok' }}" href="#ingress"><span class="klabel">{{ _('pl.k.5xx') }}</span>
     <b class="kval">{{ ig.cur['5xx']|round|int|n if ig.cur else '–' }}</b>
     <span class="kdelta">{{ chg(((ig.cur['5xx'] - ig.prev['5xx']) / ig.prev['5xx']) if ig.cur and ig.prev['5xx'] else none) }} {{ _('pl.vs_avg') }}</span>{{ chart.spark(ig.spark_5xx or [], 'c-crit', _('pl.k.5xx')) }}</a>
@@ -63,12 +64,15 @@
     <div class="phead pad"><h2>{{ _('pl.ingress') }}{% if ig.source %} · {{ ig.source }}{% endif %}</h2>{% if ig.status %}{{ st(ig.status) }}{% endif %}</div>
     {% if ig.cur %}
     <div class="pad codebar">{% for k in ('2xx', '3xx', '4xx', '5xx') %}<span><b>{{ ig.cur[k]|round|int|n }}</b> <span class="muted">{{ k }}</span></span>{% endfor %}
-      <span><b>{{ ig.cur.auth|round|int|n }}</b> <span class="muted">401/403</span></span><span><b>{{ ig.cur['404']|round|int|n }}</b> <span class="muted">404/405</span></span></div>
+      {% if not ig.classes_only %}<span><b>{{ ig.cur.auth|round|int|n }}</b> <span class="muted">401/403</span></span><span><b>{{ ig.cur['404']|round|int|n }}</b> <span class="muted">404/405</span></span>{% endif %}</div>
     {% if ig.rows %}<div class="scrollx"><table class="tbl">
-      <tr><th>{{ _('pl.c.route') }}</th><th class="r">401</th><th class="r">403</th><th class="r">404</th><th class="r">5xx</th></tr>
+      {% if ig.classes_only %}<tr><th>{{ _('pl.c.route') }}</th><th class="r">4xx</th><th class="r">5xx</th></tr>
+      {% for r in ig.rows %}<tr><td class="route" title="{{ r.route }}">{{ r.route }}</td>
+        <td class="r">{{ (r['4xx'] or 0)|round|int|n }}</td><td class="r {{ 'bad' if (r['5xx'] or 0) >= 1000 }}">{{ (r['5xx'] or 0)|round|int|n }}</td></tr>{% endfor %}
+      {% else %}<tr><th>{{ _('pl.c.route') }}</th><th class="r">401</th><th class="r">403</th><th class="r">404</th><th class="r">5xx</th></tr>
       {% for r in ig.rows %}<tr><td class="route" title="{{ r.route }}">{{ r.route }}</td>
         <td class="r">{{ (r['401'] or 0)|round|int|n }}</td><td class="r">{{ (r['403'] or 0)|round|int|n }}</td>
-        <td class="r">{{ (r['404'] or 0)|round|int|n }}</td><td class="r {{ 'bad' if (r['5xx'] or 0) >= 1000 }}">{{ (r['5xx'] or 0)|round|int|n }}</td></tr>{% endfor %}
+        <td class="r">{{ (r['404'] or 0)|round|int|n }}</td><td class="r {{ 'bad' if (r['5xx'] or 0) >= 1000 }}">{{ (r['5xx'] or 0)|round|int|n }}</td></tr>{% endfor %}{% endif %}
     </table></div>{% endif %}<p class="small muted pad">{{ _('pl.ingress_note') }}</p>
     {% else %}<div class="pad">{{ nodata(ig) }}</div>{% endif %}
   </section>

@@ -73,6 +73,8 @@ EN: dict[str, str] = {
     "pl.empty": "No metrics for this panel in this cluster.",
     "pl.error": "Prometheus did not answer for this panel.",
     "pl.partial": "Some panels could not be read: {names}.",
+    "pl.k.4xx": "4xx at ingress",
+    "pl.cluster": "Cluster",
 }
 
 TR: dict[str, str] = {
@@ -145,6 +147,8 @@ TR: dict[str, str] = {
     "pl.empty": "Bu kümede bu panel için metrik yok.",
     "pl.error": "Prometheus bu panel için cevap vermedi.",
     "pl.partial": "Bazı paneller okunamadı: {names}.",
+    "pl.k.4xx": "Girişte 4xx",
+    "pl.cluster": "Küme",
 }
 
 ES: dict[str, str] = {
@@ -217,6 +221,8 @@ ES: dict[str, str] = {
     "pl.empty": "No hay métricas para este panel en este clúster.",
     "pl.error": "Prometheus no respondió para este panel.",
     "pl.partial": "Algunos paneles no se pudieron leer: {names}.",
+    "pl.k.4xx": "4xx en la entrada",
+    "pl.cluster": "Clúster",
 }
 
 DE: dict[str, str] = {
@@ -289,6 +295,8 @@ DE: dict[str, str] = {
     "pl.empty": "Keine Metriken für dieses Panel in diesem Cluster.",
     "pl.error": "Prometheus hat für dieses Panel nicht geantwortet.",
     "pl.partial": "Einige Panels konnten nicht gelesen werden: {names}.",
+    "pl.k.4xx": "4xx am Eingang",
+    "pl.cluster": "Cluster",
 }
 
 EXTRA = {"en": EN, "tr": TR, "es": ES, "de": DE}

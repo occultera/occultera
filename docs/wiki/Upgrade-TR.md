@@ -72,6 +72,12 @@ etkisizdir. Eski sürüm yeni veriyle düzgün çalışmazsa yükseltmeden önce
 
 ## Sürüm notları
 
+### 0.13.0
+
+- `sources.prometheus_extra` ile **ortam başına birden çok küme** (ad zorunlu). Tek Prometheus'lu ortamlarda hiçbir
+  şey değişmez. Bkz. [Özellikler](Features-TR#tek-wazuh-arkasında-birden-çok-küme).
+- `openshift-*` namespace'leri dışarı aktarım panellerinde ve tetikleyicide varsayılan olarak dışarıda kalır.
+
 ### 0.12.3
 
 - Düzeltme: Prometheus'a ulaşılamadığında küme nabzı sayfası artık HTTP 500 vermiyor. Yapılacak bir şey yok.

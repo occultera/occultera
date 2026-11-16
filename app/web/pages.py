@@ -88,20 +88,23 @@ async def attack_page(request: Request, env_id: str, days: int = 7, tactic: str 
 
 
 @router.get("/e/{env_id}/pulse", response_class=HTMLResponse)
-async def pulse_page(request: Request, env_id: str):
+async def pulse_page(request: Request, env_id: str, c: str = ""):
     from ..pulse import pulse
+    from ..services import clusters_of
     from ..settingsdoc import EGRESS_EXCLUDE
     er = _env(request, env_id)
-    prom = (er.sources or {}).get("prometheus")
-    if prom is None and _rt(request).demo:
+    clusters = clusters_of(er.sources)
+    if not clusters and _rt(request).demo:
         from ..demo_pulse import DemoPrometheus
-        prom = DemoPrometheus()
-    if prom is None:
+        clusters = {"demo": DemoPrometheus()}
+    if not clusters:
         raise HTTPException(404, "no Prometheus source for this environment")
+    name = c if c in clusters else next(iter(clusters))
     st = await _safe(_rt(request).env_settings(er), None, request=request)
     exclude = st.watch.egress_excluded() if st else list(EGRESS_EXCLUDE)
-    p = await _safe(pulse(er.env.id, prom, exclude), None, request=request)
-    return tpl.TemplateResponse(request, "pulse.html", _ctx(request, er=er, env=er.env, p=p))
+    p = await _safe(pulse(f"{er.env.id}:{name}", clusters[name], exclude), None, request=request)
+    return tpl.TemplateResponse(request, "pulse.html", _ctx(request, er=er, env=er.env, p=p, cluster=name,
+                                                            clusters=list(clusters)))
 
 
 @router.get("/e/{env_id}", response_class=HTMLResponse)
@@ -201,7 +204,7 @@ async def about_page(request: Request):
             "deploy": rt.deploy_ready(e),
             "privacy": e.privacy.mode,
             "detect": e.privacy.detect and e.privacy.detect_sample > 0,
-            "sources": sorted(er.sources),
+            "sources": sorted(k for k in er.sources if k != "clusters"),
             "liveness": e.liveness.enabled,
             "notify": rt.settings.notify_for(e).channels,
             "incident": [n for n, c in (("Zammad", e.incident.zammad), ("Jira", e.incident.jira)) if c],

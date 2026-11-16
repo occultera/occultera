@@ -155,6 +155,7 @@ class PromoteCfg(BaseModel):
 
 
 class SourceEndpoint(BaseModel):
+    name: str = ""                        # Prometheus: the cluster's name when an environment has more than one
     url: str = ""
     username: str = ""
     password: str = ""
@@ -184,6 +185,8 @@ class KubernetesSource(BaseModel):
 class SourcesCfg(BaseModel):
     """Extra read-only data sources the AI can query next to Wazuh."""
     prometheus: SourceEndpoint | None = None
+    # more clusters behind the same Wazuh (e.g. OpenShift Thanos Querier), each with a unique ``name``
+    prometheus_extra: list[SourceEndpoint] = Field(default_factory=list)
     loki: SourceEndpoint | None = None
     kubernetes: KubernetesSource = Field(default_factory=KubernetesSource)
 
@@ -191,6 +194,25 @@ class SourcesCfg(BaseModel):
     @classmethod
     def _empty(cls, v):
         return None if isinstance(v, dict) and not v.get("url") else v
+
+    @field_validator("prometheus_extra", mode="before")
+    @classmethod
+    def _extra(cls, v):
+        return [x for x in (v or []) if not (isinstance(x, dict) and not x.get("url"))]
+
+    @model_validator(mode="after")
+    def _names(self):
+        names = [self.prometheus.name or "default"] if self.prometheus else []
+        for ep in self.prometheus_extra:
+            if not re.fullmatch(r"[a-z0-9][a-z0-9-]{0,39}", ep.name or ""):
+                raise ValueError(f"sources.prometheus_extra: every entry needs a name (a-z, 0-9, -): {ep.name!r}")
+            names.append(ep.name)
+        if len(names) != len(set(names)):
+            raise ValueError(f"sources: Prometheus cluster names must be unique: {names}")
+        return self
+
+    def prometheus_names(self) -> list[str]:
+        return ([self.prometheus.name or "default"] if self.prometheus else []) + [e.name for e in self.prometheus_extra]
 
 
 class ZammadCfg(BaseModel):

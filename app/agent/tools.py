@@ -369,11 +369,21 @@ class ToolBox:
                 "note": "No effect until the user approves it in the UI."}
 
     # ------------------------------------------------------------- extra sources (read-only)
+    def _prom(self, a):
+        from ..services import clusters_of
+        cs = clusters_of(self.sources)
+        name = str(a.get("cluster") or "")
+        if not name or len(cs) == 1:
+            return self.sources["prometheus"]
+        if name not in cs:
+            raise ValueError(f"unknown cluster {name!r}; one of {sorted(cs)}")
+        return cs[name]
+
     async def prom_query(self, a):
-        return await self.sources["prometheus"].query(a["expr"], a.get("time"))
+        return await self._prom(a).query(a["expr"], a.get("time"))
 
     async def prom_range(self, a):
-        return await self.sources["prometheus"].query_range(a["expr"], a.get("from"), a.get("to"), a.get("step"))
+        return await self._prom(a).query_range(a["expr"], a.get("from"), a.get("to"), a.get("step"))
 
     async def loki_query(self, a):
         return await self.sources["loki"].query(a["query"], a.get("from"), a.get("to"), int(a.get("limit") or 100),
@@ -524,12 +534,15 @@ SPECS: dict[str, dict] = {
                            ["kind", "title"])},
     "prom_query": {"name": "prom_query", "description":
         "Prometheus instant query (PromQL), e.g. node disk usage, pod restarts, up{job=...}. Read-only.",
-        "parameters": _obj({"expr": {"type": "string"}, "time": {"type": "string", "description": "ISO-8601 or now-1h"}},
+        "parameters": _obj({"expr": {"type": "string"}, "time": {"type": "string", "description": "ISO-8601 or now-1h"},
+                            "cluster": {"type": "string", "description": "cluster name when the environment has "
+                                        "several (list_environments → clusters); empty = the first"}},
                            ["expr"])},
     "prom_range": {"name": "prom_range", "description":
         "Prometheus range query: min/max/last and up to 60 sampled points per series (max 20 series).",
         "parameters": _obj({"expr": {"type": "string"}, "from": {"type": "string"}, "to": {"type": "string"},
-                            "step": {"type": "string", "description": "e.g. 60s, 5m"}}, ["expr"])},
+                            "step": {"type": "string", "description": "e.g. 60s, 5m"},
+                            "cluster": {"type": "string", "description": "cluster name; empty = the first"}}, ["expr"])},
     "loki_query": {"name": "loki_query", "description":
         "Loki LogQL query over a time range: log lines (newest first, max 500) or a metric query "
         "(count_over_time …). Always use a label selector, e.g. {namespace=\"wazuh\"} |= \"error\".",

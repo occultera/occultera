@@ -5,6 +5,21 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.13.0] — 2026-11-16
+
+### Added
+- **Several clusters behind one Wazuh.** `sources.prometheus_extra` lists more Prometheus-compatible endpoints, each
+  with a unique `name` (OpenShift Thanos Querier with a service-account bearer token works as is). The cluster pulse
+  page gets a cluster selector; the watch's outbound-transfer trigger checks every cluster and names it in the event
+  (`egress:<cluster>:<namespace>/<workload>`; with a single cluster the key stays as before), an unreachable cluster
+  does not hide the others; the AI's `prom_query` / `prom_range` take a `cluster` argument and `list_environments`
+  lists the names; the connection test checks each cluster. `sources.prometheus` takes an optional `name` too.
+- Cluster pulse: the OpenShift router (`haproxy_backend_http_responses_total`, 4xx/5xx classes) as an ingress
+  source.
+
+### Changed
+- `egress_exclude_namespaces` accepts `*` wildcards; `openshift-*` is now in the default list.
+
 ## [0.12.3] — 2026-11-16
 
 ### Fixed
