@@ -4,6 +4,19 @@
 
 *Find the signal in the dark.* Eski adı **wazuh-daily-triage** — [neden bu ad](https://github.com/occultera/occultera/wiki/Name-and-Logo-TR).
 
+**Wazuh MCP sunucusu ve AI alarm triage — GDPR / KVKK kişisel veri maskelemesiyle.** Claude Desktop, Claude
+Code, Cursor ya da VS Code'u salt okunur bir MCP sunucusuyla Wazuh'unuza bağlayın veya alarmları Occultera'nın
+kendisi izlesin ve incelesin. Basit bir Wazuh MCP köprüsünden farkı: algılanan kişisel veri herhangi bir modele ya
+da MCP istemcisine ulaşmadan takma adla değiştirilir; soruşturma araçları (`correlate_around`, `ip_profile`,
+`rule_timeline`, `logtest`, kural taslağı doğrulama), token, sorgu ve hız sınırları, audit kaydı vardır ve insan
+onayı olmadan Wazuh'ta hiçbir şey değişmez.
+
+MCP sunucusunu demo verisiyle tek satırda deneyin — Wazuh gerekmez:
+
+```sh
+docker run -i --rm -e WDT_DEMO=true ghcr.io/occultera/occultera:0.15.0 python -m app.mcp_stdio
+```
+
 **[Wazuh](https://wazuh.com) SIEM için nöbet yardımcısı.** Kural tabanlı nöbet, acil bir durum olduğunda
 dakikalar içinde ve yapay zekâ çağırmadan haber verir. Günde bir ya da iki kez çalışan AI turu ise SIEM'in
 gerçekten ayakta olduğunu denetler, gerçek riski bilinen gürültüden ayırır, kısa bir raporu kendi Wazuh

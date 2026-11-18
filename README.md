@@ -4,6 +4,19 @@
 
 *Find the signal in the dark.* Formerly **wazuh-daily-triage** — [why the new name](https://github.com/occultera/occultera/wiki/Name-and-Logo).
 
+**Wazuh MCP server and AI alert triage, with GDPR / KVKK personal-data masking.** Connect Claude Desktop,
+Claude Code, Cursor or VS Code to your Wazuh through a read-only MCP server, or let Occultera watch and review
+your alerts itself. What sets it apart from a plain Wazuh MCP bridge: detected personal data is pseudonymised
+before it reaches any model or MCP client, investigation tools (`correlate_around`, `ip_profile`,
+`rule_timeline`, `logtest`, rule-draft validation), token, query and rate limits, an audit log, and nothing
+changes in Wazuh without human approval.
+
+Try the MCP server in one line, with demo data — no Wazuh needed:
+
+```sh
+docker run -i --rm -e WDT_DEMO=true ghcr.io/occultera/occultera:0.15.0 python -m app.mcp_stdio
+```
+
 **An on-call companion for [Wazuh](https://wazuh.com) SIEM.** A rule-based watch tells you within minutes when
 something urgent happens, without calling an AI. Once or twice a day an AI round checks that the SIEM is
 actually alive, separates real risk from known noise, writes a short report into your own Wazuh Indexer and asks
