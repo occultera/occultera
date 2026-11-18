@@ -72,6 +72,47 @@ Limits: this is pseudonymisation, not DLP. Names in free text ("Betül Eser") an
 addresses are not detected. For regulated data, combine it with a provider under a data-processing agreement, or
 use a local model.
 
+## Measured coverage (Turkish-first test vectors)
+
+The default profile (`mode: mask`, `ips: keep`) on the vectors in
+[`tests/data/pii_vectors.py`](https://github.com/occultera/occultera/blob/main/tests/data/pii_vectors.py).
+`tests/test_pii_vectors.py` fails when any row changes, so this table stays true. Regenerate it with
+`python -m tools.pii_eval`.
+
+| Category | Input | What the model sees | Result |
+|---|---|---|---|
+| email | `sshd: Accepted password for ayse.yilmaz@firma.com.tr from 10.1.2.3` | `sshd: Accepted password for <email:…> from 10.1.2.3` | masked |
+| email | `user="Mehmet.Öz+test@example.org" action=login` | `user="Mehmet.Öz+test@example.org" action=login` | **not detected** (known gap) |
+| email | `mail to=<destek@sirket.com.tr> status=sent` | `mail to=<<email:…>> status=sent` | masked |
+| phone | `SMS gönderildi: 0532 123 45 67` | `SMS gönderildi: <phone:…>` | masked |
+| phone | `callerid=+90 532 123 45 67` | `callerid=<phone:…>` | masked |
+| phone | `tel:05321234567 doğrulama` | `tel:05321234567 doğrulama` | **not detected** (known gap) |
+| phone | `dahili 2145 aradı` | `dahili 2145 aradı` | kept (correct) |
+| national_id_tr | `basvuru tckn=10000000146 onaylandi` | `basvuru tckn=<national_id_tr:…> onaylandi` | masked |
+| national_id_tr | `kimlik no: 10000000147 (hatalı)` | `kimlik no: 10000000147 (hatalı)` | kept (correct) |
+| iban | `odeme IBAN TR33 0006 1005 1978 6457 8413 26 alindi` | `odeme IBAN <iban:…> alindi` | masked |
+| iban | `iban=TR330006100519786457841326` | `iban=<iban:…>` | masked |
+| card | `pan=4539 1488 0343 6467 declined` | `pan=<card:…> declined` | masked |
+| card | `ts=1730100000000 epoch` | `ts=1730100000000 epoch` | kept (correct) |
+| password | `POST /login parola=Gizli123! basarisiz` | `POST /login parola=<password> basarisiz` | masked |
+| password | `{"şifre": "Kuzey2026"}` | `{"şifre": "<password>"}` | masked |
+| bearer | `Authorization: Bearer abcdEFGH1234.xyz` | `Authorization: Bearer <bearer>` | masked |
+| aws_key | `key AKIAIOSFODNN7EXAMPLE used` | `key <aws_key> used` | masked |
+| ip | `Failed password from 203.0.113.7 port 22` | `Failed password from 203.0.113.7 port 22` | kept (correct) |
+| name | `Kullanıcı Ayşe Yılmaz oturum açtı` | `Kullanıcı Ayşe Yılmaz oturum açtı` | **not detected** (known gap) |
+| username | `sshd: Invalid user mehmet.kaya from 198.51.100.4` | `sshd: Invalid user mehmet.kaya from 198.51.100.4` | **not detected** (known gap) |
+| address | `teslimat: Atatürk Cd. No:12 Kadıköy İstanbul` | `teslimat: Atatürk Cd. No:12 Kadıköy İstanbul` | **not detected** (known gap) |
+| plate | `otopark giris 34 ABC 123` | `otopark giris 34 ABC 123` | **not detected** (known gap) |
+| noise | `run rosca-20261028073001-712bbf v4.14.8 port 55000` | `run rosca-20261028073001-712bbf v4.14.8 port 55000` | kept (correct) |
+| noise | `rule 100213 level 12 agent 007` | `rule 100213 level 12 agent 007` | kept (correct) |
+
+Personal data masked: 12/18 · false positives: 0/6
+
+**Read it as:** structured identifiers (e-mail, Turkish phone formats, TCKN, IBAN, card, secrets) are masked
+with check-digit validation and no false positives on run IDs, rule IDs or epoch timestamps. Names, usernames,
+addresses, licence plates, e-mail addresses with non-ASCII letters and a phone number glued to a prefix
+(`tel:0532…`) are **not** detected. Add a custom detector for patterns your logs contain.
+
 ## Masking profile (0.10)
 
 The detectors above are the **standard profile**: built in, the same on every installation, not editable.
