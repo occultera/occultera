@@ -168,16 +168,19 @@ async def analyse(xml: str, cfg: RuleDeployCfg, api: WazuhAPI | None, high_level
     # existing-rule checks also when the id range is wrong, so a collision is reported at the same time
     if api and rules and all(r["id"] and r["id"].isdigit() for r in rules):
         want = sorted({p for r in rules for p in r["parents"]} | set(ids))
+        api_ok = True
         try:
             for x in await api.rules(want):
                 parents_info[str(x["id"])] = x
         except WazuhAPIError as e:
-            errors.append(f"cannot check existing rules: {e}")
-        for rid in ids:
+            api_ok = False
+            errors.append(f"cannot check existing rules (Wazuh API unreachable, parent/collision checks skipped): {e}")
+        # without an API answer an empty lookup says nothing — do not report parents as missing
+        for rid in (ids if api_ok else []):
             ex = parents_info.get(rid)
             if ex and ex.get("filename") != cfg.file:
                 errors.append(f"rule {rid} already exists in {ex.get('filename')} (id collision)")
-        for r in rules:
+        for r in (rules if api_ok else []):
             for p in r["parents"]:
                 pl = parents_info.get(p, {}).get("level")
                 if pl is not None and r["level"] and r["level"].isdigit() and int(r["level"]) < int(pl):

@@ -5,6 +5,15 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+- **MCP clients now know the rule ID range.** `list_environments` returns `rule_id_range`, the MCP server
+  instructions and the `validate_rule_xml` / `propose_knowledge` descriptions mention it, `validate_rule_xml`
+  reports `allowed_id_range`, `id_errors` and a free `suggested_id`, and `propose_knowledge(kind=rule_draft)`
+  refuses a draft whose new rule IDs are outside the range (with the range and a suggested ID), so the assistant
+  renumbers it instead of leaving an undeployable proposal.
+- **Wazuh API unreachable no longer reports "parent rule … does not exist".** When the `/rules` lookup fails, the
+  draft analysis reports only that the API is unreachable and skips the parent, collision and load-order checks.
+
 ## [0.15.0] — 2026-11-16
 
 ### Changed

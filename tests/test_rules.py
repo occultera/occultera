@@ -235,3 +235,17 @@ def test_xml_entities_refused_and_extraction():
     assert R.extract_xml({"body": "text\n```xml\n<rule id=\"1\"/>\n```\nmore"}) == '<rule id="1"/>'
     assert R.extract_xml({"body": "a <group name=\"g\"><rule id=\"2\"/></group> b"}).startswith("<group")
     assert R.extract_xml({"body": "```" * 5000}) == ""          # no catastrophic backtracking
+
+
+async def test_unreachable_api_does_not_report_missing_parent():
+    from app.wazuh.api import WazuhAPIError
+
+    class Down:
+        async def rules(self, ids):
+            raise WazuhAPIError("/rules: All connection attempts failed")
+
+    rt = Runtime(load_settings(os.path.join(ROOT, "config/demo.yaml")), demo=True)
+    cfg = rt.get("demo").env.rule_deploy
+    a = await R.analyse(DETECT, cfg, Down())
+    assert not a["ok"] and any("Wazuh API unreachable" in e for e in a["errors"])
+    assert not any("does not exist" in e for e in a["errors"])

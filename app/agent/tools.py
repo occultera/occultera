@@ -311,6 +311,42 @@ class ToolBox:
         return await simulate(self.env, self.ix, a["xml"], days=max(1, min(int(a.get("days") or 14), 30)),
                               sample=1000)
 
+    def id_range(self) -> tuple[int, int]:
+        c = self.env.rule_deploy
+        return int(c.id_min), int(c.id_max)
+
+    async def suggest_rule_id(self, avoid: set[int] | None = None) -> int | None:
+        """First free rule ID in the environment's range: above existing drafts, not taken in Wazuh, not in `avoid`."""
+        from ..noise import next_rule_id
+        lo, hi = self.id_range()
+        drafts: list[dict] = []
+        if self.repo is not None:
+            try:
+                drafts = await self.repo.list_knowledge(kinds=["rule_draft"], size=1000)
+            except Exception:                       # noqa: BLE001 - a hint only, never fail the tool
+                drafts = []
+        start = next_rule_id(drafts, self.env.rule_deploy)
+        cands = [i for i in range(start, min(start + 50, hi + 1)) if i not in (avoid or set())]
+        if not cands:
+            return None
+        if self.api:
+            try:
+                taken = {int(r["id"]) for r in await self.api.rules([str(i) for i in cands])}
+                cands = [i for i in cands if i not in taken]
+            except Exception:                       # noqa: BLE001
+                pass
+        return cands[0] if cands and lo <= cands[0] <= hi else None
+
+    def _range_errors(self, ids: list[str | None]) -> list[str]:
+        lo, hi = self.id_range()
+        out = []
+        for i in ids:
+            if not i or not str(i).isdigit():
+                out.append(f"rule without numeric id: {i!r}")
+            elif not lo <= int(i) <= hi:
+                out.append(f"rule {i}: id outside the allowed range {lo}-{hi}")
+        return out
+
     async def validate_rule_xml(self, a):
         xml = a["xml"]
         res: dict[str, Any] = {}
@@ -343,6 +379,15 @@ class ToolBox:
             existing = await self.api.rules([i for i in res["rule_ids"] if i])
             res["id_collisions"] = [{"id": r["id"], "file": r.get("filename"), "description": r.get("description")}
                                     for r in existing]
+        lo, hi = self.id_range()
+        res["allowed_id_range"] = f"{lo}-{hi}"
+        res["id_errors"] = self._range_errors(res.get("rule_ids") or [])
+        if res["id_errors"]:
+            sid = await self.suggest_rule_id()
+            res["suggested_id"] = sid
+            res["fix"] = (f"Renumber the new rule(s) into {lo}-{hi}"
+                          + (f", starting at {sid}" if sid else "")
+                          + ". Parent IDs in <if_sid>/<if_matched_sid> stay as they are. Deployment refuses IDs outside the range.")
         res["note"] = ("Syntax/ID check only. Propose it with propose_knowledge(kind=rule_draft, xml=..., tests=...); "
                        "the user approves and deploys it (validated, restarted, rolled back on failure) or runs the commands.")
         return res
@@ -357,6 +402,20 @@ class ToolBox:
         if kind == "rule_draft":
             if a.get("xml"):
                 extra["xml"] = str(a["xml"])[:20000]
+                try:
+                    ids = [r.get("id") for r in SafeET.fromstring(f"<root>{extra['xml']}</root>").iter("rule")]
+                except (DefusedXmlException, ET.ParseError):
+                    ids = []
+                bad = self._range_errors(ids)
+                if bad:
+                    lo, hi = self.id_range()
+                    sid = await self.suggest_rule_id()
+                    return {"error": "rule draft refused: " + "; ".join(bad),
+                            "allowed_id_range": f"{lo}-{hi}", "suggested_id": sid,
+                            "fix": f"Renumber the new rule(s) into {lo}-{hi}"
+                                   + (f" (e.g. {sid})" if sid else "")
+                                   + ", keep parent IDs in <if_sid> unchanged, check with validate_rule_xml and "
+                                     "call propose_knowledge again."}
             tests = [t for t in (a.get("tests") or []) if isinstance(t, dict) and t.get("event")][:6]
             if tests:
                 extra["tests"] = [{"event": str(t["event"])[:4000], "log_format": str(t.get("log_format") or "syslog"),
@@ -525,7 +584,9 @@ SPECS: dict[str, dict] = {
         "parameters": _obj({"event": {"type": "string"}, "log_format": {"type": "string"},
                             "location": {"type": "string"}}, ["event"])},
     "validate_rule_xml": {"name": "validate_rule_xml", "description":
-        "Check a rule draft for XML syntax, OS_Regex pitfalls and rule ID collisions. Never applies it.",
+        "Check a rule draft for XML syntax, OS_Regex pitfalls, rule ID collisions and whether the new rule IDs are "
+        "inside the environment's allowed range (returned as allowed_id_range; list_environments shows it too). "
+        "On a range error it returns suggested_id. Never applies it.",
         "parameters": _obj({"xml": {"type": "string"}}, ["xml"])},
     "simulate_rule": {"name": "simulate_rule", "description":
         "Replay a child-rule draft (if_sid) against the last N days of real alerts: estimated alerts/day it would "
@@ -536,7 +597,8 @@ SPECS: dict[str, dict] = {
     "propose_knowledge": {"name": "propose_knowledge", "description":
         "Add a PROPOSAL to the knowledge base (baseline, decision, open item, lesson, rule draft). It has no "
         "effect until the user approves it. Only for durable, reusable knowledge. For kind=rule_draft put the full "
-        "<group> XML in `xml` and two-way test events in `tests`.",
+        "<group> XML in `xml` and two-way test events in `tests`; new rule IDs MUST be inside the environment's "
+        "rule_id_range (list_environments / validate_rule_xml), otherwise the draft is refused with a suggested_id.",
         "parameters": _obj({"kind": {"type": "string", "enum": [k for k in KNOWLEDGE_KINDS if k != "answer"]},
                             "title": {"type": "string"}, "body": {"type": "string"},
                             "rule_ids": {"type": "array", "items": {"type": "string"}},

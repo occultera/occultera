@@ -150,3 +150,19 @@ def test_ignore_agents_and_accept_in_collector(settings):
     assert health_status(flags) == "ok"
     d["health"]["agents_not_active"].append({"name": "db01"})
     assert any(f["code"] == "agents" and "db01" in f["message"] for f in c._flags(d))
+
+
+async def test_rule_id_range_is_reported_and_enforced(settings):
+    env = settings.environments[0]
+    env = env.model_copy(update={"rule_deploy": env.rule_deploy.model_copy(update={"id_min": 119000,
+                                                                                   "id_max": 119999})})
+    tb = ToolBox(env, None, None, None, mode="mcp")
+    xml = ('<group name="x"><rule id="100899" level="0"><if_sid>100893</if_sid>'
+           '<match>RoutingError</match><description>t</description></rule></group>')
+    res = await tb.validate_rule_xml({"xml": xml})
+    assert res["allowed_id_range"] == "119000-119999"
+    assert res["id_errors"] and res["suggested_id"] == 119000
+    refused = await tb.propose_knowledge({"kind": "rule_draft", "title": "t", "xml": xml})
+    assert "outside the allowed range" in refused["error"] and refused["suggested_id"] == 119000
+    ok = await tb.validate_rule_xml({"xml": xml.replace("100899", "119000")})
+    assert not ok["id_errors"] and "suggested_id" not in ok
