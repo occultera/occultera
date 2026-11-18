@@ -50,14 +50,7 @@ async def dashboard(request: Request, env: str | None = None, period: str = "24h
         top = [dict(it, idx=i) for i, it in enumerate(inbox)][:10]
         urgent = sum(1 for it in inbox if it["finding"].get("label") in ("real_incident", "detection_gap")
                      or it["finding"].get("severity") in ("critical", "high"))
-        # unanswered questions across recent runs (newest first, same question once)
-        questions, seen_q = [], set()
-        for r in runs:
-            for q in r.get("questions") or []:
-                k = (q.get("question") or "").strip().lower()
-                if not q.get("answer") and k and k not in seen_q:
-                    seen_q.add(k)
-                    questions.append({"q": q, "run_id": r["run_id"], "at": r.get("started_at")})
+        questions = _open_questions(runs)
         kb = await _safe(er.repo.list_knowledge(status=["proposed", "active"], size=500), [], request=request)
         rules = sorted([k for k in kb if k["kind"] == "rule_draft"],
                        key=lambda k: (k["status"] != "proposed", ((k.get("deploy") or {}).get("state") == "deployed"),
@@ -66,7 +59,15 @@ async def dashboard(request: Request, env: str | None = None, period: str = "24h
         open_items = [k for k in kb if k["kind"] == "open_item" and k["status"] == "active"]
         other_props = [k for k in kb if k["status"] == "proposed" and k["kind"] != "rule_draft"]
         live = await _safe(rt.liveness_state(er.env.id), None, request=request) if er.env.liveness.enabled else None
-        cards.append({"env": er.env, "last": last, "running": er.current_run, "next": rt.next_run(er.env, lang), "live": live,
+        st = await _safe(rt.env_settings(er), None, request=request)
+        setup = [   # first-run checklist on the dashboard: shown until every step is done
+            ("first_report", bool(last), f"/e/{er.env.id}"),
+            ("schedule", bool(st and st.schedule(er.env.schedule).enabled), f"/e/{er.env.id}/settings#ai"),
+            ("channel", bool(rt.settings.notify_for(er.env).channels), wiki_url(lang, "Configuration")),
+            ("watch", bool(st and st.watch.enabled), f"/e/{er.env.id}/settings#watch"),
+            ("privacy", getattr(er.env.privacy, "mode", "off") == "mask", wiki_url(lang, "Privacy")),
+        ]
+        cards.append({"env": er.env, "last": last, "setup": [] if all(d for _, d, _ in setup) else setup, "running": er.current_run, "next": rt.next_run(er.env, lang), "live": live,
                       "proposals": len(props), "open_q": open_q, "new_f": new_f, "inbox": len(inbox),
                       "top": top, "urgent": urgent, "questions": questions[:6], "rules": rules[:6],
                       "requests": requests[:6], "open_items": open_items[:6],
@@ -137,15 +138,29 @@ async def report_page(request: Request, env_id: str, run_id: str):
                                                              hourly=hourly, hmax=mx, proposals=props))
 
 
+def _open_questions(runs: list[dict]) -> list[dict]:
+    """Unanswered questions across recent runs (newest first, the same question once)."""
+    questions, seen_q = [], set()
+    for r in runs:
+        for q in r.get("questions") or []:
+            k = (q.get("question") or "").strip().lower()
+            if not q.get("answer") and k and k not in seen_q:
+                seen_q.add(k)
+                questions.append({"q": q, "run_id": r["run_id"], "at": r.get("started_at")})
+    return questions
+
+
 @router.get("/e/{env_id}/inbox", response_class=HTMLResponse)
 async def inbox_page(request: Request, env_id: str, i: int = 0, key: str | None = None):
     er = _env(request, env_id)
     items = await _safe(_rt(request).inbox(env_id), [], request=request)
+    runs = await _safe(er.repo.list_runs(8, light=True), [], request=request)
+    questions = _open_questions(runs)[:10]
     if key:   # deep link from a notification: the item may have moved since the message was sent
         i = next((n for n, g in enumerate(items) if g["key"] == key), i)
     i = max(0, min(i, len(items) - 1)) if items else 0
     return tpl.TemplateResponse(request, "inbox.html", _ctx(request, er=er, env=er.env, items=items, i=i,
-                                                            item=items[i] if items else None))
+                                                            item=items[i] if items else None, questions=questions))
 
 
 @router.get("/e/{env_id}/k", response_class=HTMLResponse)

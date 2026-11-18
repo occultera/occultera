@@ -136,13 +136,14 @@
   <form class="sform" data-mask="/api/e/{{ env.id }}/settings">
     <h3>{{ _('mask.standard') }}</h3>
     <div class="frow">{% for d in detectors %}
-      <label class="chk" title="{{ _('mask.secret_locked') if d.secret else '' }}"><input type="checkbox" data-detector="{{ d.kind }}" {{ 'checked disabled' if d.secret else ('' if d.kind in st.mask.disabled else 'checked') }}> {{ d.kind }}{% if d.secret %} 🔒{% endif %}</label>{% endfor %}</div>
-    <p class="small muted">{{ _('mask.standard_help') }}</p>
+      {% if d.yaml %}<label class="chk muted" title="{{ _('mask.yaml_only') }}"><input type="checkbox" disabled {{ 'checked' if d.on }}> {{ d.kind }} ⚙</label>
+      {% else %}<label class="chk" title="{{ _('mask.secret_locked') if d.secret else '' }}"><input type="checkbox" data-detector="{{ d.kind }}" {{ 'checked disabled' if d.secret else ('' if d.kind in st.mask.disabled else 'checked') }}> {{ d.kind }}{% if d.secret %} 🔒{% endif %}</label>{% endif %}{% endfor %}</div>
+    <p class="small muted">{{ _('mask.standard_help') }} {{ _('mask.yaml_only') }}</p>
     <h3>{{ _('mask.custom') }}</h3>
     <table class="tbl small"><thead><tr><th>{{ _('mask.c_name') }}</th><th>{{ _('mask.c_pattern') }}</th><th>{{ _('mask.c_desc') }}</th><th></th></tr></thead>
       <tbody data-custom-rows>{% for c in st.mask.custom %}
-        <tr><td><input data-c="name" value="{{ c.name }}" maxlength="26"></td><td><input data-c="pattern" value="{{ c.pattern }}" maxlength="200" class="mono"></td>
-          <td><input data-c="description" value="{{ c.description }}" maxlength="200"></td><td><button type="button" class="btn small ghost" data-row-del>✕</button></td></tr>{% endfor %}
+        <tr><td><input data-c="name" value="{{ c.name }}" maxlength="26" aria-label="{{ _('mask.c_name') }}"></td><td><input data-c="pattern" value="{{ c.pattern }}" maxlength="200" class="mono" aria-label="{{ _('mask.c_pattern') }}"></td>
+          <td><input data-c="description" value="{{ c.description }}" maxlength="200" aria-label="{{ _('mask.c_desc') }}"></td><td><button type="button" class="btn small ghost" data-row-del>✕</button></td></tr>{% endfor %}
       </tbody></table>
     <div class="row"><button type="button" class="btn small" data-row-add>{{ _('mask.c_add') }}</button><span class="small muted">{{ _('mask.custom_help') }}</span></div>
     <h3>{{ _('mask.allow') }}</h3>
@@ -177,7 +178,7 @@
 
   <h3>{{ _('bk.import') }}</h3>
   <form class="sform" data-backup-import="/api/e/{{ env.id }}/backup/import">
-    <div class="frow"><input type="file" name="file" accept=".occbak" required>
+    <div class="frow"><input type="file" name="file" accept=".occbak" required aria-label="{{ _('bk.file') }}">
       <label>{{ _('bk.pass') }} <input type="password" name="passphrase" autocomplete="off" required></label></div>
     <div class="frow"><label class="chk"><input type="radio" name="mode" value="missing" checked> {{ _('bk.mode_missing') }}</label>
       <label class="chk"><input type="radio" name="mode" value="overwrite"> {{ _('bk.mode_overwrite') }}</label></div>

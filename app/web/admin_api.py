@@ -33,8 +33,16 @@ def _problem(e: Exception) -> str:
     return str(e)
 
 
-def _detectors() -> list[dict]:
-    return [{"kind": d.kind, "secret": d.secret, "optional": d.optional} for d in DETECTORS] + [{"kind": "ip", "secret": False}]
+def _detectors(env=None) -> list[dict]:
+    """Detectors for the settings page. ``yaml``: switched in the environment's YAML, not here (optional detectors
+    and IPs); ``on`` then shows what the YAML says, so the page never claims a masking that does not happen."""
+    p = getattr(env, "privacy", None)
+    kinds = set(getattr(p, "kinds", None) or [])
+    out = [{"kind": d.kind, "secret": d.secret, "yaml": d.optional, "on": d.kind in kinds} if d.optional
+           else {"kind": d.kind, "secret": d.secret, "yaml": False} for d in DETECTORS]
+    ips = getattr(p, "ips", "keep")
+    out.append({"kind": "ip" if ips == "keep" else f"ip ({ips})", "secret": False, "yaml": True, "on": ips != "keep"})
+    return out
 
 
 # ------------------------------------------------------------------ pages
@@ -50,7 +58,7 @@ async def settings_page(request: Request, env_id: str):
     sugg = [e for e in events if (e.get("suggestion") or {}).get("state") == "open"]
     return tpl.TemplateResponse(request, "settings.html", _ctx(
         request, er=er, env=er.env, st=st, storage=storage, channels=ncfg.channels, all_channels=CHANNELS,
-        triggers=TRIGGERS, detectors=_detectors(), suggestions=sugg, tunable=TUNABLE,
+        triggers=TRIGGERS, detectors=_detectors(er.env), suggestions=sugg, tunable=TUNABLE,
         s3_on=bcfg.s3.enabled, s3_bucket=bcfg.s3.bucket if bcfg.s3.enabled else "",
         auto_possible=bcfg.s3.enabled and len(bcfg.passphrase) >= MIN_PASSPHRASE, min_pass=MIN_PASSPHRASE,
         yaml_schedule=er.env.schedule, schedule=st.schedule(er.env.schedule),

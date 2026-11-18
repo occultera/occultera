@@ -576,9 +576,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const rows = form.querySelector("[data-custom-rows]");
     form.querySelector("[data-row-add]").addEventListener("click", () => {
       const trEl = document.createElement("tr");
-      trEl.innerHTML = '<td><input data-c="name" placeholder="x_customer_no" maxlength="26"></td>'
-        + '<td><input data-c="pattern" class="mono" placeholder="CUST-\\d{6}" maxlength="200"></td>'
-        + '<td><input data-c="description" maxlength="200"></td>'
+      trEl.innerHTML = '<td><input data-c="name" placeholder="x_customer_no" maxlength="26" aria-label="name"></td>'
+        + '<td><input data-c="pattern" class="mono" placeholder="CUST-\\d{6}" maxlength="200" aria-label="pattern"></td>'
+        + '<td><input data-c="description" maxlength="200" aria-label="description"></td>'
         + '<td><button type="button" class="btn small ghost" data-row-del>✕</button></td>';
       rows.appendChild(trEl);
     });

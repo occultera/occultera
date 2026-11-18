@@ -16,6 +16,17 @@
 </div>
 {% if c %}<div class="runstate small" data-runstate="{{ c.env.id }}" {% if c.running %}data-poll="{{ c.running }}"{% endif %}></div>{% endif %}
 
+{% if c and c.setup and can.admin %}
+<details class="card setup" open>
+  <summary><b>{{ _('setup.title') }}</b> <span class="pill outline">{{ c.setup|selectattr(1)|list|length }} / {{ c.setup|length }}</span></summary>
+  <ol class="setup-list">{% for key, done, href in c.setup %}
+    <li class="{{ 'done' if done }}"><span aria-hidden="true">{{ '✓' if done else '○' }}</span>
+      {% if done %}{{ _('setup.' ~ key) }}{% else %}<a href="{{ href }}"{% if href.startswith('http') %} rel="noopener" target="_blank"{% endif %}>{{ _('setup.' ~ key) }}</a>{% endif %}</li>{% endfor %}
+  </ol>
+  <p class="small muted">{{ _('setup.note') }}</p>
+</details>
+{% endif %}
+
 {% if tiles|length > 1 %}
 <div class="envstrip">
   {% for tl in tiles %}{% set h = (tl.last.health or 'ok') if tl.last else 'none' %}

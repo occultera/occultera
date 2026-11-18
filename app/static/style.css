@@ -467,7 +467,7 @@ i.c-med { background: var(--c-med); } i.c-low { background: var(--c-low); }
 .mhead:hover { text-decoration: none; border-color: var(--accent); }
 .mhead span { font-size: 12px; font-weight: 700; line-height: 1.25; } .mhead b { font-size: 17px; margin-top: auto; }
 .mhead small { color: var(--muted); font-size: 11px; }
-.mcol.blank .mhead { opacity: .6; border-style: dashed; } .mcol.focus .mhead { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+.mcol.blank .mhead { border-style: dashed; color: var(--muted); } .mcol.focus .mhead { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
 .mcell { display: flex; flex-direction: column; gap: 1px; padding: 7px 9px; border-radius: 7px; color: var(--ink); border: 1px solid transparent; }
 .mcell:hover { text-decoration: none; border-color: var(--accent); }
 .mcell .tid { font: 600 11.5px var(--mono); } .mcell .tid em { font: 700 10px Inter, sans-serif; font-style: normal; text-transform: uppercase;
@@ -506,3 +506,22 @@ td.route { max-width: 420px; overflow: hidden; text-overflow: ellipsis; white-sp
 dl.kv { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; margin: 0 0 10px; }
 dl.kv dt { color: var(--muted); } dl.kv dd { margin: 0; font-variant-numeric: tabular-nums; }
 .tbl.compact td, .tbl.compact th { padding-top: 6px; padding-bottom: 6px; }
+.inbox-questions { margin-bottom: 16px; } .inbox-questions .bhead { display: flex; align-items: center; gap: 8px; } .inbox-questions .qa { gap: 8px; margin-top: 8px; } .inbox-questions textarea { flex: 1 1 260px; }
+
+/* contrast (WCAG AA 4.5:1) on tinted cells and light rows */
+@media (prefers-color-scheme: light) {
+  .tcell.h0 .tsub, .tcell.h1 .tsub, .mcell.h0 .tct, .mcell.h1 .tct { color: #4b5263; }
+  .tcell.h2 .tsub, .tcell.h3 .tsub, .mcell.h2 .tct, .mcell.h3 .tct { color: #1f2430; }
+  .hi { color: #a14408; }
+  .tcell.h2 .hi, .tcell.h3 .hi, .mcell.h2 .hi, .mcell.h3 .hi { color: #6b2504; }
+  .tcell.h4 .hi, .tcell.h5 .hi, .mcell.h4 .hi, .mcell.h5 .hi { color: #ffd59a; }
+  .warnrow .muted, .warnrow .small { color: #4b5263; }
+}
+
+/* links inside running text are underlined (not distinguished by colour alone) */
+p a:not(.btn):not(.pill), .small a:not(.btn):not(.pill), .bd a, li a:not(.btn):not(.pill):not(.ttag) { text-decoration: underline; text-underline-offset: 2px; }
+.nav a, .side a, .inbox-list a, .lang a, .tabs a, .mhead, .tcell, .mcell { text-decoration: none; }
+
+.setup { margin-bottom: 16px; } .setup summary { cursor: pointer; display: flex; gap: 8px; align-items: center; }
+.setup-list { list-style: none; padding: 0; margin: 10px 0 4px; display: grid; gap: 6px; } .setup-list li.done { color: var(--muted); }
+.setup-list li span { display: inline-block; width: 1.4em; color: var(--accent); font-weight: 700; }

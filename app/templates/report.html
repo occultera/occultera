@@ -79,7 +79,7 @@
       <p class="small muted">{{ _('rep.rule_draft_note') }}</p>
     </details>{% endif %}
     <div class="row fb" data-finding="/api/e/{{ env.id }}/r/{{ run.run_id }}/f/{{ f.id }}">
-      <select data-k="user_status">
+      <select data-k="user_status" aria-label="{{ _('rep.status') }}">
         {% for k in USER_STATUSES %}<option value="{{ k }}" {{ 'selected' if f.user_status == k }}>{{ _('us.' ~ k) }}</option>{% endfor %}
       </select>
       <input data-k="user_note" placeholder="{{ _('rep.note_ph') }}" value="{{ f.user_note or '' }}">

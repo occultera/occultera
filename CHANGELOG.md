@@ -20,11 +20,21 @@ All notable changes to this project are documented here. The format follows
   claims and broken wiki or README links.
 - **Masked notification channels.** `notify.mask: [telegram, slack, …]` sends those channels the title and
   lines through the environment's masker; other channels and the UI link keep the real values.
+- **Questions on the Recommendations page.** Unanswered questions from recent runs are listed at the top of
+  Recommendations with an answer box, not only inside the report.
+- **First-run checklist** on the dashboard (administrators): first check, AI-round schedule, notification channel,
+  watch and masking, each linked to where it is set; it disappears when all are done.
+- **Accessibility:** WCAG 2 A/AA violations found by axe fixed (contrast in the ATT&CK and heat cells, labels for
+  selects and detector fields, underlined links in text). `tests/test_empty_states.py` renders every page of a
+  nearly empty installation in English and Turkish.
 - **Signed releases.** The release workflow signs the image with cosign (keyless), attaches SLSA provenance and a
   BuildKit SBOM, and puts a Trivy CRITICAL/HIGH scan in the run summary.
 
 ### Fixed
 - **E-mail addresses with non-ASCII letters** (`Mehmet.Öz@…`) and **phone numbers after `tel:`** are now masked.
+- The masking settings no longer show `person_name` and `ip` as active when the YAML leaves them off; both are
+  marked ⚙ (set in the YAML) and show the state in force.
+- Percentages on the Noise map follow the UI language (`%12.5` in Turkish, `12.5 %` elsewhere).
 - The model wrapper masks structured (non-string) message content too, instead of passing it through.
 - The `propose_knowledge` audit entry records the environment and the request ID instead of empty values.
 - **MCP clients now know the rule ID range.** `list_environments` returns `rule_id_range`, the MCP server

@@ -7,6 +7,23 @@
 </div>
 {% if items %}<div class="progress"><span data-w="{{ ((i + 1) * 100 / items|length)|round|int }}"></span></div>{% endif %}
 
+{% if questions %}
+<section class="card inbox-questions" id="questions">
+  <div class="bhead"><h3>{{ _('dash.q_title') }}</h3><span class="count">{{ questions|length }}</span></div>
+  <p class="small muted">{{ _('rep.questions_note') }}</p>
+  {% for x in questions %}
+  <div class="brow">
+    <div class="bt">{{ x.q.question }}</div>
+    {% if x.q.why %}<div class="bd">{{ x.q.why }}</div>{% endif %}
+    <div class="row qa" data-answer="/api/e/{{ env.id }}/r/{{ x.run_id }}/q/{{ x.q.id }}">
+      <textarea rows="1" placeholder="{{ _('rep.answer_ph') }}"></textarea><button class="btn small primary" data-save>{{ _('rep.send') }}</button>
+      <a class="small" href="/e/{{ env.id }}/r/{{ x.run_id }}#questions">{{ _('inbox.open_report') }}</a>
+    </div>
+  </div>
+  {% endfor %}
+</section>
+{% endif %}
+
 {% if not item %}
   <div class="card empty"><b>✓</b>{{ _('inbox.empty') }}</div>
 {% else %}

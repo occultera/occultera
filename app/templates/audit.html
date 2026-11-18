@@ -8,7 +8,7 @@
     <div class="sub">{{ _('au.period') }}: {{ a.from[:10] }} – {{ a.to[:10] }} · {{ _('au.generated') }} {{ a.generated_at|ts }}</div>
   </div>
   <div class="tools noprint">
-    <form method="get" class="inline"><select name="month" data-autosubmit>{% for m in months %}<option value="{{ m }}" {{ 'selected' if m == a.month }}>{{ m }}</option>{% endfor %}</select></form>
+    <form method="get" class="inline"><select name="month" data-autosubmit aria-label="{{ _('au.month') }}">{% for m in months %}<option value="{{ m }}" {{ 'selected' if m == a.month }}>{{ m }}</option>{% endfor %}</select></form>
     <a class="btn" href="/api/e/{{ env.id }}/audit.md?month={{ a.month }}">{{ _('au.download_md') }}</a>
     <a class="btn primary" href="/api/e/{{ env.id }}/audit.pdf?month={{ a.month }}">{{ _('au.download_pdf') }}</a>
   </div>

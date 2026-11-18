@@ -8,6 +8,7 @@ from datetime import UTC
 from pathlib import Path
 
 from fastapi.templating import Jinja2Templates
+from jinja2 import pass_context
 from markdown_it import MarkdownIt
 from markupsafe import Markup
 
@@ -82,6 +83,13 @@ def _fmt_bytes(n) -> str:
     return fmt_bytes(float(n or 0))
 
 
+@pass_context
+def pct(ctx, ratio) -> str:
+    """A ratio as a percentage in the UI language: ``%12.5`` in Turkish, ``12.5 %`` elsewhere."""
+    v = round((ratio or 0) * 100, 1)
+    return f"%{v}" if ctx.get("lang") == "tr" else f"{v} %"
+
+
 def delta(v):
     """``+12 %`` / ``−8 %`` for a ratio, ``—`` when there is no previous value."""
     if v is None:
@@ -95,6 +103,7 @@ tpl.env.filters["md"] = lambda s: Markup(_md.render(s if isinstance(s, str) else
 tpl.env.filters["ts"] = fmt_ts
 tpl.env.filters["tss"] = lambda v: fmt_ts(v, True)
 tpl.env.filters["n"] = num
+tpl.env.globals["pct"] = pct
 tpl.env.globals.update(LABEL_COLORS=LABEL_COLORS, USER_STATUSES=USER_STATUSES, HEALTH_COLORS=HEALTH_COLORS,
                        KINDS=list(KNOWLEDGE_KINDS), LANGS=LANG_NAMES, version=__version__, SOURCE_URL=SOURCE_URL,
                        LABELS=LABELS, SEVERITIES=SEVERITIES, chart=charts, volume_chart=volume_chart,
