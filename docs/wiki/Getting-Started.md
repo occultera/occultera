@@ -53,8 +53,9 @@ writes a placeholder report without calling a model, so the run takes seconds an
 
 1. Open the report. Top to bottom: summary, infrastructure, findings, questions from the assistant, then the
    **Data** section marked *deterministic queries — independent of the AI*.
-2. Open **Recommendations**. Decide one finding, answer one question.
-3. Open **Knowledge base** and confirm that your answer is stored there.
+2. In the report, answer the question under **Questions from the assistant** and press **Send**.
+3. Open **Recommendations** and decide one finding (for example *Known noise (baseline)*).
+4. Open **Knowledge base** and confirm that both your answer and your decision are stored there.
 
 Each of these pages is explained in the [User guide](User-Guide). To see a real model on the same synthetic
 data, set the `LLM_*` variables in `.env` and run `docker compose up -d` again.
@@ -138,7 +139,7 @@ knowledge base. The next run reads them.
 - Urgent alerts between AI rounds: [Watch](Watch).
 - More than one Wazuh: [Installation](Installation) (A3) and [Configuration](Configuration).
 
-*Applies to 0.11.0 · reviewed 2026-11-11*
+*Applies to 0.15.0 · demo steps 1–4 run on 0.15.0, steps 5–8 checked against the 0.15.0 code · 2026-11-18*
 
 ---
 

@@ -54,8 +54,9 @@ sağlayıcısını kullanır: model çağırmadan yer tutucu bir rapor yazar; ko
 
 1. Raporu açın. Yukarıdan aşağıya: özet, altyapı, bulgular, asistanın soruları, ardından yapay zekâdan
    bağımsız deterministik sorguların yer aldığı veri bölümü.
-2. **Öneriler** sayfasını açın. Bir bulgu için karar verin, bir soruyu cevaplayın.
-3. **Bilgi tabanı**nı açın ve cevabınızın orada durduğunu görün.
+2. Raporda **Asistanın soruları** altındaki soruyu cevaplayıp **Gönder**'e basın.
+3. **Öneriler** sayfasını açın ve bir bulgu için karar verin (örneğin *Bilinen gürültü (baseline)*).
+4. **Bilgi tabanı**nı açın ve hem cevabınızın hem kararınızın orada durduğunu görün.
 
 Bu sayfaların her biri [Kullanıcı rehberi](User-Guide-TR)nde anlatılır. Aynı sentetik veride gerçek bir modeli
 denemek için `.env` içinde `LLM_*` değişkenlerini ayarlayıp `docker compose up -d` komutunu yeniden çalıştırın.
@@ -140,7 +141,7 @@ tabanında bulun. Sonraki koşu bunları okur.
 - AI turları arasında acil uyarılar: [Nöbet](Watch-TR).
 - Birden fazla Wazuh: [Kurulum](Installation-TR) (A3) ve [Yapılandırma](Configuration-TR).
 
-*0.11.0 için geçerlidir · gözden geçirme: 2026-11-11*
+*0.15.0 için geçerlidir · demo adımları 1–4 0.15.0 üzerinde çalıştırıldı, 5–8 0.15.0 koduna göre kontrol edildi · 2026-11-18*
 
 ---
 
