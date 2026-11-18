@@ -82,11 +82,12 @@ kalır. Yeniden üretmek için: `python -m tools.pii_eval`.
 | Category | Input | What the model sees | Result |
 |---|---|---|---|
 | email | `sshd: Accepted password for ayse.yilmaz@firma.com.tr from 10.1.2.3` | `sshd: Accepted password for <email:…> from 10.1.2.3` | masked |
-| email | `user="Mehmet.Öz+test@example.org" action=login` | `user="Mehmet.Öz+test@example.org" action=login` | **not detected** (known gap) |
+| email | `user="Mehmet.Öz+test@example.org" action=login` | `user="<email:…>" action=login` | masked |
 | email | `mail to=<destek@sirket.com.tr> status=sent` | `mail to=<<email:…>> status=sent` | masked |
 | phone | `SMS gönderildi: 0532 123 45 67` | `SMS gönderildi: <phone:…>` | masked |
 | phone | `callerid=+90 532 123 45 67` | `callerid=<phone:…>` | masked |
-| phone | `tel:05321234567 doğrulama` | `tel:05321234567 doğrulama` | **not detected** (known gap) |
+| phone | `tel:05321234567 doğrulama` | `tel:<phone:…> doğrulama` | masked |
+| phone | `ref:05321234567` | `ref:05321234567` | kept (correct) |
 | phone | `dahili 2145 aradı` | `dahili 2145 aradı` | kept (correct) |
 | national_id_tr | `basvuru tckn=10000000146 onaylandi` | `basvuru tckn=<national_id_tr:…> onaylandi` | masked |
 | national_id_tr | `kimlik no: 10000000147 (hatalı)` | `kimlik no: 10000000147 (hatalı)` | kept (correct) |
@@ -106,13 +107,17 @@ kalır. Yeniden üretmek için: `python -m tools.pii_eval`.
 | noise | `run rosca-20261028073001-712bbf v4.14.8 port 55000` | `run rosca-20261028073001-712bbf v4.14.8 port 55000` | kept (correct) |
 | noise | `rule 100213 level 12 agent 007` | `rule 100213 level 12 agent 007` | kept (correct) |
 
-Personal data masked: 12/18 · false positives: 0/6
+Personal data masked: 14/18 · false positives: 0/7
 
 **Nasıl okunur:** yapısal tanımlayıcılar (e-posta, Türk telefon biçimleri, TCKN, IBAN, kart, sırlar) kontrol
 basamağı doğrulamasıyla maskelenir; çalışma kimliklerinde, kural numaralarında ve epoch zaman damgalarında yanlış
-pozitif yoktur. Kişi adları, kullanıcı adları, adresler, plakalar, ASCII dışı harf içeren e-posta adresleri ve
-bir öneke bitişik telefon numarası (`tel:0532…`) **algılanmaz**. Loglarınızdaki kalıplar için özel detector
+pozitif yoktur. Kişi adları, kullanıcı adları, adresler ve plakalar varsayılan profilde **algılanmaz**. Loglarınızdaki kalıplar için özel detector
 ekleyin.
+
+**İsteğe bağlı `person_name` detector'ı (yayımlanmadı):** yaygın bir Türkçe ad ve büyük harfle başlayan bir soyadı
+(*Ayşe Yılmaz*, *Mehmet Ali Kaya*). *Sultan Ahmet* gibi yer adlarını da yakaladığı için **varsayılan olarak
+kapalıdır**; istediğiniz türlerle birlikte `privacy.kinds` listesine yazarak açın (boş liste, onsuz varsayılan küme
+demektir). Tek başına bir ad ve küçük harfli kullanıcı adları yakalanmaz.
 
 ## Maskeleme profili (0.10)
 

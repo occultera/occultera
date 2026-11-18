@@ -12,10 +12,12 @@ Off unless MCP_TOKEN is set; clients send `Authorization: Bearer <MCP_TOKEN>`.
 """
 from __future__ import annotations
 
+import contextvars
 import hmac
 import json
 import logging
 import os
+import re
 
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse, Response
@@ -24,7 +26,7 @@ from . import __version__, auditlog, authz
 from .agent.tools import SPECS, ToolBox
 from .errors import public_error
 from .observability import REQUEST_ID
-from .web.common import Throttle, client_ip
+from .web.common import Throttle, client_ip, proxy_hint
 
 log = logging.getLogger("wdt.mcp")
 router = APIRouter()
@@ -44,14 +46,58 @@ EXTRA = {
 }
 
 
+MCP_CLIENT: contextvars.ContextVar[str] = contextvars.ContextVar("wdt_mcp_client", default="mcp-client")
+_NAME = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,39}$")
+
+
+def tokens() -> dict[str, str]:
+    """Client name -> token. ``MCP_TOKEN`` is the client ``default``; ``MCP_TOKENS`` adds named clients as
+    ``name=token`` pairs separated by commas or new lines (``MCP_TOKENS_FILE`` reads the same from a file, e.g. a
+    mounted Secret). Read per request, so a removed entry is revoked at once. Short or malformed entries are
+    skipped with a warning; values are never logged."""
+    out: dict[str, str] = {}
+    if os.environ.get("MCP_TOKEN"):
+        out["default"] = os.environ["MCP_TOKEN"]
+    raw = os.environ.get("MCP_TOKENS", "")
+    f = os.environ.get("MCP_TOKENS_FILE", "")
+    if f:
+        try:
+            raw += "\n" + open(f, encoding="utf-8").read()
+        except OSError as e:
+            log.warning("MCP_TOKENS_FILE unreadable: %s", type(e).__name__)
+    for part in re.split(r"[,\n]", raw):
+        part = part.strip()
+        if not part or part.startswith("#"):
+            continue
+        name, sep, tok = part.partition("=")
+        name, tok = name.strip(), tok.strip()
+        if not sep or not _NAME.match(name) or len(tok) < 16:
+            log.warning("MCP_TOKENS: ignoring an entry (name %r): needs name=token, token >= 16 chars", name[:40])
+            continue
+        out[name] = tok
+    return out
+
+
 def token() -> str:
-    return os.environ.get("MCP_TOKEN", "")
+    """Non-empty when MCP is enabled (kept for callers that only need on/off)."""
+    t = tokens()
+    return next(iter(t.values()), "")
+
+
+def _client(request: Request) -> str | None:
+    """The client name whose token the request carries, else None. Every token is compared (constant time)."""
+    h = request.headers.get("authorization", "")
+    if not h.lower().startswith("bearer "):
+        return None
+    given, found = h[7:].strip(), None
+    for name, tok in tokens().items():
+        if hmac.compare_digest(given.encode(), tok.encode()):
+            found = name
+    return found
 
 
 def _authorized(request: Request) -> bool:
-    tok = token()
-    h = request.headers.get("authorization", "")
-    return bool(tok) and h.lower().startswith("bearer ") and hmac.compare_digest(h[7:].strip(), tok)
+    return _client(request) is not None
 
 
 def _tool_list(rt) -> list[dict]:
@@ -160,11 +206,11 @@ async def _handle(rt, msg: dict) -> dict | None:
         if name == "propose_knowledge":
             env_arg = str((p.get("arguments") or {}).get("env") or "")
             rid = REQUEST_ID.get()
-            auditlog.record("mcp.propose_knowledge", actor="mcp-client", role="mcp", env=env_arg,
+            auditlog.record("mcp.propose_knowledge", actor=MCP_CLIENT.get(), role="mcp", env=env_arg,
                             target=env_arg,
                             result="error" if err else "ok", request_id=rid if rid != "-" else "mcp",
                             method="POST", path_="/mcp", detail={"tool": name})
-        log.info("mcp %s %s", name, "error" if err else "ok")
+        log.info("mcp %s %s %s", MCP_CLIENT.get(), name, "error" if err else "ok")
         return _ok(mid, {"content": [{"type": "text", "text": text}], "isError": err})
     if method in ("resources/list", "prompts/list"):
         return _ok(mid, {method.split("/")[0]: []})
@@ -178,7 +224,7 @@ def _rate() -> int:
         return 120
 
 
-MCP_REQUESTS = Throttle(limit=_rate(), window=60)        # per client address; 0 = unlimited
+MCP_REQUESTS = Throttle(limit=_rate(), window=60)        # per named client, else per address; 0 = unlimited
 MCP_AUTH_FAILS = Throttle(limit=10, window=300)
 
 
@@ -187,16 +233,20 @@ async def mcp_post(request: Request):
     if not token():
         return JSONResponse({"error": "MCP is disabled (set MCP_TOKEN)"}, status_code=404)
     ip = client_ip(request)
+    proxy_hint(request)           # logs once when the proxy is not in TRUSTED_PROXIES
     if MCP_AUTH_FAILS.blocked(ip):
         return JSONResponse({"error": "too many failed attempts"}, status_code=429, headers={"Retry-After": "300"})
-    if not _authorized(request):
+    client = _client(request)
+    if client is None:
         MCP_AUTH_FAILS.add(ip)
         return JSONResponse({"error": "unauthorized"}, status_code=401,
                             headers={"WWW-Authenticate": 'Bearer realm="occultera"'})
-    if MCP_REQUESTS.blocked(ip):
+    key = ip if client == "default" else f"client:{client}"     # named clients get their own limit
+    if MCP_REQUESTS.blocked(key):
         return JSONResponse({"error": "rate limit exceeded; retry in a minute"}, status_code=429,
                             headers={"Retry-After": "60"})
-    MCP_REQUESTS.add(ip)
+    MCP_REQUESTS.add(key)
+    MCP_CLIENT.set("mcp-client" if client == "default" else f"mcp:{client}")
     try:
         body = await request.json()
     except ValueError:

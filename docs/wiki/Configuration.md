@@ -72,6 +72,7 @@ otherwise                → single-environment mode from WAZUH_* variables
 | `BACKUP_S3_*`, `BACKUP_PASSPHRASE` | *(empty)* | S3 target and the passphrase for automatic backups — see [Backup](Backup). |
 | `METRICS_TOKEN` | *(empty)* | Bearer token for `/metrics`; when empty an admin session is required. |
 | `MCP_TOKEN` | *(empty)* | Enables `POST /mcp`; without it the endpoint answers `404`. See [MCP](MCP). |
+| `MCP_TOKENS` / `MCP_TOKENS_FILE` | *(empty)* | Named MCP clients, `name=token` pairs (comma or new line); each is audited and rate-limited by name and revoked by removing its line. *(unreleased)* |
 
 ### Model (LLM)
 

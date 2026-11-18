@@ -191,6 +191,22 @@ motoruna dönüştüremez.
 ingress arkasında `TRUSTED_PROXIES` ayarlayın: aksi halde tüm istemciler proxy olarak görünür, tek bir sınırı ve
 tek bir kilidi paylaşır — bir istemcinin on yanlış belirteci diğerlerini de kilitler. Sayaçlar süreç belleğindedir.
 
+### İsimli token'lar (yayımlanmadı)
+
+Her istemciye kendi token'ını verin: audit kaydı istemcinin adını yazar, her birinin kendi hız sınırı olur ve
+biri diğerlerine dokunmadan iptal edilebilir:
+
+```sh
+MCP_TOKENS="claude-rustem=$(openssl rand -hex 32),cursor-soc=$(openssl rand -hex 32)"
+# ya da bağlanmış bir dosya, her satırda bir ad=token (# yorumlara izin verilir):
+MCP_TOKENS_FILE=/run/secrets/mcp-tokens
+```
+
+Adlar: harf, rakam, `.`, `_`, `-`, en çok 40 karakter; token'lar en az 16 karakter. Liste her istekte okunur: bir
+satırı silmek o istemciyi hemen iptal eder. `MCP_TOKEN` `default` istemcisi olarak çalışmaya devam eder (audit
+aktörü `mcp-client`, hız sınırı kaynak IP başına); isimli bir istemci `mcp:<ad>` olarak kaydedilir ve ad başına
+sınırlanır. Değerler hiçbir zaman loglanmaz.
+
 ### Hatalar ve takma adlar
 
 Başarısız bir araç `{"error", "kind", "ref"}` döner — `timeout`, `unreachable` gibi bir kategori ve bir referans;

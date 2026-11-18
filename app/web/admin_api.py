@@ -34,7 +34,7 @@ def _problem(e: Exception) -> str:
 
 
 def _detectors() -> list[dict]:
-    return [{"kind": d.kind, "secret": d.secret} for d in DETECTORS] + [{"kind": "ip", "secret": False}]
+    return [{"kind": d.kind, "secret": d.secret, "optional": d.optional} for d in DETECTORS] + [{"kind": "ip", "secret": False}]
 
 
 # ------------------------------------------------------------------ pages

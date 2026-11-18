@@ -72,6 +72,20 @@ ingress, SSO, kural dağıtımının açılması) yeniden üzerinden geçin. Her
 - [ ] Hiçbir indeks saklama politikası uygulamanın indekslerini silmiyor (**Ayarlar → Depolama güvenliği**) ve
       ilk yedek alındı. Bkz. [Yedekleme](Backup-TR).
 
+## İmajı doğrulayın (yayımlanmadı)
+
+0.15.0 sonrası sürümler Sigstore ile anahtarsız imzalanır, SLSA provenance ve SBOM taşır:
+
+```sh
+cosign verify ghcr.io/occultera/occultera:<sürüm> \
+  --certificate-identity-regexp 'https://github.com/occultera/occultera/.github/workflows/release.yml@.*' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+docker buildx imagetools inspect ghcr.io/occultera/occultera:<sürüm> --format '{{ json .Provenance }}'
+```
+
+Digest ile dağıtın (`ghcr.io/occultera/occultera@sha256:…`); release koşusunun özetinde digest ve imajın
+CRITICAL/HIGH zafiyet taraması görünür.
+
 ## İşletim
 
 - [ ] İmaj `:latest` yerine bir sürüme ya da digest'e sabitlendi.

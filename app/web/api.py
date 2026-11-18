@@ -15,7 +15,7 @@ from ..i18n import t
 from ..jobs import Job, JobError
 from ..observability import REQUEST_ID, metrics
 from ..store import KNOWLEDGE_KINDS, now_iso
-from .common import AUTH_DISABLED, actor, ui_lang
+from .common import AUTH_DISABLED, actor, proxy_hint, ui_lang
 from .common import env as _env
 from .common import role as _role
 from .common import runtime as _rt
@@ -109,11 +109,17 @@ async def api_status(request: Request, env_id: str, run_id: str):
 async def api_check(request: Request, env_id: str):
     _env(request, env_id)
     lang, rt = ui_lang(request), _rt(request)
+    peer = proxy_hint(request)
 
     async def work(job):
         res = await rt.check(env_id)
         for r in res:
             r["label"] = t(lang, f"chk.{r['key']}")
+        if peer is not None:
+            res.append({"key": "proxy", "ok": False, "label": t(lang, "chk.proxy"),
+                        "detail": t(lang, "chk.proxy_bad", peer=peer)})
+        elif request.headers.get("x-forwarded-for"):
+            res.append({"key": "proxy", "ok": True, "label": t(lang, "chk.proxy"), "detail": t(lang, "chk.proxy_ok")})
         return {"results": res}
     return await _launch(request, "check", env_id, f"check:{env_id}", work)
 

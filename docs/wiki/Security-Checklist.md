@@ -70,6 +70,20 @@ change of exposure (new ingress, SSO, rule deployment switched on). Each item sa
 - [ ] No index retention policy deletes the application's indices (**Settings → Storage safety**), and a first
       backup exists. See [Backup](Backup).
 
+## Verify the image (unreleased)
+
+Releases after 0.15.0 are signed keylessly with Sigstore and carry SLSA provenance and an SBOM:
+
+```sh
+cosign verify ghcr.io/occultera/occultera:<version> \
+  --certificate-identity-regexp 'https://github.com/occultera/occultera/.github/workflows/release.yml@.*' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+docker buildx imagetools inspect ghcr.io/occultera/occultera:<version> --format '{{ json .Provenance }}'
+```
+
+Deploy by digest (`ghcr.io/occultera/occultera@sha256:…`); the release run's summary shows the digest and a
+CRITICAL/HIGH vulnerability scan of the image.
+
 ## Operations
 
 - [ ] The image is pinned to a version or digest, not `:latest`.

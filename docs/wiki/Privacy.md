@@ -82,11 +82,12 @@ The default profile (`mode: mask`, `ips: keep`) on the vectors in
 | Category | Input | What the model sees | Result |
 |---|---|---|---|
 | email | `sshd: Accepted password for ayse.yilmaz@firma.com.tr from 10.1.2.3` | `sshd: Accepted password for <email:…> from 10.1.2.3` | masked |
-| email | `user="Mehmet.Öz+test@example.org" action=login` | `user="Mehmet.Öz+test@example.org" action=login` | **not detected** (known gap) |
+| email | `user="Mehmet.Öz+test@example.org" action=login` | `user="<email:…>" action=login` | masked |
 | email | `mail to=<destek@sirket.com.tr> status=sent` | `mail to=<<email:…>> status=sent` | masked |
 | phone | `SMS gönderildi: 0532 123 45 67` | `SMS gönderildi: <phone:…>` | masked |
 | phone | `callerid=+90 532 123 45 67` | `callerid=<phone:…>` | masked |
-| phone | `tel:05321234567 doğrulama` | `tel:05321234567 doğrulama` | **not detected** (known gap) |
+| phone | `tel:05321234567 doğrulama` | `tel:<phone:…> doğrulama` | masked |
+| phone | `ref:05321234567` | `ref:05321234567` | kept (correct) |
 | phone | `dahili 2145 aradı` | `dahili 2145 aradı` | kept (correct) |
 | national_id_tr | `basvuru tckn=10000000146 onaylandi` | `basvuru tckn=<national_id_tr:…> onaylandi` | masked |
 | national_id_tr | `kimlik no: 10000000147 (hatalı)` | `kimlik no: 10000000147 (hatalı)` | kept (correct) |
@@ -106,12 +107,16 @@ The default profile (`mode: mask`, `ips: keep`) on the vectors in
 | noise | `run rosca-20261028073001-712bbf v4.14.8 port 55000` | `run rosca-20261028073001-712bbf v4.14.8 port 55000` | kept (correct) |
 | noise | `rule 100213 level 12 agent 007` | `rule 100213 level 12 agent 007` | kept (correct) |
 
-Personal data masked: 12/18 · false positives: 0/6
+Personal data masked: 14/18 · false positives: 0/7
 
 **Read it as:** structured identifiers (e-mail, Turkish phone formats, TCKN, IBAN, card, secrets) are masked
 with check-digit validation and no false positives on run IDs, rule IDs or epoch timestamps. Names, usernames,
-addresses, licence plates, e-mail addresses with non-ASCII letters and a phone number glued to a prefix
-(`tel:0532…`) are **not** detected. Add a custom detector for patterns your logs contain.
+addresses and licence plates are **not** detected by the default profile. Add a custom detector for patterns your logs contain.
+
+**Optional detector `person_name` (unreleased):** a common Turkish given name followed by a capitalised surname
+(*Ayşe Yılmaz*, *Mehmet Ali Kaya*). It is **off by default** because it also matches place names such as
+*Sultan Ahmet*; turn it on by listing it in `privacy.kinds` together with the kinds you want (an empty list means
+the default set without it). A given name alone and lower-case usernames are not matched.
 
 ## Masking profile (0.10)
 

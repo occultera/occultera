@@ -32,6 +32,8 @@ from collections import OrderedDict
 from collections.abc import Callable
 from dataclasses import dataclass
 
+from .names_tr import GIVEN_NAMES
+
 # ------------------------------------------------------------------ validators
 
 
@@ -115,6 +117,7 @@ class Detector:
     rx: re.Pattern
     ok: Callable[[str], bool] | None = None
     secret: bool = False      # irreversible replacement, never shown again
+    optional: bool = False    # off unless listed in privacy.kinds (more false positives)
 
 
 SECRET_KEYS = r"pass(?:word|wd)?|parola|şifre|sifre|pwd|secret|token|api[_-]?key|client[_-]?secret|access[_-]?key"
@@ -128,7 +131,7 @@ DETECTORS: list[Detector] = [
     # key=value / "key":"value" / key: value — the value only
     Detector("password", re.compile(rf"(?i)(?<![A-Za-z])(?:{SECRET_KEYS})[\"']?\s*[=:]\s*[\"']?"
                                     r"(?P<v>[^\s\"'&,;}{\]\[]{3,})"), secret=True),
-    Detector("email", re.compile(r"(?<![\w.%+-])[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}\b")),
+    Detector("email", re.compile(r"(?<![\w.%+-])[\w.%+-]+@[\w-]+(?:\.[\w-]+)*\.[A-Za-z]{2,}\b")),
     Detector("iban", re.compile(r"\b[A-Z]{2}\d{2}(?: ?[A-Z0-9]{4}){2,7}(?: ?[A-Z0-9]{1,4})?\b"), iban_ok),
     Detector("card", re.compile(_NB + r"(?:\d[ -]?){12,18}\d" + r"(?![\d\w\-])"),
              lambda m: card_ok(_digits(m))),
@@ -137,11 +140,15 @@ DETECTORS: list[Detector] = [
     Detector("national_id_be", re.compile(_NB + r"\d{2}\.?\d{2}\.?\d{2}-?\d{3}\.?\d{2}" + r"(?![\d\w\-])"),
              lambda m: be_nn_ok(_digits(m))),
     Detector("national_id_tr", re.compile(_NB + r"[1-9]\d{10}" + r"(?![\d\w\-])"), tckn_ok),
-    Detector("phone", re.compile(_NB + r"(?:\+\d{1,3}(?:[ .-]?\(?\d\)?){7,12}"
+    Detector("phone", re.compile(r"(?:(?<=tel:)|(?<=Tel:)|(?<=TEL:)|" + _NB + r")(?:\+\d{1,3}(?:[ .-]?\(?\d\)?){7,12}"
                                  r"|0 ?5\d{2}[ .-]?\d{3}[ .-]?\d{2}[ .-]?\d{2})" + r"(?![\d\w])"),
              lambda m: 10 <= len(_digits(m)) <= 15),
 ]
+DETECTORS.append(Detector("person_name", re.compile(
+    r"\b(?P<v>(?:" + "|".join(sorted(GIVEN_NAMES, key=len, reverse=True)) + r")(?: [A-ZÇĞİÖŞÜ][a-zçğıöşü]+){1,2})\b"),
+    optional=True))
 KINDS = [d.kind for d in DETECTORS] + ["ip"]
+DEFAULT_KINDS = [d.kind for d in DETECTORS if not d.optional] + ["ip"]   # what an empty privacy.kinds means
 _IPV4 = re.compile(r"(?<![\d.])(?:25[0-5]|2[0-4]\d|1?\d?\d)(?:\.(?:25[0-5]|2[0-4]\d|1?\d?\d)){3}(?![\d.])")
 _TOKEN = re.compile(r"<(?P<k>[a-z_][a-z0-9_]*):(?P<h>[0-9a-f]{6,32})>")
 TOKEN_HEX = 16          # 64 bit: no realistic collision inside the registry, no brute-force table
@@ -297,7 +304,7 @@ class Masker:
         self.enabled = enabled
         self.scope = scope
         secret = {d.kind for d in DETECTORS if d.secret}
-        base = set(kinds or KINDS)
+        base = set(kinds or DEFAULT_KINDS)
         self.kinds = (base - set(disabled or ())) | (base & secret)      # a profile can never switch a secret off
         self.ips = ips
         self.allow = [_allow_rx(a) for a in allow or []]
@@ -435,7 +442,7 @@ def scan(text: str, kinds: set[str] | None = None) -> dict[str, int]:
     """Validated personal-data hits in ``text`` per kind (no values returned)."""
     out: dict[str, int] = {}
     for d in DETECTORS:
-        if kinds and d.kind not in kinds:
+        if (kinds and d.kind not in kinds) or (not kinds and d.optional):
             continue
         for m in d.rx.finditer(text):
             val = m.groupdict().get("v") or m.group(0)

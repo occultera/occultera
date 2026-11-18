@@ -99,6 +99,26 @@ def client_ip(request: Request) -> str:
     return peer
 
 
+_proxy_warned = False
+
+
+def proxy_hint(request: Request) -> str | None:
+    """The peer address when a request evidently came through a proxy that is not in TRUSTED_PROXIES, else None.
+
+    Without the setting every user and MCP client behind that proxy shares one rate limit, one lock-out and one
+    audit address. Logged once per process; the connection test shows it too.
+    """
+    global _proxy_warned
+    peer = request.client.host if request.client else "?"
+    if not request.headers.get("x-forwarded-for") or (TRUSTED_PROXIES and _trusted(peer)):
+        return None
+    if not _proxy_warned:
+        _proxy_warned = True
+        log.warning("requests come through a proxy (%s) but TRUSTED_PROXIES does not include it: all clients share "
+                    "one rate limit and lock-out; set TRUSTED_PROXIES", peer)
+    return peer
+
+
 def sso_user(request: Request) -> str | None:
     for h in USER_HEADERS:
         v = request.headers.get(h)

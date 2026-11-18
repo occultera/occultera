@@ -7,6 +7,7 @@ on:
 permissions:
   contents: read
   packages: write
+  id-token: write        # keyless cosign signature (Sigstore, GitHub OIDC)
 
 jobs:
   image:
@@ -38,6 +39,8 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          provenance: mode=max   # SLSA build provenance attached to the image
+          sbom: true             # BuildKit SBOM attestation attached to the image
       # Traceability: the digest (immutable) next to the mutable tags, so a deployment can pin
       # ghcr.io/<repo>@sha256:... and the release notes show exactly which image was built.
       - name: Record image digest
@@ -45,8 +48,31 @@ jobs:
           echo "### Image digest" >> "$GITHUB_STEP_SUMMARY"
           echo '`${{ steps.build.outputs.digest }}`' >> "$GITHUB_STEP_SUMMARY"
           echo "source revision: \`${{ github.sha }}\`" >> "$GITHUB_STEP_SUMMARY"
-      # SBOM of the released image, uploaded as a workflow artifact (SPDX JSON).
-      # To also sign it, set a cosign key and add `cosign sign`/`cosign attest` steps.
+      # Keyless signature of the pushed digest: verify with
+      #   cosign verify ghcr.io/occultera/occultera:<version> \
+      #     --certificate-identity-regexp 'https://github.com/occultera/occultera/.github/workflows/release.yml@.*' \
+      #     --certificate-oidc-issuer https://token.actions.githubusercontent.com
+      - uses: sigstore/cosign-installer@v3
+      - name: Sign the image
+        run: cosign sign --yes "ghcr.io/${{ github.repository }}@${{ steps.build.outputs.digest }}"
+      # Vulnerability scan of the released image (OS packages and Python libraries), shown in the run summary.
+      # It reports; it does not block the release — the fix is a rebuild on a newer base image.
+      - name: Scan the image
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          image-ref: ghcr.io/${{ github.repository }}@${{ steps.build.outputs.digest }}
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          format: table
+          output: trivy.txt
+          exit-code: "0"
+      - name: Scan summary
+        run: |
+          echo "### Vulnerability scan (CRITICAL/HIGH, fixable)" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          cat trivy.txt >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+      # SBOM of the released image, uploaded as a workflow artifact (SPDX JSON) next to the attested one.
       - uses: anchore/sbom-action@v0
         with:
           image: ghcr.io/${{ github.repository }}:${{ steps.meta.outputs.version }}

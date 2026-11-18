@@ -5,7 +5,24 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+- **Named MCP tokens.** `MCP_TOKENS` / `MCP_TOKENS_FILE` take `name=token` pairs. Each client is audited as
+  `mcp:<name>`, has its own rate limit and is revoked by removing its line (read per request). `MCP_TOKEN` keeps
+  working as the client `default`.
+- **Reverse-proxy hint.** When requests arrive with `X-Forwarded-For` from a peer that is not in `TRUSTED_PROXIES`,
+  the connection test shows a failed *Reverse proxy* row and the log warns once: without the setting every user and
+  MCP client shares one rate limit and lock-out.
+- **Optional `person_name` detector** (off by default): a common Turkish given name followed by a capitalised
+  surname. Enable it in `privacy.kinds`.
+- **PII test vectors and docs consistency checks.** `tests/data/pii_vectors.py` with `python -m tools.pii_eval`
+  (table on the Privacy page); `tests/test_docs_consistency.py` fails on a stale Getting Started label, known-wrong
+  claims and broken wiki or README links.
+- **Signed releases.** The release workflow signs the image with cosign (keyless), attaches SLSA provenance and a
+  BuildKit SBOM, and puts a Trivy CRITICAL/HIGH scan in the run summary.
+
 ### Fixed
+- **E-mail addresses with non-ASCII letters** (`Mehmet.Öz@…`) and **phone numbers after `tel:`** are now masked.
+- The `propose_knowledge` audit entry records the environment and the request ID instead of empty values.
 - **MCP clients now know the rule ID range.** `list_environments` returns `rule_id_range`, the MCP server
   instructions and the `validate_rule_xml` / `propose_knowledge` descriptions mention it, `validate_rule_xml`
   reports `allowed_id_range`, `id_errors` and a free `suggested_id`, and `propose_knowledge(kind=rule_draft)`

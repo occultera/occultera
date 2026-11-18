@@ -11,12 +11,13 @@ Run `python -m tools.pii_eval` for the table published on the Privacy page.
 VECTORS = [
     # e-mail
     ("email", "sshd: Accepted password for ayse.yilmaz@firma.com.tr from 10.1.2.3", "ayse.yilmaz@firma.com.tr", "masked"),
-    ("email", 'user="Mehmet.Öz+test@example.org" action=login', "Mehmet.Öz+test@example.org", "miss"),
+    ("email", 'user="Mehmet.Öz+test@example.org" action=login', "Mehmet.Öz+test@example.org", "masked"),
     ("email", "mail to=<destek@sirket.com.tr> status=sent", "destek@sirket.com.tr", "masked"),
     # phone
     ("phone", "SMS gönderildi: 0532 123 45 67", "0532 123 45 67", "masked"),
     ("phone", "callerid=+90 532 123 45 67", "+90 532 123 45 67", "masked"),
-    ("phone", "tel:05321234567 doğrulama", "05321234567", "miss"),   # no separator before the number
+    ("phone", "tel:05321234567 doğrulama", "05321234567", "masked"),
+    ("phone", "ref:05321234567", "05321234567", "kept"),      # glued to another prefix: an identifier, not a phone
     ("phone", "dahili 2145 aradı", "2145", "kept"),
     # TCKN
     ("national_id_tr", "basvuru tckn=10000000146 onaylandi", "10000000146", "masked"),
@@ -42,4 +43,13 @@ VECTORS = [
     # things that must not be touched
     ("noise", "run rosca-20261028073001-712bbf v4.14.8 port 55000", "rosca-20261028073001-712bbf", "kept"),
     ("noise", "rule 100213 level 12 agent 007", "100213", "kept"),
+]
+
+# Optional detectors (privacy.kinds must list them): person_name = common Turkish given name + Capitalised surname.
+OPTIONAL_VECTORS = [
+    ("person_name", "Kullanıcı Ayşe Yılmaz oturum açtı", "Ayşe Yılmaz", "masked"),
+    ("person_name", "onaylayan: Mehmet Ali Kaya", "Mehmet Ali Kaya", "masked"),
+    ("person_name", "Deniz kenarı sensörü alarm verdi", "Deniz", "kept"),
+    ("person_name", "Sultan Ahmet camii kamerası", "Sultan Ahmet", "masked"),     # known false positive
+    ("person_name", "kullanıcı mehmet.kaya kilitlendi", "mehmet.kaya", "miss"),
 ]

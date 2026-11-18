@@ -1374,6 +1374,10 @@ from .i18n_v140 import EXTRA as _V140  # noqa: E402 - 0.15.0 messages (cluster a
 
 for _lang, _msgs in _V140.items():
     CATALOG[_lang].update(_msgs)
+from .i18n_unreleased import EXTRA as _VNEXT  # noqa: E402 - messages after 0.15.0
+
+for _lang, _msgs in _VNEXT.items():
+    CATALOG[_lang].update(_msgs)
 LANG_NAMES = {"en": "English", "tr": "Türkçe", "es": "Español", "de": "Deutsch"}
 OUTPUT_LANGUAGE = {"en": "English", "tr": "Turkish", "es": "Spanish", "de": "German"}
 

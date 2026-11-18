@@ -72,6 +72,7 @@ aksi halde                    → WAZUH_* değişkenleriyle tek ortam modu
 | `BACKUP_S3_*`, `BACKUP_PASSPHRASE` | *(boş)* | S3 hedefi ve otomatik yedek parolası — bkz. [Yedekleme](Backup-TR). |
 | `METRICS_TOKEN` | *(boş)* | `/metrics` için Bearer token; boşsa admin oturumu gerekir. |
 | `MCP_TOKEN` | *(boş)* | `POST /mcp`'yi açar; yoksa uç nokta `404` döner. [MCP](MCP-TR). |
+| `MCP_TOKENS` / `MCP_TOKENS_FILE` | *(boş)* | İsimli MCP istemcileri, `ad=token` çiftleri (virgül ya da yeni satır); her biri adıyla kaydedilir, ada göre sınırlanır ve satırı silinerek iptal edilir. *(yayımlanmadı)* |
 
 ### Model (LLM)
 

@@ -191,6 +191,22 @@ The client address is the peer, or the real client behind `TRUSTED_PROXIES`. Beh
 ingress, set `TRUSTED_PROXIES`: otherwise every client is seen as the proxy and they all share one limit and
 one lock-out — ten wrong tokens from one client lock out the others too. The counters live in process memory.
 
+### Named tokens (unreleased)
+
+Give each client its own token, so the audit log names the client, each one has its own rate limit and one can
+be revoked without touching the others:
+
+```sh
+MCP_TOKENS="claude-rustem=$(openssl rand -hex 32),cursor-soc=$(openssl rand -hex 32)"
+# or a mounted file, one name=token per line (# comments allowed):
+MCP_TOKENS_FILE=/run/secrets/mcp-tokens
+```
+
+Names: letters, digits, `.`, `_`, `-`, up to 40 characters; tokens at least 16 characters. The list is read on
+every request: deleting a line revokes that client at once. `MCP_TOKEN` keeps working as the client `default`
+(audit actor `mcp-client`, rate limit per source IP); a named client is audited as `mcp:<name>` and limited per
+name. Values are never logged.
+
 ### Errors and pseudonyms
 
 A failing tool returns `{"error", "kind", "ref"}` — a category such as `timeout` or `unreachable` and a
