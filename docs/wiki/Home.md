@@ -6,7 +6,7 @@
 something urgent happens — without asking an AI. Once or twice a day an AI round reviews everything the watch
 saw, explains it and suggests what to tune. You decide; nothing changes in Wazuh without your approval.
 
-> **Personal data does not reach the AI.** E-mail addresses, phone numbers, national ID numbers (TCKN …), IBANs,
+> **Detected personal data is masked before the AI.** E-mail addresses, phone numbers, national ID numbers (TCKN …), IBANs,
 > card numbers, passwords, tokens and keys are replaced by pseudonyms such as `<email:3f9a…>` **before** anything
 > is sent to the model — on by default since 0.10.1 (KVKK / GDPR). Secrets cannot be unmasked at all. IP
 > addresses are kept for the analysis unless you set `ips: public` or `ips: all`. Your reports keep the real
@@ -15,8 +15,8 @@ saw, explains it and suggests what to tune. You decide; nothing changes in Wazuh
 > **Talk to your Wazuh from any MCP-capable agent.** The built-in MCP server gives every agent or assistant that
 > speaks the Model Context Protocol — Claude Desktop, Claude Code, Cursor, VS Code and others — the same
 > read-only investigation tools the AI uses — alert search, timelines, IP profiles, agents,
-> rule info, logtest, reports, the knowledge base — with the same query limits, masking and a per-client rate
-> limit. Ask "what happened on webserver last night?" and get answers from live data. → [MCP server](MCP)
+> rule info, logtest, reports, the knowledge base — with the same query limits, masking and a rate limit per
+> source IP. Ask "what happened on webserver last night?" and get answers from live data. → [MCP server](MCP)
 
 ![Watch board](images/dashboard.png)
 
@@ -99,7 +99,7 @@ cluster's own Prometheus. Quiet hours hold everything but critical events. The w
 | Promotion, incident records, extra sources, audit report, eval | [Features](Features) |
 | **Security and privacy** | |
 | Know what the tool can do and where data goes | [Security model](Security-Model) |
-| Be sure no personal data goes to the AI provider (KVKK / GDPR) | [Privacy](Privacy) |
+| See what reaches the AI provider and the limits of masking (KVKK / GDPR) | [Privacy](Privacy) |
 | Sign off an installation before production | [Security checklist](Security-Checklist) |
 | **Operate** | |
 | Find the cause of an error message | [Troubleshooting](Troubleshooting) |

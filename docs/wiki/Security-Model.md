@@ -118,7 +118,7 @@ is an `emptyDir`: records disappear with the pod unless you ship them or mount a
 
 Off unless `MCP_TOKEN` is set. It offers the read tools of the built-in AI plus `propose_knowledge`, which only
 creates a proposal. There is no tool that changes Wazuh, deploys a rule or edits the knowledge base. `MCP_ENVS`
-limits the environments, results are masked like the model's, and requests are rate-limited per client. Watch
+limits the environments, results are masked like the model's, and requests are rate-limited per source IP. Watch
 events are not exposed. See [MCP server](MCP).
 
 ## The monthly audit report and ISO 27001

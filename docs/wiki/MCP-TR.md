@@ -116,7 +116,7 @@ docker run -i --rm -e WDT_DEMO=true occultera python -m app.mcp_stdio
 Docker olmadan: gereksinimleri kurulu bir kopyada `WDT_DEMO=true python -m app.mcp_stdio`.
 `WDT_DEMO` olmadan `python -m app.mcp_stdio` normal yapılandırmanızı (`WDT_CONFIG` ve web uygulamasıyla aynı ortam
 değişkenleri) başlatan kişinin kimlik bilgileriyle kullanır. Paylaşılan bir kurulumda aşağıdaki HTTP uç noktası
-kullanılmalı: token, hız sınırı ve istemci bazında denetim kaydı orada.
+kullanılmalı: token, hız sınırı ve denetim kaydı orada.
 
 ### Herhangi bir Streamable HTTP istemcisi
 
@@ -186,7 +186,9 @@ motoruna dönüştüremez.
 | `MCP_RATE_PER_MINUTE` | `120` | İstemci adresi başına dakikalık istek; aşılırsa `Retry-After: 60` ile `429`. `0` = sınırsız. |
 | — | 5 dk'da 10 yanlış belirteç | Adres 5 dakika kilitlenir (`429`), doğru belirteçle de. |
 
-İstemci adresi, bağlanan adres ya da `TRUSTED_PROXIES` arkasındaki gerçek istemcidir.
+İstemci adresi, bağlanan adres ya da `TRUSTED_PROXIES` arkasındaki gerçek istemcidir. Reverse proxy ya da
+ingress arkasında `TRUSTED_PROXIES` ayarlayın: aksi halde tüm istemciler proxy olarak görünür, tek bir sınırı ve
+tek bir kilidi paylaşır — bir istemcinin on yanlış belirteci diğerlerini de kilitler. Sayaçlar süreç belleğindedir.
 
 ### Hatalar ve takma adlar
 

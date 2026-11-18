@@ -116,7 +116,7 @@ Client configuration (Claude Desktop, Cursor, VS Code … — any client that st
 Without Docker: `WDT_DEMO=true python -m app.mcp_stdio` from a checkout with the requirements installed.
 `python -m app.mcp_stdio` without `WDT_DEMO` uses your normal configuration (`WDT_CONFIG` and the same environment
 variables as the web app), with the credentials of whoever starts it. A shared installation should use the HTTP
-endpoint below instead: it has the token, the rate limit and the per-client audit.
+endpoint below instead: it has the token, the rate limit and the audit log.
 
 ### Any Streamable HTTP client
 
@@ -186,7 +186,9 @@ cannot turn MCP into an expensive query engine.
 | `MCP_RATE_PER_MINUTE` | `120` | Requests per minute and client address; above it `429` with `Retry-After: 60`. `0` = unlimited. |
 | — | 10 wrong tokens / 5 min | The address is locked out for 5 minutes (`429`), also for the right token. |
 
-The client address is the peer, or the real client behind `TRUSTED_PROXIES`.
+The client address is the peer, or the real client behind `TRUSTED_PROXIES`. Behind a reverse proxy or
+ingress, set `TRUSTED_PROXIES`: otherwise every client is seen as the proxy and they all share one limit and
+one lock-out — ten wrong tokens from one client lock out the others too. The counters live in process memory.
 
 ### Errors and pseudonyms
 

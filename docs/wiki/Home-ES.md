@@ -6,7 +6,7 @@
 urgente — sin preguntar a una IA. Una o dos veces al día, una ronda de IA revisa todo lo que vio la vigilancia,
 lo explica y propone qué ajustar. Usted decide; nada cambia en Wazuh sin su aprobación.
 
-> **Los datos personales no llegan a la IA.** Direcciones de correo, teléfonos, números de identificación,
+> **Los datos personales detectados se enmascaran antes de la IA.** Direcciones de correo, teléfonos, números de identificación,
 > IBAN, tarjetas, contraseñas, tokens y claves se sustituyen por seudónimos como `<email:3f9a…>` **antes** de
 > enviar nada al modelo — activado por defecto desde la 0.10.1 (RGPD / KVKK). Los secretos no se pueden
 > recuperar en ningún caso. Las direcciones IP se mantienen para el análisis salvo que elija `ips: public` o
@@ -15,7 +15,7 @@ lo explica y propone qué ajustar. Usted decide; nada cambia en Wazuh sin su apr
 > **Hable con su Wazuh desde cualquier agente compatible con MCP.** El servidor MCP integrado ofrece a todo
 > agente o asistente que hable el Model Context Protocol — Claude Desktop, Claude Code, Cursor, VS Code y otros — las mismas herramientas de investigación de solo lectura que usa la IA — búsqueda de
 > alertas, líneas de tiempo, perfiles de IP, agentes, reglas, logtest, informes, base de conocimiento — con los
-> mismos límites de consulta, el mismo enmascaramiento y un límite de peticiones por cliente. Pregunte «¿qué pasó
+> mismos límites de consulta, el mismo enmascaramiento y un límite de peticiones por IP de origen. Pregunte «¿qué pasó
 > anoche en el servidor web?» y obtenga respuestas con datos en vivo. → [MCP server](MCP) (en inglés)
 
 ![Panel de guardia](images/dashboard.png)

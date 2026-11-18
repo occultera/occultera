@@ -6,7 +6,7 @@ Two independent features, configured per environment under `privacy:`.
 environments:
   - id: prod
     privacy:
-      mode: mask          # off (default) | mask
+      mode: mask          # mask (default) | off
       ips: keep           # keep (default) | public | all
       kinds: []           # empty = all detectors; or e.g. [email, password, national_id_tr, iban, card]
       allow: ['noreply@example\.com', 'svc-.*@example\.com']   # never masked / reported

@@ -23,6 +23,7 @@ from fastapi.responses import JSONResponse, Response
 from . import __version__, auditlog, authz
 from .agent.tools import SPECS, ToolBox
 from .errors import public_error
+from .observability import REQUEST_ID
 from .web.common import Throttle, client_ip
 
 log = logging.getLogger("wdt.mcp")
@@ -157,9 +158,11 @@ async def _handle(rt, msg: dict) -> dict | None:
             log.exception("mcp tool %s failed (ref=%s)", name, ref)
             text, err = json.dumps(pub), True
         if name == "propose_knowledge":
-            auditlog.record("mcp.propose_knowledge", actor="mcp-client", role="mcp", env="",
-                            target=str((p.get("arguments") or {}).get("env") or ""),
-                            result="error" if err else "ok", request_id="mcp",
+            env_arg = str((p.get("arguments") or {}).get("env") or "")
+            rid = REQUEST_ID.get()
+            auditlog.record("mcp.propose_knowledge", actor="mcp-client", role="mcp", env=env_arg,
+                            target=env_arg,
+                            result="error" if err else "ok", request_id=rid if rid != "-" else "mcp",
                             method="POST", path_="/mcp", detail={"tool": name})
         log.info("mcp %s %s", name, "error" if err else "ok")
         return _ok(mid, {"content": [{"type": "text", "text": text}], "isError": err})

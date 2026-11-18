@@ -6,7 +6,7 @@
 haber verir — yapay zekâya sormadan. Günde bir ya da iki kez bir AI turu, nöbetin gördüğü her şeyi inceler,
 açıklar ve neyin ayarlanması gerektiğini önerir. Kararı siz verirsiniz; onayınız olmadan Wazuh'ta hiçbir şey değişmez.
 
-> **Kişisel veri yapay zekâya gitmez.** E-posta adresleri, telefon numaraları, TC kimlik numaraları, IBAN'lar,
+> **Algılanan kişisel veri yapay zekâdan önce maskelenir.** E-posta adresleri, telefon numaraları, TC kimlik numaraları, IBAN'lar,
 > kart numaraları, parolalar, belirteçler ve anahtarlar, modele herhangi bir şey gönderilmeden **önce**
 > `<email:3f9a…>` gibi takma adlarla değiştirilir — 0.10.1'den beri varsayılan olarak açık (KVKK / GDPR). Sırlar
 > hiçbir şekilde geri açılamaz. IP adresleri, `ips: public` ya da `ips: all` seçmediğiniz sürece analiz için açık
@@ -15,7 +15,7 @@ açıklar ve neyin ayarlanması gerektiğini önerir. Kararı siz verirsiniz; on
 > **Wazuh'unuzla MCP destekleyen her ajandan konuşun.** Yerleşik MCP sunucusu, Model Context Protocol'ü
 > destekleyen her ajana ve asistana — Claude Desktop, Claude Code, Cursor, VS Code ve diğerleri — yapay zekânın kullandığı salt okunur araştırma araçlarının aynısını verir — alarm arama, zaman
 > çizelgesi, IP profili, ajanlar, kural bilgisi, logtest, raporlar, bilgi tabanı — aynı sorgu sınırları, maskeleme
-> ve istemci başına hız sınırıyla. "Dün gece webserver'da ne oldu?" diye sorun, cevabı canlı veriden alın.
+> ve kaynak IP başına hız sınırıyla. "Dün gece webserver'da ne oldu?" diye sorun, cevabı canlı veriden alın.
 > → [MCP sunucusu](MCP-TR)
 
 ![Nöbet panosu](images/dashboard.png)
@@ -101,7 +101,7 @@ Prometheus'undan yeni bir alarm. Sessiz saatlerde kritik olaylar dışındakiler
 | Kalıcı hâle getirme, olay kaydı, ek kaynaklar, denetim raporu, eval | [Özellikler](Features-TR) |
 | **Güvenlik ve gizlilik** | |
 | Aracın ne yapabildiğini ve verinin nereye gittiğini bilmek | [Güvenlik modeli](Security-Model-TR) |
-| AI sağlayıcısına hiç kişisel veri gitmediğinden emin olmak (KVKK / GDPR) | [Gizlilik](Privacy-TR) |
+| AI sağlayıcısına neyin gittiğini ve maskelemenin sınırlarını öğrenmek (KVKK / GDPR) | [Gizlilik](Privacy-TR) |
 | Bir kurulumu üretim öncesi onaylamak | [Güvenlik kontrol listesi](Security-Checklist-TR) |
 | **İşletmek** | |
 | Bir hata iletisinin nedenini bulmak | [Sorun giderme](Troubleshooting-TR) |

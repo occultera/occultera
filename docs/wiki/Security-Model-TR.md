@@ -121,7 +121,7 @@ birim `emptyDir`'dir: kayıtlar, gönderilmedikçe ya da kalıcı birim bağlanm
 
 `MCP_TOKEN` tanımlanmadıkça kapalıdır. Yerleşik yapay zekânın okuma araçlarını ve yalnız öneri oluşturan
 `propose_knowledge` aracını sunar. Wazuh'u değiştiren, kural dağıtan ya da bilgi tabanını düzenleyen bir araç
-yoktur. `MCP_ENVS` ortamları sınırlar, sonuçlar modelinkiler gibi maskelenir ve istekler istemci başına hız
+yoktur. `MCP_ENVS` ortamları sınırlar, sonuçlar modelinkiler gibi maskelenir ve istekler kaynak IP başına hız
 sınırına tabidir. Nöbet olayları MCP'ye açık değildir. Bkz. [MCP sunucusu](MCP-TR).
 
 ## Aylık denetim raporu ve ISO 27001

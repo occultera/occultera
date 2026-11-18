@@ -7,7 +7,7 @@ minutes quand quelque chose d'urgent se produit — sans interroger d'IA. Une ou
 examine tout ce que la surveillance a vu, l'explique et propose quoi ajuster. Vous décidez ; rien ne change dans
 Wazuh sans votre accord.
 
-> **Les données personnelles n'atteignent pas l'IA.** Adresses e-mail, numéros de téléphone, numéros
+> **Les données personnelles détectées sont masquées avant l'IA.** Adresses e-mail, numéros de téléphone, numéros
 > d'identification nationaux, IBAN, cartes, mots de passe, jetons et clés sont remplacés par des pseudonymes
 > comme `<email:3f9a…>` **avant** tout envoi au modèle — activé par défaut depuis la 0.10.1 (RGPD / KVKK). Les
 > secrets ne peuvent jamais être restitués. Les adresses IP restent visibles pour l'analyse, sauf avec
@@ -17,7 +17,7 @@ Wazuh sans votre accord.
 > **Interrogez votre Wazuh depuis n'importe quel agent compatible MCP.** Le serveur MCP intégré donne à tout agent
 > ou assistant qui parle le Model Context Protocol — Claude Desktop, Claude Code, Cursor, VS Code et d'autres — les mêmes outils d'investigation en lecture seule que l'IA — recherche d'alertes, chronologies,
 > profils d'IP, agents, règles, logtest, rapports, base de connaissances — avec les mêmes limites de requêtes, le
-> même masquage et une limite de débit par client. Demandez « que s'est-il passé cette nuit sur le serveur web ? »
+> même masquage et une limite de débit par IP source. Demandez « que s'est-il passé cette nuit sur le serveur web ? »
 > et obtenez des réponses issues des données en direct. → [MCP server](MCP) (en anglais)
 
 ![Tableau de veille](images/dashboard.png)
