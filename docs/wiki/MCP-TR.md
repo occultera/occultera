@@ -188,7 +188,7 @@ motoruna dönüştüremez.
 | — | 5 dk'da 10 yanlış belirteç | Adres 5 dakika kilitlenir (`429`), doğru belirteçle de. |
 
 İstemci adresi, bağlanan adres ya da `TRUSTED_PROXIES` arkasındaki gerçek istemcidir. Reverse proxy ya da
-ingress arkasında `TRUSTED_PROXIES` ayarlayın: aksi halde tüm istemciler proxy olarak görünür, tek bir sınırı ve
+ingress arkasında `FORWARDED_ALLOW_IPS` (uvicorn) ya da `TRUSTED_PROXIES` ayarlayın: aksi halde tüm istemciler proxy olarak görünür, tek bir sınırı ve
 tek bir kilidi paylaşır — bir istemcinin on yanlış belirteci diğerlerini de kilitler. Sayaçlar süreç belleğindedir.
 
 ### İsimli token'lar (yayımlanmadı)

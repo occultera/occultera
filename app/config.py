@@ -467,7 +467,12 @@ class Settings(BaseModel):
         return env.llm or self.llm
 
     def notify_for(self, env: Environment) -> NotifyCfg:
-        return env.notify or self.notify
+        cfg = env.notify or self.notify
+        if cfg.mask:
+            from .privacy import Masker, masker_for
+            cfg = cfg.model_copy()
+            cfg._masker = masker_for(env) or Masker(scope=env.id)
+        return cfg
 
     def lang_for(self, env: Environment) -> str:
         return env.language if env.language in LANGUAGES else self.app.language

@@ -58,6 +58,9 @@ secret:
   PRIVACY_SALT: ""            # key for personal-data pseudonyms (default: APP_SECRET)
   PROXY_SECRET: ""            # SSO mode: the proxy must send it as X-WDT-Proxy-Secret
   BACKUP_PASSPHRASE: ""       # automatic backups only (docs/backup.md); manual exports ask for one
+  # MCP server (docs/wiki/MCP.md): one token, and/or named clients "name=token,name2=token2"
+  MCP_TOKEN: ""
+  MCP_TOKENS: ""
   BACKUP_S3_ACCESS_KEY: ""
   BACKUP_S3_SECRET_KEY: ""
 

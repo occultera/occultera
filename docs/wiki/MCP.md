@@ -188,7 +188,7 @@ cannot turn MCP into an expensive query engine.
 | — | 10 wrong tokens / 5 min | The address is locked out for 5 minutes (`429`), also for the right token. |
 
 The client address is the peer, or the real client behind `TRUSTED_PROXIES`. Behind a reverse proxy or
-ingress, set `TRUSTED_PROXIES`: otherwise every client is seen as the proxy and they all share one limit and
+ingress, set `FORWARDED_ALLOW_IPS` (uvicorn) or `TRUSTED_PROXIES`: otherwise every client is seen as the proxy and they all share one limit and
 one lock-out — ten wrong tokens from one client lock out the others too. The counters live in process memory.
 
 ### Named tokens (unreleased)

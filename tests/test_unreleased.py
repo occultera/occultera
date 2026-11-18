@@ -70,3 +70,67 @@ def test_person_name_is_optional():
     assert "Ayşe Yılmaz" in Masker().mask("Ayşe Yılmaz giriş yaptı")
     assert "Ayşe Yılmaz" not in Masker(kinds=KINDS).mask("Ayşe Yılmaz giriş yaptı")
     assert "person_name" not in scan("Ayşe Yılmaz giriş yaptı")
+
+
+def test_masked_notification_channels(monkeypatch):
+    import httpx
+
+    from app.config import Environment, Settings
+    from app.notify import NotifyCfg, send
+    sent = {}
+
+    def handler(request):
+        sent[request.url.host] = request.content.decode()
+        return httpx.Response(200, json={"ok": True})
+
+    cfg = NotifyCfg(telegram={"bot_token": "123:abc", "chat_id": "1"}, slack={"webhook_url": "https://hooks.slack.test/x"},
+                    mask="telegram")
+    env = Environment(id="t", name="T", indexer={"url": "https://x:9200"}, notify=cfg)
+    ncfg = Settings(environments=[env]).notify_for(env)
+    msg = {"title": "login ayse@firma.com.tr", "lines": ["TCKN 10000000146"], "link": "https://ui/x",
+           "text": "login ayse@firma.com.tr TCKN 10000000146"}
+    import asyncio
+    res = asyncio.run(send(ncfg, msg, transport=httpx.MockTransport(handler)))
+    assert res == {"telegram": "ok", "slack": "ok"}
+    tg = next(v for k, v in sent.items() if "telegram" in k)
+    sl = next(v for k, v in sent.items() if "slack" in k)
+    assert "ayse@firma.com.tr" not in tg and "10000000146" not in tg and "<email:" in tg
+    assert "ayse@firma.com.tr" in sl                      # not in the mask list: unchanged
+    assert msg["text"].startswith("login ayse@")          # the caller's message is not modified
+
+
+def test_structured_llm_content_is_masked():
+    import asyncio
+
+    from app.llm.base import LLMResponse
+    from app.privacy import MaskingLLM
+    seen = {}
+
+    class Inner:
+        name = "x"
+
+        async def complete(self, system, messages, tools, force_tool=None):
+            seen["m"] = messages
+            return LLMResponse(text="", tool_calls=[])
+
+    asyncio.run(MaskingLLM(Inner(), Masker()).complete("s", [{"role": "user", "content": [
+        {"type": "text", "text": "mail ayse@firma.com.tr"}]}], []))
+    assert "ayse@firma.com.tr" not in str(seen["m"])
+
+
+def test_only_runtime_and_eval_build_llm_clients():
+    """Every model call must go through Runtime.llm_for (which wraps it in MaskingLLM): no direct make_llm."""
+    import pathlib
+    import re
+    root = pathlib.Path(__file__).resolve().parent.parent / "app"
+    users = sorted(str(p.relative_to(root)) for p in root.rglob("*.py")
+                   if re.search(r"\bmake_llm\(", p.read_text(encoding="utf-8")))
+    assert users == ["eval.py", "llm/base.py", "runtime.py"], users
+
+
+def test_no_proxy_hint_when_uvicorn_resolved_the_client():
+    from starlette.requests import Request
+    scope = {"type": "http", "client": ("198.51.100.9", 1), "headers": [(b"x-forwarded-for", b"198.51.100.9")]}
+    assert common.proxy_hint(Request(scope)) is None           # FORWARDED_ALLOW_IPS already applied
+    scope["client"] = ("10.42.0.5", 1)
+    assert common.proxy_hint(Request(scope)) == "10.42.0.5"   # the proxy itself is the peer

@@ -11,7 +11,10 @@
 | IP adresleri — analiz için **varsayılan olarak açık gider** (`ips: keep`); `ips: public` dış IP'leri, `ips: all` hepsini maskeler | Wazuh'taki veri; hiç değiştirilmez |
 
 Bildirimler (Teams, Telegram, e-posta …) IP, ajan adı ve bulgu başlığı gibi gerçek değerleri taşır: bunun için
-güvendiğiniz kanalları seçin.
+güvendiğiniz kanalları seçin. *(Yayımlanmadı)* Bir kanala maskeli metin göndermek için onu `notify.mask` altına yazın
+(örneğin `mask: [telegram, slack]`): başlık ve satırlar ortamın maskeleyicisinden (standart profil ve
+`privacy.allow`) geçer; e-posta adresleri, kimlik numaraları ve IBAN'lar takma adla gelir, bağlantı arayüzü gerçek
+değerlerle açar.
 
 *0.8.0 ile gelir.* `privacy:` altında ortam bazında ayarlanan iki özellik vardır:
 

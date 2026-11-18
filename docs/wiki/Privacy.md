@@ -11,7 +11,10 @@
 | IP addresses — **kept by default** (`ips: keep`) because the analysis needs them; `ips: public` masks external ones, `ips: all` every one | the data in Wazuh, which is never changed |
 
 Notifications (Teams, Telegram, e-mail …) carry real values such as IPs, agent names and finding titles: choose
-channels you trust for that.
+channels you trust for that. *(Unreleased)* To send a channel masked text, list it under `notify.mask`
+(for example `mask: [telegram, slack]`): its title and lines go through the environment's masker (standard
+profile and `privacy.allow`), so e-mail addresses, IDs and IBANs arrive as pseudonyms; the link opens the UI with
+the real values.
 
 *Since 0.8.0.* Two features, set per environment under `privacy:`.
 

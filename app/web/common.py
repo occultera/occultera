@@ -110,12 +110,15 @@ def proxy_hint(request: Request) -> str | None:
     """
     global _proxy_warned
     peer = request.client.host if request.client else "?"
-    if not request.headers.get("x-forwarded-for") or (TRUSTED_PROXIES and _trusted(peer)):
+    hops = [h.strip() for h in (request.headers.get("x-forwarded-for") or "").split(",") if h.strip()]
+    if not hops or (TRUSTED_PROXIES and _trusted(peer)):
+        return None
+    if peer in hops:      # uvicorn --proxy-headers (FORWARDED_ALLOW_IPS) already replaced the proxy by the client
         return None
     if not _proxy_warned:
         _proxy_warned = True
         log.warning("requests come through a proxy (%s) but TRUSTED_PROXIES does not include it: all clients share "
-                    "one rate limit and lock-out; set TRUSTED_PROXIES", peer)
+                    "one rate limit and lock-out; set TRUSTED_PROXIES or FORWARDED_ALLOW_IPS", peer)
     return peer
 
 

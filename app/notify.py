@@ -12,9 +12,10 @@ import smtplib
 import ssl
 from datetime import UTC, datetime, timedelta
 from email.message import EmailMessage
+from typing import Any
 
 import httpx
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, PrivateAttr, field_validator
 
 from .i18n import t
 from .observability import scrub
@@ -119,6 +120,17 @@ class NotifyCfg(BaseModel):
     discord: DiscordCfg = Field(default_factory=DiscordCfg)
     webhook: WebhookCfg = Field(default_factory=WebhookCfg)
     ntfy: NtfyCfg = Field(default_factory=NtfyCfg)
+    # channels whose messages go through the environment's masker first (third-party clouds such as Telegram,
+    # Slack, Teams): e-mail addresses, IDs, IBANs … become pseudonyms; the link to the UI shows the real values
+    mask: list[str] = Field(default_factory=list)
+    _masker: Any = PrivateAttr(default=None)
+
+    @field_validator("mask", mode="before")
+    @classmethod
+    def _mask_names(cls, v):
+        if isinstance(v, str):
+            v = [x for x in v.replace(";", ",").split(",")]
+        return [str(x).strip().lower() for x in v or [] if str(x).strip()]
 
     @property
     def channels(self) -> list[str]:
@@ -292,11 +304,28 @@ async def _send_ntfy(cfg: NtfyCfg, msg: dict, client: httpx.AsyncClient):
         raise RuntimeError(f"ntfy {r.status_code}: {r.text[:200]}")
 
 
+def masked(cfg: NotifyCfg, msg: dict) -> dict:
+    """The message as a channel in ``cfg.mask`` receives it: every text through the masker, the link untouched."""
+    m = cfg._masker
+    if m is None:
+        from .privacy import Masker
+        m = Masker()
+    out = dict(msg)
+    for k in ("title", "text"):
+        if isinstance(out.get(k), str):
+            out[k] = m.mask(out[k])
+    if isinstance(out.get("lines"), list):
+        out["lines"] = [m.mask(x) if isinstance(x, str) else x for x in out["lines"]]
+    return out
+
+
 async def send(cfg: NotifyCfg, msg: dict, transport: httpx.AsyncBaseTransport | None = None) -> dict[str, str]:
     """Send to every configured channel; returns {channel: "ok" | error}."""
     res: dict[str, str] = {}
+    plain = msg
     async with httpx.AsyncClient(timeout=20, transport=transport) as client:
         for name in cfg.channels:
+            msg = masked(cfg, plain) if name in cfg.mask else plain
             try:
                 if name == "email":
                     await asyncio.to_thread(_send_email, cfg.email, msg)

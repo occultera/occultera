@@ -415,8 +415,11 @@ class MaskingLLM:
 
     def _msg(self, m: dict) -> dict:
         m = dict(m)
-        if isinstance(m.get("content"), str):
-            m["content"] = self.masker.mask(m["content"])
+        c = m.get("content")
+        if isinstance(c, str):
+            m["content"] = self.masker.mask(c)
+        elif c is not None:      # fail closed: a structured content (blocks) is masked as JSON, never sent as is
+            m["content"] = json.loads(self.masker.mask(json.dumps(c, ensure_ascii=False)))
         if m.get("tool_calls"):
             m["tool_calls"] = [{**c, "input": json.loads(self.masker.mask(json.dumps(c.get("input") or {},
                                                                                     ensure_ascii=False)))}
