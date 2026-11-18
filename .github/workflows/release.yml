@@ -58,10 +58,12 @@ jobs:
       # Vulnerability scan of the released image (OS packages and Python libraries), shown in the run summary.
       # It reports; it does not block the release — the fix is a rebuild on a newer base image.
       - name: Scan the image
-        uses: aquasecurity/trivy-action@0.33.1
+        # 0.35.0+: immutable release; 0.0.1–0.34.2 were hit by the March 2026 supply-chain compromise (GHSA-69fq-xp46-6x23)
+        uses: aquasecurity/trivy-action@0.35.0
         with:
           image-ref: ghcr.io/${{ github.repository }}@${{ steps.build.outputs.digest }}
           severity: CRITICAL,HIGH
+          version: v0.69.3       # pinned scanner, never "latest"
           ignore-unfixed: true
           format: table
           output: trivy.txt
