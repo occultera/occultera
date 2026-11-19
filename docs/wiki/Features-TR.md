@@ -284,3 +284,17 @@ ekleyin, örneğin `data.remote_addr` ya da `data.objectRef.namespace`.
 ---
 
 [English](Features) · [Türkçe](Features-TR)
+
+## Haftalık özet ve ölçülen etki *(yayımlanmadı)*
+
+```yaml
+notify:
+  on_weekly: true
+  weekly_day: mon        # mon … sun
+  weekly_time: "09:00"   # app.timezone
+```
+
+Tanımlı kanallara haftada bir mesaj: önceki haftaya göre alarm ve 7+ seviye alarm sayısı, sağlık durumuna göre AI
+turları, bulgular (gerçek olay, incelenecek, tespit boşluğu), karar bekleyen öneriler ve son 60 günde dağıtılan ya da
+kalıcılaştırılan her kural taslağı **ölçülen etkisiyle**: kural ailesinin 7+ seviye alarmlarının değişiklikten önceki
+ve sonraki günlük sayısı. Etki bilgi tabanındaki taslak kartında da görünür. Deterministiktir: model çağrılmaz.

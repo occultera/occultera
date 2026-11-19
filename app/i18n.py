@@ -1378,8 +1378,11 @@ from .i18n_unreleased import EXTRA as _VNEXT  # noqa: E402 - messages after 0.15
 
 for _lang, _msgs in _VNEXT.items():
     CATALOG[_lang].update(_msgs)
-LANG_NAMES = {"en": "English", "tr": "Türkçe", "es": "Español", "de": "Deutsch"}
-OUTPUT_LANGUAGE = {"en": "English", "tr": "Turkish", "es": "Spanish", "de": "German"}
+from .i18n_fr import FR  # noqa: E402 - French: one complete catalogue, added last
+
+CATALOG["fr"] = FR
+LANG_NAMES = {"en": "English", "tr": "Türkçe", "es": "Español", "de": "Deutsch", "fr": "Français"}
+OUTPUT_LANGUAGE = {"en": "English", "tr": "Turkish", "es": "Spanish", "de": "German", "fr": "French"}
 
 def _check_parity() -> None:
     """Every catalogue must carry exactly the same keys as English.

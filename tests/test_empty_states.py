@@ -25,7 +25,7 @@ def empty(monkeypatch):
     monkeypatch.setattr(demo, "generate_vulns", lambda *a, **k: [])
 
 
-@pytest.mark.parametrize("lang", ["en", "tr"])
+@pytest.mark.parametrize("lang", ["en", "tr", "fr"])
 def test_every_page_renders_empty(empty, lang):
     with TestClient(app) as cl:
         cl.post("/login", data={"password": "pw"})

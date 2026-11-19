@@ -15,10 +15,10 @@
   <div class="brow">
     <div class="bt">{{ x.q.question }}</div>
     {% if x.q.why %}<div class="bd">{{ x.q.why }}</div>{% endif %}
-    <div class="row qa" data-answer="/api/e/{{ env.id }}/r/{{ x.run_id }}/q/{{ x.q.id }}">
+    {% if can.decide %}<div class="row qa" data-answer="/api/e/{{ env.id }}/r/{{ x.run_id }}/q/{{ x.q.id }}">
       <textarea rows="1" placeholder="{{ _('rep.answer_ph') }}"></textarea><button class="btn small primary" data-save>{{ _('rep.send') }}</button>
       <a class="small" href="/e/{{ env.id }}/r/{{ x.run_id }}#questions">{{ _('inbox.open_report') }}</a>
-    </div>
+    </div>{% endif %}
   </div>
   {% endfor %}
 </section>

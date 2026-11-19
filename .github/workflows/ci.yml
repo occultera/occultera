@@ -41,7 +41,7 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
-      - run: pip install -r requirements.txt
+      - run: pip install --require-hashes --no-deps -r requirements.lock
       # Risk-based gate: a vulnerability in a runtime dependency fails the pipeline. Exceptions must be
       # listed in docs/security-exceptions.md and .github/pip-audit-ignore.txt, with an owner and an expiry.
       - name: pip-audit (fails on any known vulnerability)
@@ -53,12 +53,12 @@ jobs:
             id="$(echo "$id" | tr -d '[:space:]')"
             if [ -n "$id" ]; then ARGS+=(--ignore-vuln "$id"); fi
           done < .github/pip-audit-ignore.txt
-          pip-audit -r requirements.txt --desc ${ARGS[@]+"${ARGS[@]}"}
+          pip-audit -r requirements.lock --require-hashes --disable-pip --desc ${ARGS[@]+"${ARGS[@]}"}
       - name: SBOM (CycloneDX, Python dependencies)
         run: |
           pip install cyclonedx-bom
           # cyclonedx-py >= 4 takes the requirements file positionally; there is no -r flag any more.
-          cyclonedx-py requirements requirements.txt -o sbom-python.cdx.json --of JSON
+          cyclonedx-py requirements requirements.lock -o sbom-python.cdx.json --of JSON
       - name: Upload SBOM
         uses: actions/upload-artifact@v7
         with:
@@ -139,3 +139,49 @@ jobs:
             exit 1
           fi
           kubectl get pods
+
+  smoke:
+    # A real indexer instead of the demo engine: OpenSearch (what the Wazuh indexer is built on) with Wazuh's own
+    # alerts template, synthetic alerts loaded, then the connection test and one full triage run with the mock model.
+    runs-on: ubuntu-latest
+    needs: [test]
+    services:
+      indexer:
+        image: opensearchproject/opensearch:2.19.3
+        env:
+          discovery.type: single-node
+          DISABLE_SECURITY_PLUGIN: "true"
+          DISABLE_INSTALL_DEMO_CONFIG: "true"
+          OPENSEARCH_JAVA_OPTS: -Xms1g -Xmx1g
+        ports: ["9200:9200"]
+        options: >-
+          --health-cmd "curl -fs http://localhost:9200/_cluster/health"
+          --health-interval 10s --health-timeout 5s --health-retries 30
+    env:
+      WAZUH_INDEXER_URL: http://127.0.0.1:9200
+      WAZUH_VERIFY_TLS: "false"
+      WAZUH_ENV_ID: smoke
+      LLM_PROVIDER: mock
+      APP_PASSWORD: smoke-password-0123456789
+      APP_SECRET: smoke-secret-0123456789abcdef0123456789
+      ENVIRONMENT: development
+      WDT_SCHEDULER: "false"
+      WDT_CONFIG: /nonexistent.yaml
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - run: pip install --require-hashes --no-deps -r requirements.lock
+      - name: Load synthetic alerts into the indexer
+        run: python -m tools.smoke_seed http://127.0.0.1:9200
+      - name: Connection test (python -m app.check)
+        run: python -m app.check --no-llm
+      - name: One full run against the real indexer
+        run: |
+          uvicorn app.main:app --host 127.0.0.1 --port 8080 > app.log 2>&1 &
+          for i in $(seq 1 30); do curl -fs http://127.0.0.1:8080/healthz && break; sleep 2; done
+          python -m tools.smoke_run http://127.0.0.1:8080 "$APP_PASSWORD" smoke
+      - name: Application log
+        if: always()
+        run: cat app.log || true

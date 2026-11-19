@@ -21,7 +21,7 @@ from .backupcfg import BackupCfg, backup_from_env
 from .notify import NotifyCfg
 
 _ENV_RE = re.compile(r"\$\{([A-Za-z_][A-Za-z0-9_]*)(?::-([^}]*))?\}")
-LANGUAGES = ("en", "tr", "es", "de")
+LANGUAGES = ("en", "tr", "es", "de", "fr")
 
 
 def _expand(value):

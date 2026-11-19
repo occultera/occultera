@@ -37,7 +37,11 @@ async def dashboard(request: Request, env: str | None = None, period: str = "24h
         runs = await _safe(er.repo.list_runs(3, light=True), [], request=request)
         last = next((r for r in runs if r.get("status") == "done"), None)
         live = await _safe(rt.liveness_state(er.env.id), None, request=request) if er.env.liveness.enabled else None
-        tiles.append({"env": er.env, "ov": ov, "last": last, "live": live, "on": sel is er})
+        waiting = await _safe(rt.inbox(er.env.id), [], request=request) if len(vis) > 1 else []
+        urgent_n = sum(1 for it in waiting if it["finding"].get("label") in ("real_incident", "detection_gap")
+                       or it["finding"].get("severity") in ("critical", "high"))
+        tiles.append({"env": er.env, "ov": ov, "last": last, "live": live, "on": sel is er,
+                      "waiting": len(waiting), "urgent": urgent_n})
     cards = []
     for er in [sel] if sel else []:
         runs = await _safe(er.repo.list_runs(8, light=True), [], request=request)

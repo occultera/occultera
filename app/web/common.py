@@ -26,6 +26,15 @@ log = logging.getLogger("wdt")
 APP_PASSWORD = os.environ.get("APP_PASSWORD", "")
 VIEWER_PASSWORD = os.environ.get("VIEWER_PASSWORD", "")   # optional read-only role
 AUTH_DISABLED = os.environ.get("AUTH_DISABLED", "").lower() in ("1", "true", "yes")
+# Public demo (demo.occultera.dev): synthetic data only, every visitor is a read-only viewer without a password.
+# Ignored unless WDT_DEMO is on too, so a real installation can never be opened by this switch.
+def public_demo_enabled(env=os.environ) -> bool:
+    yes = ("1", "true", "yes")
+    return (env.get("WDT_PUBLIC_DEMO", "").lower() in yes and env.get("WDT_DEMO", "").lower() in yes
+            and env.get("AUTH_DISABLED", "").lower() not in yes)
+
+
+PUBLIC_DEMO = public_demo_enabled()
 SECRET = (os.environ.get("APP_SECRET") or secrets.token_hex(32)).encode()
 COOKIE_SECURE = os.environ.get("COOKIE_SECURE", "false").lower() == "true"
 COOKIE = "wdt_session"
@@ -225,7 +234,8 @@ def role(request: Request) -> str | None:
     ``None`` means not signed in (password mode) or no role granted (SSO mode)."""
     if AUTH_DISABLED:
         return sso_role(request)
-    return valid(request.cookies.get(COOKIE))
+    r = valid(request.cookies.get(COOKIE))
+    return r or ("viewer" if PUBLIC_DEMO else None)
 
 
 def actor(request: Request) -> str:
@@ -260,7 +270,7 @@ def ctx(request: Request, **kw):
     return {"envs": [r.env for r in visible(request)], "demo": rt.demo, "app_title": rt.settings.app.title,
             "auth": not AUTH_DISABLED, "lang": lang, "_": lambda key, **a: t(lang, key, **a),
             "deploy_any": any(rt.deploy_ready(r.env) for r in visible(request)), "path": request.url.path,
-            "viewer": role_ == "viewer", "can": can, "viewer_enabled": bool(VIEWER_PASSWORD), "role": role_,
+            "viewer": role_ == "viewer", "can": can, "public_demo": PUBLIC_DEMO, "viewer_enabled": bool(VIEWER_PASSWORD), "role": role_,
             "who": sso_user(request) if AUTH_DISABLED else None,
             "storage_errors": getattr(request.state, "storage_errors", []), "request_id": REQUEST_ID.get(),
             "storage_lost": [{**x, "env": r.env.id} for r in visible(request)

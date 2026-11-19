@@ -13,8 +13,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1 \
     FORWARDED_ALLOW_IPS=127.0.0.1
 
 WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt && \
+# requirements.lock: every package pinned with its hashes (tools/update-lock.sh regenerates it from requirements.txt)
+COPY requirements.lock .
+RUN pip install --require-hashes --no-deps -r requirements.lock && \
     useradd --system --uid 10001 --home /app triage
 
 COPY LICENSE NOTICE ./

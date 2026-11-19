@@ -283,3 +283,18 @@ example `data.remote_addr` or `data.objectRef.namespace`.
 ---
 
 [English](Features) · [Türkçe](Features-TR)
+
+## Weekly summary and measured effect *(unreleased)*
+
+```yaml
+notify:
+  on_weekly: true
+  weekly_day: mon        # mon … sun
+  weekly_time: "09:00"   # app.timezone
+```
+
+One message a week to the configured channels: alerts and level 7+ alerts against the week before, AI rounds by
+health, findings (real incidents, to investigate, detection gaps), recommendations waiting, and every rule draft
+deployed or promoted in the last 60 days with its **measured effect** — the level 7+ alerts of the rule family per
+day in the days before and after the change. The effect is also shown on the draft's card in the knowledge base.
+Deterministic: no model is called.

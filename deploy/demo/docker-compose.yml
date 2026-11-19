@@ -1,0 +1,32 @@
+# Public read-only demo (see README.md). Needs .env with TUNNEL_TOKEN, APP_PASSWORD, APP_SECRET.
+services:
+  occultera-demo:
+    image: ghcr.io/occultera/occultera:latest     # a release that contains WDT_PUBLIC_DEMO
+    container_name: occultera-demo
+    restart: unless-stopped
+    environment:
+      WDT_DEMO: "true"
+      WDT_PUBLIC_DEMO: "true"
+      LLM_PROVIDER: mock
+      APP_LANGUAGE: en
+      TZ: UTC
+      ENVIRONMENT: development      # the demo has fixed data; production mode refuses WDT_DEMO
+      COOKIE_SECURE: "true"         # served over HTTPS by Cloudflare
+      FORWARDED_ALLOW_IPS: "*"      # only cloudflared reaches the container (no published port)
+      APP_PASSWORD: ${APP_PASSWORD:?set APP_PASSWORD in .env}
+      APP_SECRET: ${APP_SECRET:?set APP_SECRET in .env}
+    read_only: true
+    tmpfs: [/tmp, /app/logs]
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: [ALL]
+    deploy:
+      resources:
+        limits: {cpus: "1", memory: 512m}
+
+  cloudflared:
+    image: cloudflare/cloudflared:2026.11.0
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${TUNNEL_TOKEN:?set TUNNEL_TOKEN in .env}
+    depends_on: [occultera-demo]

@@ -97,7 +97,7 @@ def test_egress_settings():
 
 
 def test_egress_texts():
-    for lang in ("en", "tr", "es", "de"):
+    for lang in ("en", "tr", "es", "de", "fr"):
         assert CATALOG[lang]["watch.trigger.egress"] and "{wl}" in CATALOG[lang]["watch.ev.egress"]
     assert W.fmt_bytes(999) == "999 B" and W.fmt_bytes(1.5e6) == "1.5 MB" and W.fmt_bytes(12e9) == "12 GB"
 

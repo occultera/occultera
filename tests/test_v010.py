@@ -804,7 +804,7 @@ def test_pages_render_events_suggestions_and_the_loss_banner_in_every_language(c
     er.store.health["lost"] = [{"kind": "knowledge", "index": "daily-triage-knowledge",
                                 "detected_at": "2026-11-10T09:00:00.000Z"}]
     try:
-        for lang in ("en", "tr", "es", "de"):
+        for lang in ("en", "tr", "es", "de", "fr"):
             c.post("/lang", data={"lang": lang})
             for p in ("/e/demo/watch", "/e/demo/watch?status=judged", "/e/demo/settings", "/", "/e/demo", "/about"):
                 assert c.get(p).status_code == 200, (lang, p)

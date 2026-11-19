@@ -219,6 +219,7 @@ Bastırma kuralının sayısı hep 0 görünür; üst kurala ve logtest'e bakın
 """,
 }
 _TXT["es"] = _TXT["en"]
+_TXT["fr"] = _TXT["en"]
 _TXT["de"] = _TXT["en"]
 
 _CSV_ROWS = {
@@ -238,7 +239,7 @@ def template(fmt: str, lang: str) -> tuple[str, str, str]:
     if fmt == "csv":
         rows = _CSV_ROWS.get(lang, _CSV_ROWS["en"])
         buf = io.StringIO()
-        w = csv.writer(buf, delimiter=";" if lang in ("tr", "de", "es") else ",")   # what Excel expects there
+        w = csv.writer(buf, delimiter=";" if lang in ("tr", "de", "es", "fr") else ",")   # what Excel expects there
         w.writerow(["kind", "title", "body", "rule_ids"])
         w.writerows(rows)
         return "﻿" + buf.getvalue(), "text/csv; charset=utf-8", "knowledge-template.csv"

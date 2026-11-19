@@ -85,6 +85,8 @@
       {% for rid, x in r.verify.seen.items() %}<code>{{ rid }}</code> {{ x.n|n }}× ({{ _('vf.last') }} {{ x.last|ts }}{% if x.agents %}, {{ x.agents|join(', ') }}{% endif %}){{ ' · ' if not loop.last }}{% endfor %}
       {% else %}<span class="pill amber">{{ _('vf.waiting') }}</span> {{ _('vf.waiting_help', d=r.verify.waiting_days or 0, since=r.verify.since|ts) }}{% endif %}
       <span class="muted">· {{ _('vf.checked') }} {{ r.verify.checked_at|ts }}</span></p>{% endif %}
+    {% if r.effect %}<p class="small effect"><b>{{ _('eff.title') }}:</b> {{ _('eff.line', d=r.effect.days, pb=r.effect.parent_before, pa=r.effect.parent_after, ca=r.effect.child_after, l=r.effect.level, hb=r.effect.high_before, ha=r.effect.high_after, pct=r.effect.change) }}
+      <span class="muted">· {{ _('vf.checked') }} {{ r.effect.checked_at|ts }}</span></p>{% endif %}
     {% if r._xml %}<details><summary class="small">{{ _('rd.xml') }}</summary><pre class="code">{{ r._xml }}</pre>
       <button class="btn small" data-copy-prev>{{ _('rep.copy') }}</button></details>{% endif %}
     <div class="rd-out small" hidden></div>

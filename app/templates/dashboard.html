@@ -36,6 +36,7 @@
     {% if tl.ov %}<div class="row"><span class="num">{{ chart.compact(tl.ov.total) }}</span>
       <span class="small muted">{{ _('dash.k.alerts') }} · <span class="hi">{{ chart.compact(tl.ov.high) }}</span> L{{ tl.ov.high_level }}+</span></div>
     {{ chart.spark(tl.ov.series|map(attribute='total')|list, 'c-total', _('dash.vol')) }}{% endif %}
+    {% if tl.waiting %}<div class="small"><span class="{{ 'bad' if tl.urgent }}">{{ _('inbox.waiting', n=tl.waiting) }}{% if tl.urgent %} · {{ _('dash.urgent', n=tl.urgent) }}{% endif %}</span></div>{% endif %}
   </a>
   {% endfor %}
 </div>

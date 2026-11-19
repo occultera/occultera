@@ -27,6 +27,21 @@ All notable changes to this project are documented here. The format follows
 - **Accessibility:** WCAG 2 A/AA violations found by axe fixed (contrast in the ATT&CK and heat cells, labels for
   selects and detector fields, underlined links in text). `tests/test_empty_states.py` renders every page of a
   nearly empty installation in English and Turkish.
+- **Public demo mode.** `WDT_PUBLIC_DEMO=true` (only together with `WDT_DEMO=true`) lets every visitor in as a
+  read-only viewer without a password and shows a banner; `deploy/demo/` has a Docker Compose + Cloudflare Tunnel
+  setup and a Kubernetes overlay with a nightly reset, for demo.occultera.dev.
+- **French user interface** (`APP_LANGUAGE=fr`): all 874 texts; the language switcher shows FR.
+- **Weekly summary** (`notify.on_weekly`, `weekly_day`, `weekly_time`): alert volume against the week before, AI
+  rounds by health, findings, recommendations waiting, and rule changes with their measured effect; “Send now” via
+  `POST /api/e/<env>/weekly/send`.
+- **Measured effect of rule changes.** For drafts deployed or promoted in the last 60 days, the level 7+ alerts of
+  the rule family per day before and after the change are measured (`POST /api/e/<env>/effects`, also in the weekly
+  summary) and shown on the knowledge-base card.
+- **Environment strip** on the dashboard shows each environment's waiting and urgent recommendations.
+- **Pinned dependencies.** `requirements.lock` (versions and hashes, generated with `tools/update-lock.sh`); the image
+  installs it with `--require-hashes`; pip-audit and the SBOM use it.
+- **Smoke test against a real indexer** in CI: OpenSearch with Wazuh's alerts template, synthetic alerts
+  (`tools/smoke_seed.py`), `python -m app.check` and one full run (`tools/smoke_run.py`).
 - **Signed releases.** The release workflow signs the image with cosign (keyless), attaches SLSA provenance and a
   BuildKit SBOM, and puts a Trivy CRITICAL/HIGH scan in the run summary.
 

@@ -1,0 +1,31 @@
+# Public read-only demo on Kubernetes (see ../README.md).
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: occultera-demo
+resources:
+  - ../../kubernetes/base   # when copied elsewhere: https://github.com/occultera/occultera//deploy/kubernetes/base?ref=<release>
+  - reset-cronjob.yaml
+images:
+  - name: ghcr.io/occultera/occultera
+    newTag: latest          # pin to the first release that contains WDT_PUBLIC_DEMO
+configMapGenerator:
+  - name: occultera-env
+    literals:
+      - WDT_DEMO=true
+      - WDT_PUBLIC_DEMO=true
+      - LLM_PROVIDER=mock
+      - APP_LANGUAGE=en
+      - TZ=UTC
+      - ENVIRONMENT=development
+      - COOKIE_SECURE=true
+# The demo uses the image's own config/demo.yaml: no environments.yaml, so the config volume is removed
+# (a ConfigMap mounted on /app/config would hide config/demo.yaml).
+patches:
+  - target: {kind: Deployment, name: occultera}
+    patch: |-
+      - op: remove
+        path: /spec/template/spec/containers/0/volumeMounts/0
+      - op: remove
+        path: /spec/template/spec/volumes/0
+      - op: remove
+        path: /spec/template/spec/containers/0/env/0

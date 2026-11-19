@@ -111,6 +111,9 @@ class NotifyCfg(BaseModel):
     on_pending: bool = True             # weekday reminder: recommendations waiting for a decision too long
     pending_days: int = 7               # … older than this many days (first seen)
     pending_time: str = "09:30"         # … sent once a day after this local time (Mon-Fri)
+    on_weekly: bool = False             # weekly summary for managers (volume, rounds, findings, rule changes + effect)
+    weekly_day: str = "mon"             # mon … sun
+    weekly_time: str = "09:00"          # local time (app.timezone)
     repeat_hours: int = 24              # do not repeat the same item within this period
     ui_url: str = ""                    # base URL used for links, e.g. http://127.0.0.1:18080
     email: EmailCfg = Field(default_factory=EmailCfg)

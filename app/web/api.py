@@ -509,3 +509,17 @@ async def api_k_export(request: Request, env_id: str, kind: str | None = None, s
     text = yaml.safe_dump(rows, allow_unicode=True, sort_keys=False, width=120)
     return Response(text, media_type="application/yaml",
                     headers={"Content-Disposition": f'attachment; filename="knowledge-{env_id}.yaml"'})
+
+
+@router.post("/api/e/{env_id}/effects")
+async def api_effects(request: Request, env_id: str):
+    """Measure the before/after effect of recently deployed or promoted rule drafts (stored on each draft)."""
+    _env(request, env_id)
+    return {"effects": await _rt(request).rule_effects(env_id)}
+
+
+@router.post("/api/e/{env_id}/weekly/send")
+async def api_weekly_send(request: Request, env_id: str):
+    """Send the weekly summary now (also when notify.on_weekly is off) — to check the channels and the content."""
+    _env(request, env_id)
+    return await _rt(request).weekly_summary(env_id, transport=_rt(request).notify_transport, force=True)

@@ -40,7 +40,7 @@ aksi halde                    → WAZUH_* değişkenleriyle tek ortam modu
 | `USER_HEADER` | `X-authentik-username,X-Forwarded-User,Remote-User,X-Auth-Request-User` | Virgülle ayrılmış başlık adları; ilk dolu olan denetim kaydında aktör olur. |
 | `COOKIE_SECURE` | `false` | Oturum çerezini `Secure` yapar; üretimde `true` olmalı. |
 | `FORWARDED_ALLOW_IPS` | `127.0.0.1` (Docker) | Uvicorn'un güvendiği vekil adresleri; asla `*`. |
-| `APP_LANGUAGE` | `en` | Arayüz ve rapor dili: `en`, `tr`, `es`, `de`. |
+| `APP_LANGUAGE` | `en` | Arayüz ve rapor dili: `en`, `tr`, `es`, `de`, `fr`. |
 | `TZ` | `UTC` | Zamanlama ve zaman damgaları için IANA saat dilimi; açılışta doğrulanır. |
 | `SOURCE_URL` | proje deposu | Alt bilgi bağlantısı (AGPL-3.0 §13 — kodu değiştirdiyseniz kendi fork'unuzu gösterin). |
 | `LOG_LEVEL` | `INFO` | `DEBUG`, `INFO`, `WARNING`, `ERROR`. |
@@ -153,7 +153,7 @@ istisnalarıdır; [docs/security-exceptions.md](https://github.com/occultera/occ
 ```yaml
 app:
   timezone: ${TZ:-UTC}
-  language: ${APP_LANGUAGE:-en}     # en | tr | es | de
+  language: ${APP_LANGUAGE:-en}     # en | tr | es | de | fr
   title: Occultera
 
 llm:                                 # bloğu atlarsanız LLM_* değişkenleri kullanılır

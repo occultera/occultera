@@ -525,3 +525,5 @@ p a:not(.btn):not(.pill), .small a:not(.btn):not(.pill), .bd a, li a:not(.btn):n
 .setup { margin-bottom: 16px; } .setup summary { cursor: pointer; display: flex; gap: 8px; align-items: center; }
 .setup-list { list-style: none; padding: 0; margin: 10px 0 4px; display: grid; gap: 6px; } .setup-list li.done { color: var(--muted); }
 .setup-list li span { display: inline-block; width: 1.4em; color: var(--accent); font-weight: 700; }
+
+.public-demo { margin-bottom: 14px; background: var(--amber-bg, #fff4dd); border: 1px solid #f5c46b; border-radius: 10px; padding: 8px 12px; }

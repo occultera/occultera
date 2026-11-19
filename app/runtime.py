@@ -46,6 +46,7 @@ from .store import IndexStore, MemoryStore
 from .watch import WatchMixin
 from .wazuh.api import WazuhAPI
 from .wazuh.indexer import Indexer
+from .weekly import WeeklyMixin
 
 log = logging.getLogger("wdt")
 
@@ -54,7 +55,7 @@ __all__ = ["Runtime", "EnvRuntime", "build_sources", "demo_enabled", "normalize_
 
 
 class Runtime(KnowledgeIOMixin, RunMixin, ReviewMixin, RuleDeployMixin, IncidentMixin, DiagnosticsMixin,
-              WatchMixin, AdminMixin, BackupMixin, SchedulerMixin):
+              WatchMixin, AdminMixin, BackupMixin, WeeklyMixin, SchedulerMixin):
     def __init__(self, settings: Settings, demo: bool = False):
         self.settings = settings
         self.demo = demo

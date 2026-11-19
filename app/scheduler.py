@@ -46,7 +46,7 @@ class SchedulerMixin:
             except Exception:  # noqa: BLE001
                 log.exception("pending reminder scheduler error")
             for name, tick in (("watch", self._watch_tick), ("storage", self._storage_tick),
-                               ("backup", self._backup_tick)):
+                               ("backup", self._backup_tick), ("weekly", self._weekly_tick)):
                 try:
                     await tick()
                 except Exception:  # noqa: BLE001

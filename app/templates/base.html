@@ -89,7 +89,8 @@
       {% if can.admin %}<a href="/e/{{ x.env }}/settings#lost">{{ _('stor.lost_open') }}</a>{% endif %}</div>{% endfor %}</div>
   </div>
   {% endif %}
-  <main>{% block body %}{% endblock %}</main>
+  <main>{% if public_demo %}<div class="banner public-demo small" role="note">{{ _('demo.public') }}
+    <a href="https://occultera.dev/">occultera.dev</a> · <a href="https://github.com/occultera/occultera">GitHub</a></div>{% endif %}{% block body %}{% endblock %}</main>
   <footer>Occultera {{ version }} · {{ _('footer.deploy') if deploy_any else _('footer') }} · <a href="/about">{{ _('nav.about') }}</a> · <a href="{{ SOURCE_URL }}" rel="noopener">{{ _('nav.source') }}</a> (AGPL-3.0)</footer>
 </div>
 </div>

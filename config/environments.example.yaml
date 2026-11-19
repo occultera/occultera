@@ -5,7 +5,7 @@
 
 app:
   timezone: ${TZ:-UTC}          # schedule times and UI timestamps use this zone
-  language: ${APP_LANGUAGE:-en} # en | tr | es | de — default UI and report language
+  language: ${APP_LANGUAGE:-en} # en | tr | es | de | fr — default UI and report language
   title: Occultera
 
 llm:
@@ -38,7 +38,7 @@ environments:
   - id: prod                    # lowercase, used in URLs
     name: Production Wazuh
     description: Wazuh 4.x cluster — 1 master, 2 workers, 3 indexer nodes
-    language: null              # optional per-environment report language (en | tr | es | de)
+    language: null              # optional per-environment report language (en | tr | es | de | fr)
     indexer:
       url: https://wazuh-indexer.example.internal:9200
       username: ${PROD_INDEXER_USER}

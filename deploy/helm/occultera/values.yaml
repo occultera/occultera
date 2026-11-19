@@ -16,7 +16,7 @@ replicaCount: 1
 
 # Non-secret process environment (the app reads config via ${VAR} expansion).
 app:
-  language: en           # en | tr | es | de
+  language: en           # en | tr | es | de | fr
   timezone: UTC
   cookieSecure: false    # true behind TLS
   forwardedAllowIPs: ""  # the ingress controller's pod CIDR — never "*"

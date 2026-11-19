@@ -40,7 +40,7 @@ otherwise                → single-environment mode from WAZUH_* variables
 | `USER_HEADER` | `X-authentik-username,X-Forwarded-User,Remote-User,X-Auth-Request-User` | Comma-separated header names; the first non-empty one becomes the audit actor. |
 | `COOKIE_SECURE` | `false` | Mark the session cookie `Secure`; must be `true` in production. |
 | `FORWARDED_ALLOW_IPS` | `127.0.0.1` (Docker) | Uvicorn's trusted proxy addresses; never `*`. |
-| `APP_LANGUAGE` | `en` | UI and report language: `en`, `tr`, `es`, `de`. |
+| `APP_LANGUAGE` | `en` | UI and report language: `en`, `tr`, `es`, `de`, `fr`. |
 | `TZ` | `UTC` | IANA timezone for the schedule and timestamps; validated at startup. |
 | `SOURCE_URL` | project repository | Footer link (AGPL-3.0 §13 — point it at your fork if you modify the code). |
 | `LOG_LEVEL` | `INFO` | `DEBUG`, `INFO`, `WARNING`, `ERROR`. |
@@ -153,7 +153,7 @@ startup checks; see [docs/security-exceptions.md](https://github.com/occultera/o
 ```yaml
 app:
   timezone: ${TZ:-UTC}
-  language: ${APP_LANGUAGE:-en}     # en | tr | es | de
+  language: ${APP_LANGUAGE:-en}     # en | tr | es | de | fr
   title: Occultera
 
 llm:                                 # omit the block to use LLM_* variables

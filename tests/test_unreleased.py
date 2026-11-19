@@ -134,3 +134,46 @@ def test_no_proxy_hint_when_uvicorn_resolved_the_client():
     assert common.proxy_hint(Request(scope)) is None           # FORWARDED_ALLOW_IPS already applied
     scope["client"] = ("10.42.0.5", 1)
     assert common.proxy_hint(Request(scope)) == "10.42.0.5"   # the proxy itself is the peer
+
+
+def test_public_demo_is_read_only_without_login(monkeypatch):
+    monkeypatch.setattr(common, "PUBLIC_DEMO", True)
+    with TestClient(app) as cl:
+        r = cl.get("/")
+        assert r.status_code == 200 and "Public demo" in r.text
+        assert cl.get("/e/demo/inbox").status_code == 200
+        assert cl.get("/e/demo/settings").status_code in (302, 303, 403)
+        assert cl.post("/api/e/demo/run", json={}).status_code in (401, 403)
+        assert cl.post("/api/e/demo/inbox/act", json={}).status_code in (401, 403)
+
+
+def test_public_demo_needs_demo_mode():
+    assert common.public_demo_enabled({"WDT_PUBLIC_DEMO": "true", "WDT_DEMO": "true"})
+    assert not common.public_demo_enabled({"WDT_PUBLIC_DEMO": "true", "WDT_DEMO": "false"})
+    assert not common.public_demo_enabled({"WDT_PUBLIC_DEMO": "true", "WDT_DEMO": "true", "AUTH_DISABLED": "true"})
+
+
+async def test_weekly_summary_and_rule_effect(monkeypatch):
+    import httpx
+
+    from app.config import load_settings
+    from app.runtime import Runtime
+    sent = []
+
+    def handler(request):
+        sent.append(request.content.decode())
+        return httpx.Response(200)
+
+    rt = Runtime(load_settings(os.path.join(ROOT, "config/demo.yaml")), demo=True)
+    env_id = next(iter(rt.envs))
+    cfg = rt.settings.notify_for(rt.get(env_id).env)
+    cfg.telegram.bot_token, cfg.telegram.chat_id = "1:x", "1"
+    r = await rt.weekly_summary(env_id, transport=httpx.MockTransport(handler), force=True)
+    assert r["result"] == {"telegram": "ok"} and len(r["lines"]) >= 5
+    assert "AI round" in " ".join(r["lines"])
+    assert await rt.weekly_summary(env_id) == {}                 # off unless notify.on_weekly
+
+
+def test_effect_pct():
+    from app.weekly import pct
+    assert pct(10, 4) == "−60 %" and pct(0, 3) == "new" and pct(5, 5) == "±0 %"
