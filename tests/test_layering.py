@@ -132,3 +132,23 @@ def test_schema_entry_points_resolve_through_runtime_get():
         src = (root / name).read_text(encoding="utf-8")
         assert "S." in src
         assert re.search(r"\.get\(env_id\)|bind\(", src), name
+
+
+
+async def test_version_detection():
+    from app.demo import FakeAPI, FakeIndexer
+    from app.wazuh.detect import detect, major_of, verdict
+
+    assert major_of("v4.14.10") == 4 and major_of("5.0.0-rc2") == 5 and major_of("") is None
+    d = await detect(FakeAPI(), FakeIndexer(), "wazuh-alerts-4.x-*")
+    assert (d.major, d.source) == (4, "api") and verdict("auto", d)[0]
+    d = await detect(None, FakeIndexer(), "wazuh-alerts-4.x-*")
+    assert (d.major, d.source) == (4, "indices")
+    d = await detect(None, FakeIndexer(alerts=[]), "wazuh-alerts-4.x-*")
+    assert d.major is None and verdict("auto", d)[0]
+
+    class V5:
+        async def info(self):
+            return {"api_version": "5.0.0"}
+    ok, detail = verdict("auto", await detect(V5(), FakeIndexer(), "wazuh-alerts-4.x-*"))
+    assert not ok and "1.0" in detail

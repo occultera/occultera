@@ -5,6 +5,11 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+- **Wazuh version in the connection test.** A new `wazuh` row shows the Wazuh version the environment talks to (from
+  the server API, or from the index patterns without it). A Wazuh 5.x server fails the row with a pointer to the
+  wiki page *Wazuh 5*; support is planned for 1.0. `wazuh_version` (`WAZUH_VERSION`) is `auto` or `4`.
+
 ## [0.17.0] — 2026-11-22
 
 Groundwork for Wazuh 5.x. Nothing changes for users on Wazuh 4.x: every query and report is the same as in 0.16.0.

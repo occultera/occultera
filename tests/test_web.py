@@ -61,7 +61,7 @@ def test_flow(c):
     assert c.post(f"/api/e/demo/k/{k['id']}", json={"status": "closed"}).json()["status"] == "closed"
     assert "NFS" in c.get("/e/demo/k").text
     chk = c.post("/api/e/demo/check?wait=true").json()["results"]
-    assert {x["key"] for x in chk} == {"indexer", "alerts", "vulns", "storage", "api", "llm"}
+    assert {x["key"] for x in chk} == {"indexer", "alerts", "vulns", "storage", "api", "wazuh", "llm"}
     assert all(x["ok"] for x in chk), chk
     assert page.text.count("data-copy-text") >= 2          # every finding and question can be copied
     copied = [unescape(a) for a in findall(r'data-copy-text="([^"]*)"', page.text)]

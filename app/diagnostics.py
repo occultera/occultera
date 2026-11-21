@@ -50,6 +50,13 @@ class DiagnosticsMixin:
             info = await rt.api.info()
             return f"{env.api.url} — Wazuh {info.get('api_version')}"
 
+        async def wazuh():
+            from .wazuh.detect import detect, verdict
+            ok, detail = verdict(env.wazuh_version, await detect(rt.api, rt.ix, env.alerts_index))
+            if not ok:
+                raise RuntimeError(detail)
+            return detail
+
         async def llm():
             cfg = self.llm_cfg(env)
             r = await self.llm_for(env).complete("Reply with the single word OK.",
@@ -61,6 +68,7 @@ class DiagnosticsMixin:
         await step("vulns", vulns())
         await step("storage", storage())
         await step("api", api())
+        await step("wazuh", wazuh())
         src = rt.sources
         from .services import clusters_of
         many = len(clusters_of(src)) > 1

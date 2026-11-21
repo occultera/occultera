@@ -123,6 +123,7 @@ Bir kanal, alanları dolu olduğunda açıktır. Ayrıntılar: [docs/notificatio
 | `WAZUH_VERIFY_TLS` | `true` | Doğrulamayı kapatmak yerine `WAZUH_CA_FILE` kullanın. |
 | `WAZUH_CA_FILE` | *(boş)* | Konteyner içindeki özel CA yolu (`/app/config/certs/root-ca.pem`). |
 | `WAZUH_ALERTS_INDEX` | `wazuh-alerts-4.x-*` | Alarm indeks deseni. |
+| `WAZUH_VERSION` | `auto` | Wazuh ana sürümü: `auto` ya da `4`. Bağlantı testi algılanan sürümü gösterir; `5` 1.0 ile geliyor ([Wazuh 5](Wazuh-5-TR)). |
 | `SCHEDULE_ENABLED` | `true` | Zamanlanmış koşular. |
 | `SCHEDULE_TIME` | `07:30` | Tek saat veya virgüllü liste (`07:30,19:30`). |
 | `SCHEDULE_DAYS` | `mon,tue,wed,thu,fri` | Haftanın günleri. |
@@ -182,6 +183,7 @@ environments:
       username: ${PROD_API_USER}
       password: ${PROD_API_PASSWORD}
       ca_file: /app/config/certs/root-ca.pem
+    wazuh_version: auto      # auto | 4 (5: Occultera 1.0)
     alerts_index: wazuh-alerts-4.x-*
     vuln_index: wazuh-states-vulnerabilities-*
     storage_prefix: daily-triage      # sonuçlar daily-triage-runs / -knowledge
