@@ -180,6 +180,8 @@ handbook; the `docs/` folder holds the reference documents the wiki links to.
 - Wazuh **4.x**, developed and tested against 4.14; Wazuh Indexer (OpenSearch 2.x) with the standard
   `wazuh-alerts-*` template.
 - The Wazuh server API is optional; without it agent and daemon health, rule information and logtest are off.
+- **Wazuh 5.x** support is planned for 1.0, with a migration tool for custom 4.x rules: see
+  [Wazuh 5](https://github.com/occultera/occultera/wiki/Wazuh-5).
 - Python **3.11–3.15**.
 
 What is tested, what is expected and what is not supported:

@@ -17,6 +17,7 @@ geliştirmede kullanıldı demektir.
 | Wazuh manager 4.14 | **Test edildi** | projenin geliştirildiği sürüm |
 | 4.6'dan itibaren diğer Wazuh 4.x | Bekleniyor | 4.6 pratik alt sınırdır: isteğe bağlı dağıtım kullanıcısının RBAC eylemleri ve logtest API'si |
 | 4.6 öncesi Wazuh 4.x | Salt okunur kullanım için bekleniyor | dağıtım yardımcılarının uç noktaları eksik olabilir |
+| Wazuh 5.0 | Henüz desteklenmiyor | Occultera 1.0 için planlandı, bkz. [Wazuh 5](Wazuh-5-TR) |
 | Diğer ana sürümler | beyan yok | denenmedi |
 | Standart `wazuh-alerts-*` şablonuyla Wazuh Indexer (OpenSearch 2.x) | **Test edildi** | sorgular `bool.filter`, `terms`, `date_histogram`, `query_string` kullanır; eklenti gerekmez |
 | Özel alarm indeksi adları | Bekleniyor | `alerts_index` bir desen ya da somut bir indeks alır |

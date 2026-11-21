@@ -46,6 +46,20 @@ Where the project is going, roughly ordered by impact. This is a living document
 | ✅ | **CodeQL + dependency audit in CI** (fails on a known vulnerability), CycloneDX SBOM artifact, hash-chained audit trail, `/metrics`, production startup checks. | signals enterprise readiness. |
 | ⬜ | Published eval results (`python -m app.eval`) per model in the README. | nobody else shows their numbers this openly. |
 
+## Wazuh 5
+
+Details: [Wazuh 5](https://github.com/occultera/occultera/wiki/Wazuh-5). Wazuh 4.x stays fully supported.
+
+| Status | Item | Why |
+|---|---|---|
+| 🚧 | **Version adapter**: one interface, 4.x and 5.x implementations, version detection; modules split to ≤ 450 lines | Wazuh 5.0 changes indices, field names, severities and the rule engine. |
+| ⬜ | Severity mapping (4.x level ↔ 5.x severity), configurable | Wazuh publishes none. |
+| ⬜ | **Rule migration tool**: custom 4.x XML rules → Sigma, a review list, field mapping, a match check on sample events | custom XML rules are not migrated by Wazuh. |
+| ⬜ | Sigma drafts on 5.x next to XML drafts on 4.x | detection moves to Sigma-compatible detectors. |
+| ⬜ | Demo for 5.x (demo5.occultera.dev) and a 4.x/5.x smoke-test matrix against real Wazuh | proof on both versions. |
+| ⬜ | Error reports and anonymous usage data (on by default, can be switched off; no alert or log content) | to see which Wazuh versions are in use and fix crashes. |
+| ⬜ | **Wazuh 5.x support — Occultera 1.0**, after Wazuh 5.0 is generally available | |
+
 ## Earlier releases
 
 - v0.10.0 — the watch (rule-based alerts without the AI), AI-round verdicts, settings page, masking profile,

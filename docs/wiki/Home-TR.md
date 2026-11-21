@@ -20,7 +20,7 @@ açıklar ve neyin ayarlanması gerektiğini önerir. Kararı siz verirsiniz; on
 
 ![Nöbet panosu](images/dashboard.png)
 
-**Sürüm:** 0.16.0 · **Lisans:** AGPL-3.0-only · **Python:** 3.11–3.15 · **Wazuh:** 4.x
+**Sürüm:** 0.16.0 · **Lisans:** AGPL-3.0-only · **Python:** 3.11–3.15 · **Wazuh:** 4.x · 5.x 1.0 ile geliyor ([Wazuh 5](Wazuh-5-TR))
 
 ## Nedir, ne değildir
 

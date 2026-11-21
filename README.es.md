@@ -179,6 +179,8 @@ el manual (páginas detalladas en inglés y en turco); la carpeta `docs/` contie
   `wazuh-alerts-*`.
 - La API del servidor Wazuh es opcional; sin ella no hay estado de agentes y daemons, información de reglas ni
   logtest.
+- **Wazuh 5.x** está previsto para la 1.0, con una herramienta de migración para las reglas propias de 4.x:
+  [Wazuh 5](https://github.com/occultera/occultera/wiki/Wazuh-5).
 - Python **3.11–3.15**.
 
 Qué está probado, qué se espera y qué no se admite:

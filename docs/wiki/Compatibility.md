@@ -18,6 +18,7 @@ that version.
 | Wazuh manager 4.14 | **Tested** | the version the project is developed against |
 | Other Wazuh 4.x from 4.6 | Expected | 4.6 is the practical floor: the RBAC actions of the optional deploy user and the logtest API |
 | Wazuh 4.x before 4.6 | Expected for read-only use | deployment helpers may lack endpoints |
+| Wazuh 5.0 | Not supported yet | planned for Occultera 1.0, see [Wazuh 5](Wazuh-5) |
 | Other major versions | no statement | not tried |
 | Wazuh Indexer (OpenSearch 2.x) with the standard `wazuh-alerts-*` template | **Tested** | queries use `bool.filter`, `terms`, `date_histogram`, `query_string`; no plugin needed |
 | Custom alert index names | Expected | `alerts_index` takes a pattern or a concrete index |

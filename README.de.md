@@ -180,6 +180,8 @@ Handbuch (Englisch und Türkisch); der Ordner `docs/` enthält die Referenzdokum
   `wazuh-alerts-*`.
 - Die Wazuh-Server-API ist optional; ohne sie gibt es keinen Agenten- und Daemon-Zustand, keine
   Regelinformationen und kein Logtest.
+- **Wazuh 5.x** ist für 1.0 geplant, mit einem Migrationswerkzeug für eigene 4.x-Regeln:
+  [Wazuh 5](https://github.com/occultera/occultera/wiki/Wazuh-5).
 - Python **3.11–3.15**.
 
 Was getestet ist, was erwartet wird und was nicht unterstützt wird:

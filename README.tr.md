@@ -182,6 +182,8 @@ Bu README kısa sürümdür. El kitabı [wiki](https://github.com/occultera/occu
 - Wazuh **4.x**; 4.14'e karşı geliştirilip test edildi. Standart `wazuh-alerts-*` şablonuyla Wazuh Indexer
   (OpenSearch 2.x).
 - Wazuh sunucu API'si isteğe bağlıdır; yoksa ajan ve daemon sağlığı, kural bilgisi ve logtest kapalıdır.
+- **Wazuh 5.x** desteği 1.0 için planlandı; özel 4.x kuralları için bir geçiş aracıyla gelecek:
+  [Wazuh 5](https://github.com/occultera/occultera/wiki/Wazuh-5-TR).
 - Python **3.11–3.15**.
 
 Neyin test edildiği, neyin beklendiği ve neyin desteklenmediği:

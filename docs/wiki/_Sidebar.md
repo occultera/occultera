@@ -35,6 +35,7 @@
 - [Backup and retention](Backup)
 - [Upgrade](Upgrade)
 - [Compatibility](Compatibility)
+- [Wazuh 5 (coming in 1.0)](Wazuh-5)
 
 **Contribute**
 - [Development](Development)
@@ -74,6 +75,7 @@
 - [Yedekleme ve silme kuralları](Backup-TR)
 - [Yükseltme](Upgrade-TR)
 - [Uyumluluk](Compatibility-TR)
+- [Wazuh 5 (1.0 ile geliyor)](Wazuh-5-TR)
 
 **Katkı**
 - [Geliştirme](Development-TR)
