@@ -17,8 +17,7 @@ from .config import Environment
 from .i18n import t
 from .wazuh.api import WazuhAPI
 from .wazuh.indexer import Indexer
-
-TS = "timestamp"
+from .wazuh.schema import S, bind
 
 
 def iso(dt: datetime) -> str:
@@ -28,7 +27,7 @@ def iso(dt: datetime) -> str:
 def rng(frm: datetime | str, to: datetime | str) -> dict:
     f = iso(frm) if isinstance(frm, datetime) else frm
     t = iso(to) if isinstance(to, datetime) else to
-    return {"range": {TS: {"gte": f, "lt": t}}}
+    return {"range": {S.TS: {"gte": f, "lt": t}}}
 
 
 def _b(agg: dict) -> list[dict]:
@@ -53,6 +52,7 @@ class Collector:
             return None
 
     async def collect(self, frm: datetime, to: datetime) -> dict[str, Any]:
+        bind(self.env)
         hours = max(1, round((to - frm).total_seconds() / 3600))
         prev_frm = frm - (to - frm)
         tasks = {
@@ -98,13 +98,13 @@ class Collector:
                  "shards": _int(a.get("shards"))} for a in alloc if a.get("node")
             ]
         last = await self._safe("last_alert", self.ix.search(self.env.alerts_index, {
-            "size": 1, "sort": [{TS: "desc"}], "_source": [TS, "manager.name", "agent.name"],
-            "query": {"range": {TS: {"gte": "now-7d", "lte": "now+5m"}}},
+            "size": 1, "sort": [{S.TS: "desc"}], "_source": [S.TS, S.MANAGER, S.AGENT_NAME],
+            "query": {"range": {S.TS: {"gte": "now-7d", "lte": "now+5m"}}},
         }))
         if last is not None:
             hits = last["hits"]["hits"]
             if hits:
-                ts = hits[0]["_source"][TS]
+                ts = hits[0]["_source"][S.TS]
                 h["last_alert"] = ts
                 h["silence_minutes"] = round((now - _parse(ts)).total_seconds() / 60)
             else:
@@ -112,9 +112,9 @@ class Collector:
                 h["silence_minutes"] = None
         # which manager nodes produced alerts recently
         mgr = await self._safe("alert_managers", self.ix.search(self.env.alerts_index, {
-            "size": 0, "query": {"range": {TS: {"gte": "now-2h"}}},
-            "aggs": {"m": {"terms": {"field": "manager.name", "size": 10},
-                           "aggs": {"last": {"max": {"field": TS}}}}},
+            "size": 0, "query": {"range": {S.TS: {"gte": "now-2h"}}},
+            "aggs": {"m": {"terms": {"field": S.MANAGER, "size": 10},
+                           "aggs": {"last": {"max": {"field": S.TS}}}}},
         }))
         if mgr:
             h["managers_last_2h"] = [{"manager": b["key"], "count": b["doc_count"],
@@ -174,13 +174,13 @@ class Collector:
             pass
         try:
             last = await self.ix.search(self.env.alerts_index, {
-                "size": 1, "sort": [{TS: "desc"}], "_source": [TS],
-                "query": {"range": {TS: {"gte": "now-7d", "lte": "now+5m"}}}})
+                "size": 1, "sort": [{S.TS: "desc"}], "_source": [S.TS],
+                "query": {"range": {S.TS: {"gte": "now-7d", "lte": "now+5m"}}}})
             hits = last["hits"]["hits"]
             if not hits:
                 p["silence"] = t(L, "flag.no_alerts_7d")
             else:
-                sil = round((now - _parse(hits[0]["_source"][TS])).total_seconds() / 60)
+                sil = round((now - _parse(hits[0]["_source"][S.TS])).total_seconds() / 60)
                 if sil > silence_minutes:
                     p["silence"] = t(L, "flag.silence", m=sil, t=silence_minutes)
         except Exception as e:  # noqa: BLE001
@@ -206,10 +206,10 @@ class Collector:
         r = await self.ix.search(self.env.alerts_index, {
             "size": 0, "query": rng(frm, to),
             "aggs": {
-                "levels": {"terms": {"field": "rule.level", "size": 20, "order": {"_key": "desc"}}},
-                "hourly": {"date_histogram": {"field": TS, "fixed_interval": "1h", "min_doc_count": 0,
+                "levels": {"terms": {"field": S.RULE_LEVEL, "size": 20, "order": {"_key": "desc"}}},
+                "hourly": {"date_histogram": {"field": S.TS, "fixed_interval": "1h", "min_doc_count": 0,
                                               "extended_bounds": {"min": iso(frm), "max": iso(to - timedelta(seconds=1))}}},
-                "managers": {"terms": {"field": "manager.name", "size": 10}},
+                "managers": {"terms": {"field": S.MANAGER, "size": 10}},
             },
         })
         total = r["hits"]["total"]["value"]
@@ -226,14 +226,14 @@ class Collector:
 
     # ------------------------------------------------------------------ rules
     async def _top_rules(self, frm, to, prev_frm) -> list[dict]:
-        aggs = {"r": {"terms": {"field": "rule.id", "size": 40},
-                      "aggs": {"d": {"terms": {"field": "rule.description", "size": 1}},
-                               "l": {"max": {"field": "rule.level"}},
-                               "a": {"terms": {"field": "agent.name", "size": 4}}}}}
+        aggs = {"r": {"terms": {"field": S.RULE_ID, "size": 40},
+                      "aggs": {"d": {"terms": {"field": S.RULE_DESC, "size": 1}},
+                               "l": {"max": {"field": S.RULE_LEVEL}},
+                               "a": {"terms": {"field": S.AGENT_NAME, "size": 4}}}}}
         cur, prev = await asyncio.gather(
             self.ix.search(self.env.alerts_index, {"size": 0, "query": rng(frm, to), "aggs": aggs}),
             self.ix.search(self.env.alerts_index, {"size": 0, "query": rng(prev_frm, frm),
-                                                  "aggs": {"r": {"terms": {"field": "rule.id", "size": 500}}}}),
+                                                  "aggs": {"r": {"terms": {"field": S.RULE_ID, "size": 500}}}}),
         )
         prevm = {b["key"]: b["doc_count"] for b in _b(prev["aggregations"]["r"])}
         out = []
@@ -249,19 +249,19 @@ class Collector:
     async def _high_level(self, frm, to) -> list[dict]:
         r = await self.ix.search(self.env.alerts_index, {
             "size": 0,
-            "query": {"bool": {"filter": [rng(frm, to), {"range": {"rule.level": {"gte": self.env.high_level}}}]}},
-            "aggs": {"r": {"terms": {"field": "rule.id", "size": 60},
+            "query": {"bool": {"filter": [rng(frm, to), S.level_gte(self.env.high_level)]}},
+            "aggs": {"r": {"terms": {"field": S.RULE_ID, "size": 60},
                            "aggs": {
-                               "d": {"terms": {"field": "rule.description", "size": 1}},
-                               "l": {"max": {"field": "rule.level"}},
-                               "a": {"terms": {"field": "agent.name", "size": 8},
-                                     "aggs": {"first": {"min": {"field": TS}}, "last": {"max": {"field": TS}}}},
-                               "ip": {"terms": {"field": "data.srcip", "size": 5}},
-                               "s": {"top_hits": {"size": 1, "sort": [{TS: "desc"}],
-                                                  "_source": ["full_log", "data.url", "data.srcip", "data.srcuser",
-                                                              "data.dstuser", "syscheck.path", "data.verb",
-                                                              "data.objectRef", "data.user.username",
-                                                              "data.vulnerability.cve", "location"]}},
+                               "d": {"terms": {"field": S.RULE_DESC, "size": 1}},
+                               "l": {"max": {"field": S.RULE_LEVEL}},
+                               "a": {"terms": {"field": S.AGENT_NAME, "size": 8},
+                                     "aggs": {"first": {"min": {"field": S.TS}}, "last": {"max": {"field": S.TS}}}},
+                               "ip": {"terms": {"field": S.SRCIP, "size": 5}},
+                               "s": {"top_hits": {"size": 1, "sort": [{S.TS: "desc"}],
+                                                  "_source": [S.FULL_LOG, S.URL, S.SRCIP, S.SRCUSER,
+                                                              S.DSTUSER, S.FIM_PATH, S.VERB,
+                                                              S.K8S_OBJECT, S.USERNAME,
+                                                              S.ALERT_CVE, S.LOCATION]}},
                            }}},
         })
         out = []
@@ -269,8 +269,8 @@ class Collector:
             d = _b(b["d"])
             hit = b["s"]["hits"]["hits"]
             sample = hit[0]["_source"] if hit else {}
-            if "full_log" in sample:
-                sample["full_log"] = sample["full_log"][:400]
+            if S.FULL_LOG in sample:
+                sample[S.FULL_LOG] = sample[S.FULL_LOG][:400]
             out.append({
                 "id": b["key"], "count": b["doc_count"], "level": int(b["l"]["value"] or 0),
                 "desc": d[0]["key"] if d else "",
@@ -283,12 +283,12 @@ class Collector:
         return out
 
     async def _agents_alerts(self, frm, to, prev_frm) -> list[dict]:
-        a = {"a": {"terms": {"field": "agent.name", "size": 60},
-                   "aggs": {"hi": {"filter": {"range": {"rule.level": {"gte": self.env.high_level}}}}}}}
+        a = {"a": {"terms": {"field": S.AGENT_NAME, "size": 60},
+                   "aggs": {"hi": {"filter": S.level_gte(self.env.high_level)}}}}
         cur, prev = await asyncio.gather(
             self.ix.search(self.env.alerts_index, {"size": 0, "query": rng(frm, to), "aggs": a}),
             self.ix.search(self.env.alerts_index, {"size": 0, "query": rng(prev_frm, frm),
-                                                  "aggs": {"a": {"terms": {"field": "agent.name", "size": 200}}}}),
+                                                  "aggs": {"a": {"terms": {"field": S.AGENT_NAME, "size": 200}}}}),
         )
         pm = {b["key"]: b["doc_count"] for b in _b(prev["aggregations"]["a"])}
         return [{"agent": b["key"], "count": b["doc_count"], "prev": pm.get(b["key"], 0),
@@ -298,11 +298,11 @@ class Collector:
         """Rule IDs seen in the window but not in the preceding 14 days."""
         cur, hist = await asyncio.gather(
             self.ix.search(self.env.alerts_index, {"size": 0, "query": rng(frm, to),
-                           "aggs": {"r": {"terms": {"field": "rule.id", "size": 2000},
-                                          "aggs": {"d": {"terms": {"field": "rule.description", "size": 1}},
-                                                   "l": {"max": {"field": "rule.level"}}}}}}),
+                           "aggs": {"r": {"terms": {"field": S.RULE_ID, "size": 2000},
+                                          "aggs": {"d": {"terms": {"field": S.RULE_DESC, "size": 1}},
+                                                   "l": {"max": {"field": S.RULE_LEVEL}}}}}}),
             self.ix.search(self.env.alerts_index, {"size": 0, "query": rng(frm - timedelta(days=14), frm),
-                           "aggs": {"r": {"terms": {"field": "rule.id", "size": 5000}}}}),
+                           "aggs": {"r": {"terms": {"field": S.RULE_ID, "size": 5000}}}}),
         )
         seen = {b["key"] for b in _b(hist["aggregations"]["r"])}
         out = []
@@ -315,7 +315,7 @@ class Collector:
 
     async def _groups(self, frm, to) -> dict:
         r = await self.ix.search(self.env.alerts_index, {"size": 0, "query": rng(frm, to),
-                                 "aggs": {"g": {"terms": {"field": "rule.groups", "size": 50}}}})
+                                 "aggs": {"g": {"terms": {"field": S.RULE_GROUPS, "size": 50}}}})
         g = {b["key"]: b["doc_count"] for b in _b(r["aggregations"]["g"])}
         if self.env.watch_groups:
             g = {"top": g, "watched": {k: g.get(k, 0) for k in self.env.watch_groups}}
@@ -323,10 +323,10 @@ class Collector:
 
     async def _srcips(self, frm, to) -> list[dict]:
         r = await self.ix.search(self.env.alerts_index, {
-            "size": 0, "query": {"bool": {"filter": [rng(frm, to), {"exists": {"field": "data.srcip"}}]}},
-            "aggs": {"ip": {"terms": {"field": "data.srcip", "size": 15},
-                            "aggs": {"r": {"terms": {"field": "rule.id", "size": 3}},
-                                     "l": {"max": {"field": "rule.level"}}}}}})
+            "size": 0, "query": {"bool": {"filter": [rng(frm, to), {"exists": {"field": S.SRCIP}}]}},
+            "aggs": {"ip": {"terms": {"field": S.SRCIP, "size": 15},
+                            "aggs": {"r": {"terms": {"field": S.RULE_ID, "size": 3}},
+                                     "l": {"max": {"field": S.RULE_LEVEL}}}}}})
         return [{"ip": b["key"], "count": b["doc_count"], "max_level": int(b["l"]["value"] or 0),
                  "rules": {x["key"]: x["doc_count"] for x in _b(b["r"])}}
                 for b in _b(r["aggregations"]["ip"])]
@@ -335,8 +335,8 @@ class Collector:
         if not self.env.watch_rules:
             return {}
         r = await self.ix.search(self.env.alerts_index, {
-            "size": 0, "query": {"bool": {"filter": [rng(frm, to), {"terms": {"rule.id": self.env.watch_rules}}]}},
-            "aggs": {"r": {"terms": {"field": "rule.id", "size": len(self.env.watch_rules)}}}})
+            "size": 0, "query": {"bool": {"filter": [rng(frm, to), {"terms": {S.RULE_ID: self.env.watch_rules}}]}},
+            "aggs": {"r": {"terms": {"field": S.RULE_ID, "size": len(self.env.watch_rules)}}}})
         got = {b["key"]: b["doc_count"] for b in _b(r["aggregations"]["r"])}
         return {rid: got.get(rid, 0) for rid in self.env.watch_rules}
 
@@ -344,21 +344,21 @@ class Collector:
         now = now or datetime.now(UTC)
         sla = self.env.vuln_sla.days()
         aggs: dict[str, Any] = {
-            "sev": {"terms": {"field": "vulnerability.severity", "size": 10}},
-            "crit_agents": {"filter": {"term": {"vulnerability.severity": "Critical"}},
-                            "aggs": {"a": {"terms": {"field": "agent.name", "size": 15}}}},
-            "crit_pkgs": {"filter": {"term": {"vulnerability.severity": "Critical"}},
-                          "aggs": {"p": {"terms": {"field": "package.name", "size": 15}}}},
-            "dated": {"filter": {"exists": {"field": "vulnerability.detected_at"}}},
+            "sev": {"terms": {"field": S.VULN_SEV, "size": 10}},
+            "crit_agents": {"filter": {"term": {S.VULN_SEV: "Critical"}},
+                            "aggs": {"a": {"terms": {"field": S.AGENT_NAME, "size": 15}}}},
+            "crit_pkgs": {"filter": {"term": {S.VULN_SEV: "Critical"}},
+                          "aggs": {"p": {"terms": {"field": S.PKG_NAME, "size": 15}}}},
+            "dated": {"filter": {"exists": {"field": S.VULN_DETECTED}}},
         }
         for sev, days in sla.items():  # open longer than the SLA allows
             aggs[f"over_{sev}"] = {
                 "filter": {"bool": {"filter": [
-                    {"term": {"vulnerability.severity": sev}},
-                    {"range": {"vulnerability.detected_at": {"lt": iso(now - timedelta(days=days))}}}]}},
-                "aggs": {"a": {"terms": {"field": "agent.name", "size": 10}},
-                         "p": {"terms": {"field": "package.name", "size": 8}},
-                         "oldest": {"min": {"field": "vulnerability.detected_at"}}}}
+                    {"term": {S.VULN_SEV: sev}},
+                    {"range": {S.VULN_DETECTED: {"lt": iso(now - timedelta(days=days))}}}]}},
+                "aggs": {"a": {"terms": {"field": S.AGENT_NAME, "size": 10}},
+                         "p": {"terms": {"field": S.PKG_NAME, "size": 8}},
+                         "oldest": {"min": {"field": S.VULN_DETECTED}}}}
         r = await self.ix.search(self.env.vuln_index, {"size": 0, "aggs": aggs})
         if r["hits"]["total"]["value"] == 0:
             return None
@@ -382,17 +382,17 @@ class Collector:
         """rule × agent counts in the window vs. the daily mean / spread of the previous `days` days."""
         hours = max(1.0, (to - frm).total_seconds() / 3600)
         b_from = frm - timedelta(days=days)
-        pair = {"r": {"terms": {"field": "rule.id", "size": 150},
-                      "aggs": {"a": {"terms": {"field": "agent.name", "size": 40}},
-                               "d": {"terms": {"field": "rule.description", "size": 1}},
-                               "l": {"max": {"field": "rule.level"}}}}}
+        pair = {"r": {"terms": {"field": S.RULE_ID, "size": 150},
+                      "aggs": {"a": {"terms": {"field": S.AGENT_NAME, "size": 40}},
+                               "d": {"terms": {"field": S.RULE_DESC, "size": 1}},
+                               "l": {"max": {"field": S.RULE_LEVEL}}}}}
         cur, base = await asyncio.gather(
             self.ix.search(self.env.alerts_index, {"size": 0, "query": rng(frm, to), "aggs": pair}),
             self.ix.search(self.env.alerts_index, {"size": 0, "query": rng(b_from, frm), "aggs": {
-                "r": {"terms": {"field": "rule.id", "size": 400},
-                      "aggs": {"a": {"terms": {"field": "agent.name", "size": 60},
+                "r": {"terms": {"field": S.RULE_ID, "size": 400},
+                      "aggs": {"a": {"terms": {"field": S.AGENT_NAME, "size": 60},
                                      "aggs": {"day": {"date_histogram": {
-                                         "field": TS, "fixed_interval": "1d", "min_doc_count": 0,
+                                         "field": S.TS, "fixed_interval": "1d", "min_doc_count": 0,
                                          "extended_bounds": {"min": iso(b_from), "max": iso(frm - timedelta(seconds=1))}}}}}}}}}))
         hist: dict[tuple, list[int]] = {}
         for rb in _b(base["aggregations"]["r"]):
@@ -427,12 +427,12 @@ class Collector:
         m = self.env.mail
         r = await self.ix.search(self.env.alerts_index, {
             "size": 0,
-            "query": {"bool": {"filter": [rng(frm, to), {"range": {"rule.level": {"gte": m.alert_level}}}]}},
-            "aggs": {"h": {"date_histogram": {"field": TS, "fixed_interval": "1h", "min_doc_count": 1},
-                           "aggs": {"r": {"terms": {"field": "rule.id", "size": 10},
-                                          "aggs": {"d": {"terms": {"field": "rule.description", "size": 1}},
-                                                   "l": {"max": {"field": "rule.level"}},
-                                                   "a": {"terms": {"field": "agent.name", "size": 3}}}}}}}})
+            "query": {"bool": {"filter": [rng(frm, to), S.level_gte(m.alert_level)]}},
+            "aggs": {"h": {"date_histogram": {"field": S.TS, "fixed_interval": "1h", "min_doc_count": 1},
+                           "aggs": {"r": {"terms": {"field": S.RULE_ID, "size": 10},
+                                          "aggs": {"d": {"terms": {"field": S.RULE_DESC, "size": 1}},
+                                                   "l": {"max": {"field": S.RULE_LEVEL}},
+                                                   "a": {"terms": {"field": S.AGENT_NAME, "size": 3}}}}}}}})
         hours, buried = [], {}
         for b in _b(r["aggregations"]["h"]):
             if b["doc_count"] <= m.max_per_hour:
@@ -458,16 +458,16 @@ class Collector:
         """Scan the newest ``sample`` alerts of the window (plus a share of the high-level ones) for personal data
         stored in clear text. Only counts and fully masked examples leave this function."""
         from .privacy import scan_alerts
-        src = ["full_log", "data", "rule.id", "rule.description", "agent.name", "location", "decoder.name"]
+        src = [S.FULL_LOG, S.DATA, S.RULE_ID, S.RULE_DESC, S.AGENT_NAME, S.LOCATION, S.DECODER]
         q = {"bool": {"filter": [rng(frm, to)]}}
         r = await self.ix.search(self.env.alerts_index, {"size": sample, "query": q, "_source": src,
-                                                         "sort": [{TS: "desc"}]})
+                                                         "sort": [{S.TS: "desc"}]})
         hits = r["hits"]["hits"]
         # spread the sample over the window: the newest alerts alone are often one noisy source
         r2 = await self.ix.search(self.env.alerts_index, {
             "size": 0, "query": q,
-            "aggs": {"loc": {"terms": {"field": "location", "size": 40},
-                             "aggs": {"s": {"top_hits": {"size": 5, "_source": src, "sort": [{TS: "desc"}]}}}}}})
+            "aggs": {"loc": {"terms": {"field": S.LOCATION, "size": 40},
+                             "aggs": {"s": {"top_hits": {"size": 5, "_source": src, "sort": [{S.TS: "desc"}]}}}}}})
         seen = {h.get("_id") for h in hits}
         for b in _b(r2["aggregations"]["loc"]):
             for h in b["s"]["hits"]["hits"]:

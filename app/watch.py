@@ -36,7 +36,7 @@ import re
 from datetime import UTC, datetime, timedelta
 from typing import TYPE_CHECKING, Any
 
-from .collector import TS, _b, _parse, iso, rng
+from .collector import _b, _parse, iso, rng
 from .config import DAYS
 from .i18n import t
 from .notify import NotifyCfg, plain_message
@@ -44,14 +44,16 @@ from .notify import send as notify_send
 from .observability import metrics
 from .settingsdoc import CHANNELS, TUNABLE, WatchSettings
 from .store import new_id, now_iso
+from .wazuh.schema import S, bind
 
 if TYPE_CHECKING:
     from .services import EnvRuntime
 
 log = logging.getLogger("wdt.watch")
 
-FIELDS = [TS, "agent.name", "rule.id", "rule.level", "rule.description", "rule.groups", "data.srcip",
-          "data.srcuser", "data.dstuser", "location", "full_log"]
+def fields() -> list[str]:
+    return [S.TS, S.AGENT_NAME, S.RULE_ID, S.RULE_LEVEL, S.RULE_DESC, S.RULE_GROUPS, S.SRCIP,
+            S.SRCUSER, S.DSTUSER, S.LOCATION, S.FULL_LOG]
 AUTH_FAIL = ["authentication_failed", "authentication_failures"]
 AUTH_OK = ["authentication_success"]
 MAX_HITS = 500
@@ -69,13 +71,13 @@ def _get(d: dict, path: str) -> Any:
 
 
 def _groups(src: dict) -> list[str]:
-    g = _get(src, "rule.groups") or []
+    g = _get(src, S.RULE_GROUPS) or []
     return [g] if isinstance(g, str) else [str(x) for x in g]
 
 
 def _level(src: dict) -> int:
     try:
-        return int(_get(src, "rule.level") or 0)
+        return int(_get(src, S.RULE_LEVEL) or 0)
     except (TypeError, ValueError):
         return 0
 
@@ -88,7 +90,7 @@ def classify(src: dict, cfg: WatchSettings, rules: set[str], groups: set[str]) -
         return "active_response", "high"
     if cfg.on("level") and lvl >= cfg.critical_level:
         return "level", "critical" if lvl >= max(cfg.critical_level, 15) else "high"
-    if cfg.on("rules") and str(_get(src, "rule.id")) in rules:
+    if cfg.on("rules") and str(_get(src, S.RULE_ID)) in rules:
         return "rules", "high"
     if cfg.on("groups") and g & groups and lvl >= cfg.group_min_level:
         return "groups", "high"
@@ -120,6 +122,7 @@ class Scanner:
             return default
 
     async def scan(self, frm: datetime, to: datetime, known_disconnected: set[str] | None) -> tuple[list[dict], set[str] | None]:
+        bind(self.env)
         a, b, c, d, e = await asyncio.gather(
             self._safe("alerts", self.alerts(frm, to), []),
             self._safe("brute_force", self.brute_force(frm, to), []),
@@ -168,18 +171,18 @@ class Scanner:
         cfg = self.cfg
         should: list[dict] = []
         if cfg.on("level"):
-            should.append({"range": {"rule.level": {"gte": cfg.critical_level}}})
+            should.append(S.level_gte(cfg.critical_level))
         if cfg.on("rules") and self.rules:
-            should.append({"terms": {"rule.id": sorted(self.rules)}})
+            should.append({"terms": {S.RULE_ID: sorted(self.rules)}})
         if cfg.on("groups") and self.groups:
-            should.append({"bool": {"filter": [{"terms": {"rule.groups": sorted(self.groups)}},
-                                               {"range": {"rule.level": {"gte": cfg.group_min_level}}}]}})
+            should.append({"bool": {"filter": [{"terms": {S.RULE_GROUPS: sorted(self.groups)}},
+                                               S.level_gte(cfg.group_min_level)]}})
         if cfg.on("active_response"):
-            should.append({"term": {"rule.groups": "active_response"}})
+            should.append({"term": {S.RULE_GROUPS: "active_response"}})
         if not should:
             return []
         r = await self.ix.search(self.env.alerts_index, {
-            "size": MAX_HITS, "sort": [{TS: "desc"}], "_source": FIELDS,
+            "size": MAX_HITS, "sort": [{S.TS: "desc"}], "_source": fields(),
             "query": {"bool": {"filter": [rng(frm, to)], "should": should, "minimum_should_match": 1}}})
         by_key: dict[str, dict] = {}
         for h in r["hits"]["hits"]:
@@ -188,18 +191,18 @@ class Scanner:
             if not cl:
                 continue
             trig, sev = cl
-            rid, agent = str(_get(src, "rule.id") or ""), str(_get(src, "agent.name") or "")
+            rid, agent = str(_get(src, S.RULE_ID) or ""), str(_get(src, S.AGENT_NAME) or "")
             key = f"{trig}:{rid}:{agent}"
             ev = by_key.get(key)
             if ev is None:
                 ev = by_key[key] = _event(
                     self.env.id, key, trig, sev, rule_ids=[rid], agents=[agent] if agent else [],
-                    level=_level(src), title=str(_get(src, "rule.description") or "")[:200], srcips=[],
-                    first_seen=src.get(TS), last_seen=src.get(TS), count=0,
-                    sample=str(src.get("full_log") or "")[:400])
+                    level=_level(src), title=str(_get(src, S.RULE_DESC) or "")[:200], srcips=[],
+                    first_seen=src.get(S.TS), last_seen=src.get(S.TS), count=0,
+                    sample=str(src.get(S.FULL_LOG) or "")[:400])
             ev["count"] += 1
-            ev["first_seen"] = src.get(TS) or ev["first_seen"]          # hits are newest first
-            ip = _get(src, "data.srcip")
+            ev["first_seen"] = src.get(S.TS) or ev["first_seen"]          # hits are newest first
+            ip = _get(src, S.SRCIP)
             if ip and ip not in ev["srcips"] and len(ev["srcips"]) < 5:
                 ev["srcips"].append(ip)
             if sev == "critical":
@@ -216,21 +219,21 @@ class Scanner:
         if not cfg.on("brute_force"):
             return []
         ok = await self.ix.search(self.env.alerts_index, {
-            "size": 0, "query": {"bool": {"filter": [rng(frm, to), {"terms": {"rule.groups": AUTH_OK}},
-                                                     {"exists": {"field": "data.srcip"}}]}},
-            "aggs": {"ip": {"terms": {"field": "data.srcip", "size": 200},
-                            "aggs": {"last": {"max": {"field": TS}},
-                                     "agent": {"terms": {"field": "agent.name", "size": 3}},
-                                     "user": {"terms": {"field": "data.dstuser", "size": 3}}}}}})
+            "size": 0, "query": {"bool": {"filter": [rng(frm, to), {"terms": {S.RULE_GROUPS: AUTH_OK}},
+                                                     {"exists": {"field": S.SRCIP}}]}},
+            "aggs": {"ip": {"terms": {"field": S.SRCIP, "size": 200},
+                            "aggs": {"last": {"max": {"field": S.TS}},
+                                     "agent": {"terms": {"field": S.AGENT_NAME, "size": 3}},
+                                     "user": {"terms": {"field": S.DSTUSER, "size": 3}}}}}})
         winners = {str(x["key"]): x for x in _b(ok["aggregations"]["ip"])}
         if not winners:
             return []
         start = frm - timedelta(minutes=cfg.brute_window_minutes)
         fails = await self.ix.search(self.env.alerts_index, {
-            "size": 0, "query": {"bool": {"filter": [rng(start, to), {"terms": {"rule.groups": AUTH_FAIL}},
-                                                     {"terms": {"data.srcip": sorted(winners)}}]}},
-            "aggs": {"ip": {"terms": {"field": "data.srcip", "size": 200},
-                            "aggs": {"first": {"min": {"field": TS}}}}}})
+            "size": 0, "query": {"bool": {"filter": [rng(start, to), {"terms": {S.RULE_GROUPS: AUTH_FAIL}},
+                                                     {"terms": {S.SRCIP: sorted(winners)}}]}},
+            "aggs": {"ip": {"terms": {"field": S.SRCIP, "size": 200},
+                            "aggs": {"first": {"min": {"field": S.TS}}}}}})
         out = []
         for bk in _b(fails["aggregations"]["ip"]):
             ip, n = str(bk["key"]), int(bk["doc_count"])
@@ -254,11 +257,11 @@ class Scanner:
         cfg = self.cfg
         flt: list[dict] = [rng(frm, to)]
         if cfg.spike_min_level > 0:
-            flt.append({"range": {"rule.level": {"gte": cfg.spike_min_level}}})
+            flt.append(S.level_gte(cfg.spike_min_level))
         if rule_ids:
-            flt.append({"terms": {"rule.id": rule_ids}})
+            flt.append({"terms": {S.RULE_ID: rule_ids}})
         excl = cfg.spike_excluded()
-        return {"bool": {"filter": flt, "must_not": [{"terms": {"rule.groups": excl}}] if excl else []}}
+        return {"bool": {"filter": flt, "must_not": [{"terms": {S.RULE_GROUPS: excl}}] if excl else []}}
 
     async def spike(self, frm: datetime, to: datetime) -> list[dict]:
         """A burst of alerts that matter, named by the rules behind it.
@@ -285,16 +288,16 @@ class Scanner:
         if avg > 0 and cur < cfg.spike_factor * avg:
             return []
         r = await self.ix.search(idx, {"size": 0, "query": self._spike_query(frm, to), "aggs": {
-            "r": {"terms": {"field": "rule.id", "size": 5}, "aggs": {
-                "a": {"terms": {"field": "agent.name", "size": 3}},
-                "d": {"top_hits": {"size": 1, "_source": ["rule.description", "rule.level"]}}}}}})
+            "r": {"terms": {"field": S.RULE_ID, "size": 5}, "aggs": {
+                "a": {"terms": {"field": S.AGENT_NAME, "size": 3}},
+                "d": {"top_hits": {"size": 1, "_source": [S.RULE_DESC, S.RULE_LEVEL]}}}}}})
         contrib: list[dict] = []
         for b in _b(r.get("aggregations", {}).get("r") or {}):
             hits = (b.get("d") or {}).get("hits", {}).get("hits") or [{}]
             src = hits[0].get("_source") or {}
             contrib.append({"rule": str(b["key"]), "count": int(b["doc_count"]),
                             "agents": [str(a["key"]) for a in _b(b.get("a") or {})],
-                            "description": str(_get(src, "rule.description") or "")[:120],
+                            "description": str(_get(src, S.RULE_DESC) or "")[:120],
                             "level": _level(src)})
         if not contrib:
             return []
@@ -307,8 +310,8 @@ class Scanner:
         # has each of them already done this in the last 7 days? (largest window of the same length)
         minutes = max(5, math.ceil(span / 60))
         h = await self.ix.search(idx, {"size": 0, "query": self._spike_query(week_from, frm, [c["rule"] for c in main]),
-                                       "aggs": {"r": {"terms": {"field": "rule.id", "size": len(main)}, "aggs": {
-                                           "h": {"date_histogram": {"field": TS, "fixed_interval": f"{minutes}m",
+                                       "aggs": {"r": {"terms": {"field": S.RULE_ID, "size": len(main)}, "aggs": {
+                                           "h": {"date_histogram": {"field": S.TS, "fixed_interval": f"{minutes}m",
                                                                     "min_doc_count": 1}}}}}})
         peak = {str(b["key"]): max((int(x["doc_count"]) for x in _b(b.get("h") or {})), default=0)
                 for b in _b(h.get("aggregations", {}).get("r") or {})}

@@ -14,7 +14,7 @@ from __future__ import annotations
 
 from datetime import UTC, datetime, timedelta
 
-TS = "timestamp"
+from .wazuh.schema import S, bind
 
 # Enterprise ATT&CK tactics, in kill-chain order. Wazuh writes the tactic *name* into rule.mitre.tactic.
 TACTICS: list[tuple[str, str]] = [
@@ -49,7 +49,7 @@ def _b(a: dict | None) -> list[dict]:
 
 
 def _rng(frm: datetime, to: datetime) -> dict:
-    return {"range": {TS: {"gte": frm.strftime("%Y-%m-%dT%H:%M:%S"), "lt": to.strftime("%Y-%m-%dT%H:%M:%S")}}}
+    return {"range": {S.TS: {"gte": frm.strftime("%Y-%m-%dT%H:%M:%S"), "lt": to.strftime("%Y-%m-%dT%H:%M:%S")}}}
 
 
 def _technique_name(top_hits: dict, tid: str) -> str:
@@ -74,11 +74,12 @@ def heat_class(n: int, peak: int) -> str:
 
 async def tactic_counts(env, ix, frm: datetime, to: datetime) -> dict[str, dict]:
     """Per tactic: alerts, high-level alerts, distinct techniques — for the dashboard strip."""
+    bind(env)
     r = await ix.search(env.alerts_index, {
         "size": 0, "query": {"bool": {"filter": [_rng(frm, to)]}},
-        "aggs": {"t": {"terms": {"field": "rule.mitre.tactic", "size": 40},
-                       "aggs": {"high": {"filter": {"range": {"rule.level": {"gte": env.high_level}}}},
-                                "tech": {"cardinality": {"field": "rule.mitre.id"}}}}}})
+        "aggs": {"t": {"terms": {"field": S.MITRE_TACTIC, "size": 40},
+                       "aggs": {"high": {"filter": S.level_gte(env.high_level)},
+                                "tech": {"cardinality": {"field": S.MITRE_ID}}}}}})
     out: dict[str, dict] = {}
     for b in _b(r.get("aggregations", {}).get("t")):
         name = canonical_tactic(str(b["key"]))
@@ -109,33 +110,34 @@ async def matrix(env, ix, days: int = 7, lookback_days: int = 30, now: datetime 
     Wazuh stores the tactics and technique ids of a rule as two independent lists, so a rule that maps to several
     tactics lists each of its techniques under each of them — the same behaviour as the Wazuh dashboard.
     """
+    bind(env)
     now = now or datetime.now(UTC)
     frm, prev = now - timedelta(days=days), now - timedelta(days=2 * days)
     hl = env.high_level
     r = await ix.search(env.alerts_index, {
         "size": 0, "track_total_hits": True, "query": {"bool": {"filter": [_rng(frm, now)]}},
-        "aggs": {"mapped": {"filter": {"exists": {"field": "rule.mitre.id"}}},
-                 "t": {"terms": {"field": "rule.mitre.tactic", "size": 40},
-                       "aggs": {"x": {"terms": {"field": "rule.mitre.id", "size": 60},
-                                      "aggs": {"name": {"top_hits": {"size": 1, "_source": ["rule.mitre"]}},
-                                               "high": {"filter": {"range": {"rule.level": {"gte": hl}}}},
-                                               "lvl": {"max": {"field": "rule.level"}},
-                                               "agents": {"cardinality": {"field": "agent.name"}},
-                                               "rules": {"terms": {"field": "rule.id", "size": 5}},
-                                               "last": {"max": {"field": TS}}}}}}}})
+        "aggs": {"mapped": {"filter": {"exists": {"field": S.MITRE_ID}}},
+                 "t": {"terms": {"field": S.MITRE_TACTIC, "size": 40},
+                       "aggs": {"x": {"terms": {"field": S.MITRE_ID, "size": 60},
+                                      "aggs": {"name": {"top_hits": {"size": 1, "_source": [S.MITRE]}},
+                                               "high": {"filter": S.level_gte(hl)},
+                                               "lvl": {"max": {"field": S.RULE_LEVEL}},
+                                               "agents": {"cardinality": {"field": S.AGENT_NAME}},
+                                               "rules": {"terms": {"field": S.RULE_ID, "size": 5}},
+                                               "last": {"max": {"field": S.TS}}}}}}}})
     tot = r["hits"]["total"]
     total = int(tot.get("value", 0) if isinstance(tot, dict) else tot)
     mapped = int(r["aggregations"]["mapped"]["doc_count"])
     p = await ix.search(env.alerts_index, {
         "size": 0, "query": {"bool": {"filter": [_rng(prev, frm)]}},
-        "aggs": {"x": {"terms": {"field": "rule.mitre.id", "size": 500}},
-                 "t": {"terms": {"field": "rule.mitre.tactic", "size": 40}}}})
+        "aggs": {"x": {"terms": {"field": S.MITRE_ID, "size": 500}},
+                 "t": {"terms": {"field": S.MITRE_TACTIC, "size": 40}}}})
     before = {str(b["key"]): b["doc_count"] for b in _b(p["aggregations"]["x"])}
     before_t = {canonical_tactic(str(b["key"])): b["doc_count"] for b in _b(p["aggregations"]["t"])}
     lb = await ix.search(env.alerts_index, {
         "size": 0, "query": {"bool": {"filter": [_rng(frm - timedelta(days=lookback_days), frm)]}},
-        "aggs": {"x": {"terms": {"field": "rule.mitre.id", "size": 1000}},
-                 "t": {"terms": {"field": "rule.mitre.tactic", "size": 40}}}})
+        "aggs": {"x": {"terms": {"field": S.MITRE_ID, "size": 1000}},
+                 "t": {"terms": {"field": S.MITRE_TACTIC, "size": 40}}}})
     known = {str(b["key"]) for b in _b(lb["aggregations"]["x"])}
     seen_t_lb = {canonical_tactic(str(b["key"])) for b in _b(lb["aggregations"]["t"])}
 
@@ -183,10 +185,10 @@ async def rule_mapping(env, ix, rule_ids: list[str], frm: datetime, to: datetime
     if not ids:
         return {}
     r = await ix.search(env.alerts_index, {
-        "size": 0, "query": {"bool": {"filter": [_rng(frm, to), {"terms": {"rule.id": ids}}]}},
-        "aggs": {"r": {"terms": {"field": "rule.id", "size": len(ids)},
-                       "aggs": {"x": {"terms": {"field": "rule.mitre.id", "size": 10}},
-                                "t": {"terms": {"field": "rule.mitre.tactic", "size": 10}}}}}})
+        "size": 0, "query": {"bool": {"filter": [_rng(frm, to), {"terms": {S.RULE_ID: ids}}]}},
+        "aggs": {"r": {"terms": {"field": S.RULE_ID, "size": len(ids)},
+                       "aggs": {"x": {"terms": {"field": S.MITRE_ID, "size": 10}},
+                                "t": {"terms": {"field": S.MITRE_TACTIC, "size": 10}}}}}})
     return {str(b["key"]): {"ids": [str(x["key"]) for x in _b(b["x"])],
                             "tactics": [canonical_tactic(str(x["key"])) for x in _b(b["t"])]}
             for b in _b(r.get("aggregations", {}).get("r"))}

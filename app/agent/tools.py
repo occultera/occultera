@@ -23,7 +23,7 @@ from typing import Any, Literal
 from defusedxml import ElementTree as SafeET
 from defusedxml.common import DefusedXmlException
 
-from ..collector import TS, _b, _parse, iso
+from ..collector import _b, _parse, iso
 from ..config import Environment
 from ..errors import public_error
 from ..query_guard import QueryError, check_interval, field, histogram_buckets, query_string, size, time_range
@@ -32,6 +32,7 @@ from ..sources import SourcePolicyError
 from ..store import KNOWLEDGE_KINDS, Repo
 from ..wazuh.api import WazuhAPI
 from ..wazuh.indexer import Indexer
+from ..wazuh.schema import S, bind
 
 MAX_RESULT_CHARS = 14000
 log = logging.getLogger("wdt")
@@ -50,11 +51,13 @@ FILTER_PROPS = {
     **TIME_PROPS,
 }
 
-EVENT_FIELDS = [TS, "agent.name", "agent.id", "rule.id", "rule.level", "rule.description", "rule.groups",
-                "full_log", "location", "decoder.name", "data.srcip", "data.srcuser", "data.dstuser",
-                "data.url", "data.id", "data.protocol", "syscheck.path", "syscheck.event",
-                "data.verb", "data.user.username", "data.objectRef", "data.responseStatus.code",
-                "data.vulnerability.cve", "data.vulnerability.severity", "data.vulnerability.package.name"]
+def event_fields() -> list[str]:
+    """The event fields returned to the model, in the bound schema."""
+    return [S.TS, S.AGENT_NAME, S.AGENT_ID, S.RULE_ID, S.RULE_LEVEL, S.RULE_DESC, S.RULE_GROUPS,
+            S.FULL_LOG, S.LOCATION, S.DECODER, S.SRCIP, S.SRCUSER, S.DSTUSER,
+            S.URL, S.EVENT_ID, S.PROTOCOL, S.FIM_PATH, S.FIM_EVENT,
+            S.VERB, S.USERNAME, S.K8S_OBJECT, S.K8S_STATUS,
+            S.ALERT_CVE, S.ALERT_VULN_SEV, S.ALERT_VULN_PKG]
 
 
 def _filters(a: dict, limits=None) -> list[dict]:
@@ -62,17 +65,17 @@ def _filters(a: dict, limits=None) -> list[dict]:
     max_hours = int(getattr(limits, "max_range_hours", 24 * 14))
     frm, to = time_range(a.get("from") or "now-24h", a.get("to") or "now", max_hours)
     extra = getattr(limits, "extra_fields", None)
-    f: list[dict] = [{"range": {TS: {"gte": iso(frm), "lte": iso(to)}}}]
+    f: list[dict] = [{"range": {S.TS: {"gte": iso(frm), "lte": iso(to)}}}]
     q = query_string(a.get("query"), extra)
     if q:
         f.append({"query_string": {"query": q, "analyze_wildcard": True, "default_operator": "AND",
                                    "allow_leading_wildcard": False, "max_determinized_states": 2000}})
     if a.get("rule_ids"):
-        f.append({"terms": {"rule.id": [str(x) for x in a["rule_ids"]][:50]}})
+        f.append({"terms": {S.RULE_ID: [str(x) for x in a["rule_ids"]][:50]}})
     if a.get("agent"):
-        f.append({"term": {field("agent.name", extra): str(a["agent"])}})
+        f.append({"term": {field(S.AGENT_NAME, extra): str(a["agent"])}})
     if a.get("min_level") is not None:
-        f.append({"range": {"rule.level": {"gte": int(a["min_level"])}}})
+        f.append(S.level_gte(int(a["min_level"])))
     return f
 
 
@@ -86,7 +89,7 @@ def _compact_event(src: dict) -> dict:
             val = val[:500] + "…"
         out[path] = val
 
-    for f in EVENT_FIELDS:
+    for f in event_fields():
         cur: Any = src
         for p in f.split("."):
             cur = cur.get(p) if isinstance(cur, dict) else None
@@ -145,6 +148,7 @@ class ToolBox:
         return [S[n] for n in self._handlers if n in S]
 
     async def call(self, name: str, args: dict) -> str:
+        bind(self.env)
         h = self._handlers.get(name)
         if not h:
             return json.dumps({"error": f"unknown tool: {name}"})
@@ -174,8 +178,8 @@ class ToolBox:
     async def search_alerts(self, a):
         size_n = size(a.get("size", 10), min(25, int(getattr(self.limits, "max_size", 25))), "size")
         r = await self.ix.search(self.env.alerts_index, {
-            "size": size_n, "sort": [{TS: "asc" if a.get("oldest_first") else "desc"}],
-            "query": {"bool": {"filter": _filters(a, self.limits)}}, "_source": EVENT_FIELDS})
+            "size": size_n, "sort": [{S.TS: "asc" if a.get("oldest_first") else "desc"}],
+            "query": {"bool": {"filter": _filters(a, self.limits)}}, "_source": event_fields()})
         return {"total": r["hits"]["total"]["value"],
                 "events": [_compact_event(h["_source"]) for h in r["hits"]["hits"]]}
 
@@ -188,8 +192,8 @@ class ToolBox:
         if sub:
             agg["aggs"] = {"sub": {"terms": {"field": sub, "size": 5}}}
         agg.setdefault("aggs", {})
-        agg["aggs"]["first"] = {"min": {"field": TS}}
-        agg["aggs"]["last"] = {"max": {"field": TS}}
+        agg["aggs"]["first"] = {"min": {"field": S.TS}}
+        agg["aggs"]["last"] = {"max": {"field": S.TS}}
         body = {"size": 0, "query": {"bool": {"filter": _filters(a, self.limits)}}, "aggs": {"x": agg}}
         histogram_buckets(body, self._span(a), self.limits)   # final check on the aggregation tree
         r = await self.ix.search(self.env.alerts_index, body)
@@ -207,28 +211,28 @@ class ToolBox:
         interval = check_interval(str(a.get("interval", "1h")), str(getattr(self.limits, "min_interval", "1m")),
                                   self._span(a), int(getattr(self.limits, "max_buckets", 200)))
         r = await self.ix.search(self.env.alerts_index, {"size": 0, "query": {"bool": {"filter": _filters(a, self.limits)}},
-            "aggs": {"h": {"date_histogram": {"field": TS, "fixed_interval": interval, "min_doc_count": 1}}}})
+            "aggs": {"h": {"date_histogram": {"field": S.TS, "fixed_interval": interval, "min_doc_count": 1}}}})
         b = [{"t": x["key_as_string"], "n": x["doc_count"]} for x in _b(r["aggregations"]["h"])]
         return {"total": r["hits"]["total"]["value"], "interval": interval, "buckets": b[-200:],
                 "note": "Non-empty buckets only. Look at the distribution, not the average: everything may sit in one short window."}
 
     async def ip_profile(self, a):
         ip = a["ip"].strip()
-        q = {"prefix": {"data.srcip": ip}} if ip.endswith((".", ":")) else {"term": {"data.srcip": ip}}
+        q = {"prefix": {S.SRCIP: ip}} if ip.endswith((".", ":")) else {"term": {S.SRCIP: ip}}
         f = _filters({k: a.get(k) for k in ("from", "to")}, self.limits) + [q]
         iv = str(a.get("interval", "30m"))
         check_interval(iv, str(getattr(self.limits, "min_interval", "1m")), self._span(a),
                        int(getattr(self.limits, "max_buckets", 200)))
-        r = await self.ix.search(self.env.alerts_index, {"size": 3, "sort": [{TS: "desc"}], "_source": EVENT_FIELDS,
+        r = await self.ix.search(self.env.alerts_index, {"size": 3, "sort": [{S.TS: "desc"}], "_source": event_fields(),
             "query": {"bool": {"filter": f}}, "aggs": {
-                "rules": {"terms": {"field": "rule.id", "size": 10}, "aggs": {"d": {"terms": {"field": "rule.description", "size": 1}}}},
-                "codes": {"terms": {"field": "data.id", "size": 10}},
-                "urls": {"cardinality": {"field": "data.url"}},
-                "top_urls": {"terms": {"field": "data.url", "size": 10}},
-                "agents": {"terms": {"field": "agent.name", "size": 10}},
-                "users": {"terms": {"field": "data.srcuser", "size": 10}},
-                "ips": {"terms": {"field": "data.srcip", "size": 10}},
-                "h": {"date_histogram": {"field": TS, "fixed_interval": iv, "min_doc_count": 1}},
+                "rules": {"terms": {"field": S.RULE_ID, "size": 10}, "aggs": {"d": {"terms": {"field": S.RULE_DESC, "size": 1}}}},
+                "codes": {"terms": {"field": S.EVENT_ID, "size": 10}},
+                "urls": {"cardinality": {"field": S.URL}},
+                "top_urls": {"terms": {"field": S.URL, "size": 10}},
+                "agents": {"terms": {"field": S.AGENT_NAME, "size": 10}},
+                "users": {"terms": {"field": S.SRCUSER, "size": 10}},
+                "ips": {"terms": {"field": S.SRCIP, "size": 10}},
+                "h": {"date_histogram": {"field": S.TS, "fixed_interval": iv, "min_doc_count": 1}},
             }})
         ag = r["aggregations"]
         return {
@@ -248,16 +252,16 @@ class ToolBox:
     async def correlate_around(self, a):
         ts = _parse(a["timestamp"])
         m = max(1, min(int(a.get("minutes", 30)), 360))
-        f = [{"range": {TS: {"gte": iso(ts - timedelta(minutes=m)), "lte": iso(ts + timedelta(minutes=m))}}}]
+        f = [{"range": {S.TS: {"gte": iso(ts - timedelta(minutes=m)), "lte": iso(ts + timedelta(minutes=m))}}}]
         if a.get("agent"):
-            f.append({"term": {"agent.name": a["agent"]}})
-        f.append({"range": {"rule.level": {"gte": int(a.get("min_level", 3))}}})
-        r = await self.ix.search(self.env.alerts_index, {"size": 20, "sort": [{TS: "asc"}], "_source": EVENT_FIELDS,
+            f.append({"term": {S.AGENT_NAME: a["agent"]}})
+        f.append(S.level_gte(int(a.get("min_level", 3))))
+        r = await self.ix.search(self.env.alerts_index, {"size": 20, "sort": [{S.TS: "asc"}], "_source": event_fields(),
             "query": {"bool": {"filter": f}},
-            "aggs": {"r": {"terms": {"field": "rule.id", "size": 25},
-                           "aggs": {"d": {"terms": {"field": "rule.description", "size": 1}},
-                                    "l": {"max": {"field": "rule.level"}},
-                                    "a": {"terms": {"field": "agent.name", "size": 3}}}}}})
+            "aggs": {"r": {"terms": {"field": S.RULE_ID, "size": 25},
+                           "aggs": {"d": {"terms": {"field": S.RULE_DESC, "size": 1}},
+                                    "l": {"max": {"field": S.RULE_LEVEL}},
+                                    "a": {"terms": {"field": S.AGENT_NAME, "size": 3}}}}}})
         return {"window": f"±{m} min", "total": r["hits"]["total"]["value"],
                 "by_rule": [{"id": b["key"], "n": b["doc_count"], "level": int(b["l"]["value"] or 0),
                              "desc": (_b(b["d"]) or [{"key": ""}])[0]["key"],
@@ -267,15 +271,15 @@ class ToolBox:
     async def vulnerabilities(self, a):
         f = []
         if a.get("agent"):
-            f.append({"term": {"agent.name": a["agent"]}})
+            f.append({"term": {S.AGENT_NAME: a["agent"]}})
         if a.get("severity"):
-            f.append({"term": {"vulnerability.severity": a["severity"]}})
+            f.append({"term": {S.VULN_SEV: a["severity"]}})
         r = await self.ix.search(self.env.vuln_index, {"size": 0, "query": {"bool": {"filter": f}}, "aggs": {
-            "sev": {"terms": {"field": "vulnerability.severity", "size": 10}},
-            "cve": {"terms": {"field": "vulnerability.id", "size": int(min(a.get("size", 15), 40))},
-                    "aggs": {"p": {"terms": {"field": "package.name", "size": 3}},
-                             "a": {"cardinality": {"field": "agent.id"}}}},
-            "pkg": {"terms": {"field": "package.name", "size": 15}}}})
+            "sev": {"terms": {"field": S.VULN_SEV, "size": 10}},
+            "cve": {"terms": {"field": S.VULN_ID, "size": int(min(a.get("size", 15), 40))},
+                    "aggs": {"p": {"terms": {"field": S.PKG_NAME, "size": 3}},
+                             "a": {"cardinality": {"field": S.AGENT_ID}}}},
+            "pkg": {"terms": {"field": S.PKG_NAME, "size": 15}}}})
         ag = r["aggregations"]
         return {"total": r["hits"]["total"]["value"],
                 "severity": {b["key"]: b["doc_count"] for b in _b(ag["sev"])},
@@ -288,8 +292,8 @@ class ToolBox:
         q = str(a["agent"])
         items = await self.api.agents(search=q, limit=5)
         cnt = await self.ix.search(self.env.alerts_index, {"size": 0, "query": {"bool": {"filter": [
-            {"range": {TS: {"gte": "now-24h"}}}, {"term": {"agent.name": items[0]["name"]}}]}} if items else {"match_none": {}},
-            "aggs": {"r": {"terms": {"field": "rule.id", "size": 10}}}})
+            {"range": {S.TS: {"gte": "now-24h"}}}, {"term": {S.AGENT_NAME: items[0]["name"]}}]}} if items else {"match_none": {}},
+            "aggs": {"r": {"terms": {"field": S.RULE_ID, "size": 10}}}})
         return {"agents": items, "alerts_24h": cnt["hits"]["total"]["value"],
                 "top_rules_24h": {b["key"]: b["doc_count"] for b in _b(cnt.get("aggregations", {}).get("r", {}))}}
 

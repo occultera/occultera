@@ -336,6 +336,18 @@ class Environment(BaseModel):
     description: str = ""
     indexer: Endpoint
     api: Endpoint | None = None
+    # Wazuh major version: "auto" reads it from the server API at startup (4 when it cannot tell). 5 is planned for
+    # 1.0; see app/wazuh/schema.py and the wiki page "Wazuh 5".
+    wazuh_version: Literal["auto", "4"] = "auto"
+
+    @field_validator("wazuh_version", mode="before")
+    @classmethod
+    def _wv(cls, v):
+        v = str(v).strip().lower() if v is not None else "auto"
+        if v in ("5", "5.x"):
+            raise ValueError("Wazuh 5.x is not supported yet: it is planned for Occultera 1.0 (wiki: Wazuh 5)")
+        return {"4.x": "4", "": "auto"}.get(v, v)
+
     alerts_index: str = "wazuh-alerts-4.x-*"
     vuln_index: str = "wazuh-states-vulnerabilities-*"
     storage_prefix: str = "daily-triage"
@@ -567,6 +579,8 @@ def settings_from_env() -> dict:
                       "password": E("WAZUH_API_PASSWORD", ""), "verify_tls": verify, "ca_file": E("WAZUH_CA_FILE") or None}
     if E("WAZUH_ALERTS_INDEX"):
         env["alerts_index"] = E("WAZUH_ALERTS_INDEX")
+    if E("WAZUH_VERSION"):
+        env["wazuh_version"] = E("WAZUH_VERSION")
     if E("LIVENESS_INTERVAL_MINUTES") or E("LIVENESS_ENABLED"):
         env["liveness"] = {"enabled": _bool(E("LIVENESS_ENABLED"), True),
                            "interval_minutes": int(E("LIVENESS_INTERVAL_MINUTES") or 10)}

@@ -15,8 +15,8 @@ from app import watch as W
 from app.agent.tools import ToolBox
 from app.collector import Collector
 from app.config import load_settings
-from app.settingsdoc import WatchSettings
 from app.demo import FakeAPI, FakeIndexer, generate
+from app.settingsdoc import WatchSettings
 from app.store import MemoryStore, Repo
 
 ROOT = Path(__file__).resolve().parent.parent
