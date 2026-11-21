@@ -378,6 +378,8 @@ async def test_inbox_dedupe_and_act(settings, monkeypatch):
 
     monkeypatch.setattr(runs_mod, "datetime", FrozenClock)
     monkeypatch.setattr(demo_mod, "datetime", FrozenClock)
+    from app import demo_engine
+    monkeypatch.setattr(demo_engine, "datetime", FrozenClock)   # date math such as now-24h
     rt = Runtime(settings, demo=True)
     er = rt.get("demo")
     await rt.run_triage(er, "ib-1")

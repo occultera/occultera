@@ -64,7 +64,9 @@ class _Frozen(datetime):
 
 async def test_golden_v4(monkeypatch):
     import app.demo as demo
+    import app.demo_engine as engine
     monkeypatch.setattr(demo, "datetime", _Frozen)   # the synthetic agents and vulnerabilities are dated from "now"
+    monkeypatch.setattr(engine, "datetime", _Frozen)  # and date math such as now-24h
     got = await _sweep()
     if os.environ.get("OCC_GOLDEN_UPDATE") or not GOLD.exists():
         GOLD.write_text(json.dumps(got, indent=1, sort_keys=True, ensure_ascii=False) + "\n", encoding="utf-8")
