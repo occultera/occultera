@@ -1,0 +1,3608 @@
+{
+ "collector": {
+  "agents": [
+   {
+    "agent": "jenkins",
+    "count": 1698,
+    "high": 98,
+    "prev": 4
+   },
+   {
+    "agent": "web01",
+    "count": 889,
+    "high": 20,
+    "prev": 898
+   },
+   {
+    "agent": "db01",
+    "count": 261,
+    "high": 20,
+    "prev": 1
+   },
+   {
+    "agent": "laptop-ops",
+    "count": 39,
+    "high": 39,
+    "prev": 31
+   },
+   {
+    "agent": "k8s-cp1",
+    "count": 16,
+    "high": 16,
+    "prev": 1
+   },
+   {
+    "agent": "k8s-w1",
+    "count": 14,
+    "high": 13,
+    "prev": 1
+   },
+   {
+    "agent": "k8s-w2",
+    "count": 14,
+    "high": 13,
+    "prev": 4
+   }
+  ],
+  "anomalies": {
+   "baseline_days": 14,
+   "new_pairs": [
+    {
+     "agent": "jenkins",
+     "count": 80,
+     "desc": "Jenkins: Basic Auth brute force from same IP",
+     "level": 12,
+     "rule": "100213"
+    },
+    {
+     "agent": "db01",
+     "count": 12,
+     "desc": "CVE-2026-0001 affects openssl",
+     "level": 10,
+     "rule": "23505"
+    },
+    {
+     "agent": "jenkins",
+     "count": 12,
+     "desc": "CVE-2026-0001 affects openssl",
+     "level": 10,
+     "rule": "23505"
+    },
+    {
+     "agent": "k8s-cp1",
+     "count": 12,
+     "desc": "CVE-2026-0001 affects openssl",
+     "level": 10,
+     "rule": "23505"
+    },
+    {
+     "agent": "k8s-w1",
+     "count": 12,
+     "desc": "CVE-2026-0001 affects openssl",
+     "level": 10,
+     "rule": "23505"
+    },
+    {
+     "agent": "k8s-w2",
+     "count": 12,
+     "desc": "CVE-2026-0001 affects openssl",
+     "level": 10,
+     "rule": "23505"
+    },
+    {
+     "agent": "web01",
+     "count": 12,
+     "desc": "CVE-2026-0001 affects openssl",
+     "level": 10,
+     "rule": "23505"
+    },
+    {
+     "agent": "db01",
+     "count": 6,
+     "desc": "sshd: brute force trying to get access to the system. Non existent user.",
+     "level": 10,
+     "rule": "5712"
+    },
+    {
+     "agent": "k8s-cp1",
+     "count": 3,
+     "desc": "K8s secret changed",
+     "level": 10,
+     "rule": "110014"
+    },
+    {
+     "agent": "db01",
+     "count": 1,
+     "desc": "Integrity checksum changed.",
+     "level": 7,
+     "rule": "550"
+    },
+    {
+     "agent": "jenkins",
+     "count": 1600,
+     "desc": "Jenkins: 401 with Basic Auth username",
+     "level": 5,
+     "rule": "100212"
+    },
+    {
+     "agent": "db01",
+     "count": 240,
+     "desc": "sshd: Attempt to login using a non-existent user",
+     "level": 5,
+     "rule": "5710"
+    }
+   ],
+   "spikes": []
+  },
+  "coverage": {
+   "active_by_node": {
+    "wazuh-manager-worker-0": 7
+   },
+   "by_status": {
+    "active": 7,
+    "disconnected": 1
+   },
+   "manager_version": "4.14.8",
+   "never_connected": [],
+   "not_active": [
+    {
+     "hours": 30.0,
+     "last_keepalive": "2026-11-19T06:00:00.000Z",
+     "name": "mail01",
+     "status": "disconnected"
+    }
+   ],
+   "total": 8,
+   "version_drift": [
+    {
+     "name": "web01",
+     "version": "4.14.6"
+    },
+    {
+     "name": "db01",
+     "version": "4.14.6"
+    },
+    {
+     "name": "jenkins",
+     "version": "4.14.6"
+    },
+    {
+     "name": "k8s-cp1",
+     "version": "4.14.6"
+    },
+    {
+     "name": "k8s-w1",
+     "version": "4.14.6"
+    },
+    {
+     "name": "k8s-w2",
+     "version": "4.14.6"
+    },
+    {
+     "name": "laptop-ops",
+     "version": "4.14.6"
+    },
+    {
+     "name": "mail01",
+     "version": "4.14.6"
+    }
+   ],
+   "versions": {
+    "4.14.6": 8
+   }
+  },
+  "env": {
+   "high_level": 7,
+   "id": "demo",
+   "name": "Demo Wazuh"
+  },
+  "errors": [],
+  "flags": [
+   {
+    "code": "agents",
+    "message": "1 agent(s) not active: mail01",
+    "severity": "warn"
+   },
+   {
+    "code": "new_high_rules",
+    "message": "5 new (not seen in 14 days) level 7+ rule(s)",
+    "severity": "warn"
+   },
+   {
+    "code": "mail_saturated",
+    "message": "Alert mail channel saturated in 2 hour(s) (more than 12 mails/hour) — 2 other rule(s) may not have been mailed",
+    "severity": "warn"
+   },
+   {
+    "code": "version_drift",
+    "message": "8 agent(s) run a different version than the manager (4.14.8)",
+    "severity": "info"
+   },
+   {
+    "code": "vuln_overdue",
+    "message": "Vulnerabilities open longer than the SLA: Critical 15, High 39, Medium 39",
+    "severity": "warn"
+   }
+  ],
+  "groups": {
+   "top": {
+    "accesslog": 876,
+    "attack": 869,
+    "authentication_failed": 240,
+    "authentication_failures": 6,
+    "authentication_success": 3,
+    "config_changed": 6,
+    "dpkg": 6,
+    "invalid_login": 240,
+    "k8s_audit": 3,
+    "k8s_secret": 3,
+    "ossec": 6,
+    "recon": 7,
+    "sshd": 249,
+    "syscheck": 1,
+    "syscheck_entry_modified": 1,
+    "syslog": 255,
+    "vulnerability-detector": 72,
+    "web": 876,
+    "web_auth": 1600,
+    "web_bruteforce": 80,
+    "web_scan": 7,
+    "windows": 39,
+    "windows_application": 39
+   },
+   "watched": {
+    "authentication_failed": 240,
+    "sshd": 249,
+    "web_scan": 7
+   }
+  },
+  "health": {
+   "agents_not_active": [
+    {
+     "id": "008",
+     "lastKeepAlive": "2026-11-19T06:00:00.000Z",
+     "name": "mail01",
+     "status": "disconnected",
+     "version": "Wazuh v4.14.6"
+    }
+   ],
+   "agents_summary": {
+    "active": 7,
+    "disconnected": 1,
+    "never_connected": 0,
+    "pending": 0,
+    "total": 8
+   },
+   "api_version": "4.14.8",
+   "cluster": {
+    "enabled": "yes",
+    "nodes": {
+     "wazuh-manager-master": {
+      "n_active_agents": 0,
+      "type": "master",
+      "version": "4.14.8"
+     },
+     "wazuh-manager-worker-0": {
+      "n_active_agents": 7,
+      "type": "worker",
+      "version": "4.14.8"
+     }
+    },
+    "running": "yes"
+   },
+   "daemons_not_running": [],
+   "daemons_stopped_optional": [
+    "wazuh-agentlessd",
+    "wazuh-csyslogd",
+    "wazuh-dbd",
+    "wazuh-integratord",
+    "wazuh-maild"
+   ],
+   "indexer": {
+    "active_shards": 42,
+    "active_shards_percent_as_number": 100.0,
+    "number_of_nodes": 1,
+    "status": "green",
+    "unassigned_shards": 0
+   },
+   "indexer_disk": [
+    {
+     "node": "wazuh-indexer-0",
+     "percent": 63,
+     "shards": 42
+    }
+   ],
+   "last_alert": "2026-11-20T11:59:58.000+0000",
+   "manager_errors": [
+    {
+     "count": 2,
+     "last": "2026-11-20T10:00:00.000Z",
+     "msg": "Error updating the CVE feed: timeout",
+     "tag": "wazuh-modulesd:vulnerability-scanner"
+    }
+   ],
+   "managers_last_2h": [
+    {
+     "count": 61,
+     "last": "2026-11-20T11:59:58.000Z",
+     "manager": "wazuh-manager-worker-0"
+    }
+   ],
+   "silence_minutes": 0
+  },
+  "high_level": [
+   {
+    "agents": [
+     {
+      "first": "2026-11-20T03:00:01.140Z",
+      "last": "2026-11-20T03:01:35.940Z",
+      "n": 80,
+      "name": "jenkins"
+     }
+    ],
+    "count": 80,
+    "desc": "Jenkins: Basic Auth brute force from same IP",
+    "id": "100213",
+    "level": 12,
+    "sample": {
+     "data": {
+      "srcip": "192.0.2.45",
+      "srcuser": "admin",
+      "url": "/manage"
+     },
+     "full_log": "",
+     "location": "/var/log/nginx/access.log"
+    },
+    "srcips": {
+     "192.0.2.45": 80
+    }
+   },
+   {
+    "agents": [
+     {
+      "first": "2026-11-19T17:49:00.000Z",
+      "last": "2026-11-19T18:00:00.000Z",
+      "n": 12,
+      "name": "db01"
+     },
+     {
+      "first": "2026-11-19T17:49:00.000Z",
+      "last": "2026-11-19T18:00:00.000Z",
+      "n": 12,
+      "name": "jenkins"
+     },
+     {
+      "first": "2026-11-19T17:49:00.000Z",
+      "last": "2026-11-19T18:00:00.000Z",
+      "n": 12,
+      "name": "k8s-cp1"
+     },
+     {
+      "first": "2026-11-19T17:49:00.000Z",
+      "last": "2026-11-19T18:00:00.000Z",
+      "n": 12,
+      "name": "k8s-w1"
+     },
+     {
+      "first": "2026-11-19T17:49:00.000Z",
+      "last": "2026-11-19T18:00:00.000Z",
+      "n": 12,
+      "name": "k8s-w2"
+     },
+     {
+      "first": "2026-11-19T17:49:00.000Z",
+      "last": "2026-11-19T18:00:00.000Z",
+      "n": 12,
+      "name": "web01"
+     }
+    ],
+    "count": 72,
+    "desc": "CVE-2026-0001 affects openssl",
+    "id": "23505",
+    "level": 10,
+    "sample": {
+     "data": {
+      "vulnerability": {
+       "cve": "CVE-2026-1000"
+      }
+     },
+     "full_log": "",
+     "location": "vulnerability-detector"
+    },
+    "srcips": {}
+   },
+   {
+    "agents": [
+     {
+      "first": "2026-11-19T12:12:00.000Z",
+      "last": "2026-11-20T11:33:00.000Z",
+      "n": 39,
+      "name": "laptop-ops"
+     }
+    ],
+    "count": 39,
+    "desc": "Windows application error event.",
+    "id": "60602",
+    "level": 9,
+    "sample": {
+     "full_log": "Faulting application name: Teams.exe",
+     "location": "EventChannel"
+    },
+    "srcips": {}
+   },
+   {
+    "agents": [
+     {
+      "first": "2026-11-19T12:24:00.000Z",
+      "last": "2026-11-20T05:29:00.000Z",
+      "n": 7,
+      "name": "web01"
+     }
+    ],
+    "count": 7,
+    "desc": "Multiple web server 400 error codes from same source ip.",
+    "id": "31151",
+    "level": 10,
+    "sample": {
+     "data": {
+      "srcip": "203.0.113.45"
+     },
+     "full_log": "",
+     "location": "/var/log/syslog"
+    },
+    "srcips": {
+     "192.0.2.150": 3,
+     "198.51.100.77": 2,
+     "203.0.113.10": 1,
+     "203.0.113.45": 1
+    }
+   },
+   {
+    "agents": [
+     {
+      "first": "2026-11-20T06:04:00.000Z",
+      "last": "2026-11-20T06:04:00.000Z",
+      "n": 1,
+      "name": "db01"
+     },
+     {
+      "first": "2026-11-20T06:06:00.000Z",
+      "last": "2026-11-20T06:06:00.000Z",
+      "n": 1,
+      "name": "jenkins"
+     },
+     {
+      "first": "2026-11-20T06:15:00.000Z",
+      "last": "2026-11-20T06:15:00.000Z",
+      "n": 1,
+      "name": "k8s-cp1"
+     },
+     {
+      "first": "2026-11-20T06:16:00.000Z",
+      "last": "2026-11-20T06:16:00.000Z",
+      "n": 1,
+      "name": "k8s-w1"
+     },
+     {
+      "first": "2026-11-20T06:15:00.000Z",
+      "last": "2026-11-20T06:15:00.000Z",
+      "n": 1,
+      "name": "k8s-w2"
+     },
+     {
+      "first": "2026-11-20T06:08:00.000Z",
+      "last": "2026-11-20T06:08:00.000Z",
+      "n": 1,
+      "name": "web01"
+     }
+    ],
+    "count": 6,
+    "desc": "New dpkg (Debian Package) installed.",
+    "id": "2902",
+    "level": 7,
+    "sample": {
+     "full_log": "status installed libssl3:amd64 3.0.13-0ubuntu3.6",
+     "location": "/var/log/dpkg.log"
+    },
+    "srcips": {}
+   },
+   {
+    "agents": [
+     {
+      "first": "2026-11-20T07:49:18.000Z",
+      "last": "2026-11-20T07:55:58.000Z",
+      "n": 6,
+      "name": "db01"
+     }
+    ],
+    "count": 6,
+    "desc": "sshd: brute force trying to get access to the system. Non existent user.",
+    "id": "5712",
+    "level": 10,
+    "sample": {
+     "data": {
+      "srcip": "198.51.100.23"
+     },
+     "full_log": "",
+     "location": "/var/log/syslog"
+    },
+    "srcips": {
+     "198.51.100.23": 6
+    }
+   },
+   {
+    "agents": [
+     {
+      "first": "2026-11-19T17:54:00.000Z",
+      "last": "2026-11-20T03:02:00.000Z",
+      "n": 5,
+      "name": "jenkins"
+     }
+    ],
+    "count": 5,
+    "desc": "Listened ports status (netstat) changed (new port opened or closed).",
+    "id": "533",
+    "level": 7,
+    "sample": {
+     "full_log": "ossec: output: 'netstat listening ports': tcp 0.0.0.0:3478",
+     "location": "netstat listening ports"
+    },
+    "srcips": {}
+   },
+   {
+    "agents": [
+     {
+      "first": "2026-11-20T09:58:00.000Z",
+      "last": "2026-11-20T10:00:00.000Z",
+      "n": 3,
+      "name": "k8s-cp1"
+     }
+    ],
+    "count": 3,
+    "desc": "K8s secret changed",
+    "id": "110014",
+    "level": 10,
+    "sample": {
+     "data": {
+      "objectRef": {
+       "name": "token-ab0",
+       "namespace": "cattle-tokens",
+       "resource": "secrets"
+      },
+      "user": {
+       "username": "system:serviceaccount:cattle-system:rancher"
+      },
+      "verb": "patch"
+     },
+     "full_log": "",
+     "location": "/k8s-audit/audit.json"
+    },
+    "srcips": {}
+   },
+   {
+    "agents": [
+     {
+      "first": "2026-11-20T08:20:00.000Z",
+      "last": "2026-11-20T08:20:00.000Z",
+      "n": 1,
+      "name": "db01"
+     }
+    ],
+    "count": 1,
+    "desc": "Integrity checksum changed.",
+    "id": "550",
+    "level": 7,
+    "sample": {
+     "full_log": "File '/etc/sudoers' modified",
+     "location": "syscheck",
+     "syscheck": {
+      "path": "/etc/sudoers"
+     }
+    },
+    "srcips": {}
+   }
+  ],
+  "mail_pressure": {
+   "alert_level": 7,
+   "excess": 126,
+   "max_per_hour": 12,
+   "possibly_unmailed": [
+    {
+     "agents": [
+      "laptop-ops"
+     ],
+     "desc": "Windows application error event.",
+     "hours": 2,
+     "id": "60602",
+     "level": 9,
+     "n": 2
+    },
+    {
+     "agents": [
+      "jenkins"
+     ],
+     "desc": "Listened ports status (netstat) changed (new port opened or closed).",
+     "hours": 2,
+     "id": "533",
+     "level": 7,
+     "n": 2
+    }
+   ],
+   "saturated_hours": [
+    {
+     "flood": [
+      {
+       "agents": [
+        "db01",
+        "jenkins",
+        "k8s-cp1"
+       ],
+       "desc": "CVE-2026-0001 affects openssl",
+       "id": "23505",
+       "level": 10,
+       "n": 66
+      }
+     ],
+     "n": 68,
+     "over": 56,
+     "t": "2026-11-19T17:00:00.000Z"
+    },
+    {
+     "flood": [
+      {
+       "agents": [
+        "jenkins"
+       ],
+       "desc": "Jenkins: Basic Auth brute force from same IP",
+       "id": "100213",
+       "level": 12,
+       "n": 80
+      }
+     ],
+     "n": 82,
+     "over": 70,
+     "t": "2026-11-20T03:00:00.000Z"
+    }
+   ]
+  },
+  "new_rules": [
+   {
+    "count": 80,
+    "desc": "Jenkins: Basic Auth brute force from same IP",
+    "id": "100213",
+    "level": 12
+   },
+   {
+    "count": 72,
+    "desc": "CVE-2026-0001 affects openssl",
+    "id": "23505",
+    "level": 10
+   },
+   {
+    "count": 6,
+    "desc": "sshd: brute force trying to get access to the system. Non existent user.",
+    "id": "5712",
+    "level": 10
+   },
+   {
+    "count": 3,
+    "desc": "K8s secret changed",
+    "id": "110014",
+    "level": 10
+   },
+   {
+    "count": 1,
+    "desc": "Integrity checksum changed.",
+    "id": "550",
+    "level": 7
+   },
+   {
+    "count": 1600,
+    "desc": "Jenkins: 401 with Basic Auth username",
+    "id": "100212",
+    "level": 5
+   },
+   {
+    "count": 240,
+    "desc": "sshd: Attempt to login using a non-existent user",
+    "id": "5710",
+    "level": 5
+   }
+  ],
+  "personal_data": {
+   "affected_alerts": 0,
+   "kinds": {},
+   "sampled": 1000,
+   "sources": []
+  },
+  "srcips": [
+   {
+    "count": 1680,
+    "ip": "192.0.2.45",
+    "max_level": 12,
+    "rules": {
+     "100212": 1600,
+     "100213": 80
+    }
+   },
+   {
+    "count": 246,
+    "ip": "198.51.100.23",
+    "max_level": 10,
+    "rules": {
+     "5710": 240,
+     "5712": 6
+    }
+   },
+   {
+    "count": 227,
+    "ip": "203.0.113.45",
+    "max_level": 10,
+    "rules": {
+     "31101": 226,
+     "31151": 1
+    }
+   },
+   {
+    "count": 224,
+    "ip": "198.51.100.77",
+    "max_level": 10,
+    "rules": {
+     "31101": 222,
+     "31151": 2
+    }
+   },
+   {
+    "count": 217,
+    "ip": "203.0.113.10",
+    "max_level": 10,
+    "rules": {
+     "31101": 216,
+     "31151": 1
+    }
+   },
+   {
+    "count": 208,
+    "ip": "192.0.2.150",
+    "max_level": 10,
+    "rules": {
+     "31101": 205,
+     "31151": 3
+    }
+   },
+   {
+    "count": 3,
+    "ip": "100.124.10.5",
+    "max_level": 3,
+    "rules": {
+     "5715": 3
+    }
+   }
+  ],
+  "top_rules": [
+   {
+    "agents": {
+     "jenkins": 1600
+    },
+    "count": 1600,
+    "desc": "Jenkins: 401 with Basic Auth username",
+    "id": "100212",
+    "level": 5,
+    "prev": 0
+   },
+   {
+    "agents": {
+     "web01": 869
+    },
+    "count": 869,
+    "desc": "Web server 400 error code.",
+    "id": "31101",
+    "level": 5,
+    "prev": 888
+   },
+   {
+    "agents": {
+     "db01": 240
+    },
+    "count": 240,
+    "desc": "sshd: Attempt to login using a non-existent user",
+    "id": "5710",
+    "level": 5,
+    "prev": 0
+   },
+   {
+    "agents": {
+     "jenkins": 80
+    },
+    "count": 80,
+    "desc": "Jenkins: Basic Auth brute force from same IP",
+    "id": "100213",
+    "level": 12,
+    "prev": 0
+   },
+   {
+    "agents": {
+     "db01": 12,
+     "jenkins": 12,
+     "k8s-cp1": 12,
+     "k8s-w1": 12
+    },
+    "count": 72,
+    "desc": "CVE-2026-0001 affects openssl",
+    "id": "23505",
+    "level": 10,
+    "prev": 0
+   },
+   {
+    "agents": {
+     "laptop-ops": 39
+    },
+    "count": 39,
+    "desc": "Windows application error event.",
+    "id": "60602",
+    "level": 9,
+    "prev": 31
+   },
+   {
+    "agents": {
+     "web01": 7
+    },
+    "count": 7,
+    "desc": "Multiple web server 400 error codes from same source ip.",
+    "id": "31151",
+    "level": 10,
+    "prev": 9
+   },
+   {
+    "agents": {
+     "db01": 1,
+     "jenkins": 1,
+     "k8s-cp1": 1,
+     "k8s-w1": 1
+    },
+    "count": 6,
+    "desc": "New dpkg (Debian Package) installed.",
+    "id": "2902",
+    "level": 7,
+    "prev": 6
+   },
+   {
+    "agents": {
+     "db01": 6
+    },
+    "count": 6,
+    "desc": "sshd: brute force trying to get access to the system. Non existent user.",
+    "id": "5712",
+    "level": 10,
+    "prev": 0
+   },
+   {
+    "agents": {
+     "jenkins": 5
+    },
+    "count": 5,
+    "desc": "Listened ports status (netstat) changed (new port opened or closed).",
+    "id": "533",
+    "level": 7,
+    "prev": 3
+   },
+   {
+    "agents": {
+     "k8s-cp1": 3
+    },
+    "count": 3,
+    "desc": "K8s secret changed",
+    "id": "110014",
+    "level": 10,
+    "prev": 0
+   },
+   {
+    "agents": {
+     "db01": 1,
+     "k8s-w1": 1,
+     "k8s-w2": 1
+    },
+    "count": 3,
+    "desc": "sshd: authentication success.",
+    "id": "5715",
+    "level": 3,
+    "prev": 3
+   },
+   {
+    "agents": {
+     "db01": 1
+    },
+    "count": 1,
+    "desc": "Integrity checksum changed.",
+    "id": "550",
+    "level": 7,
+    "prev": 0
+   }
+  ],
+  "volume": {
+   "empty_hours": [],
+   "high_level_ratio_permille": 74.72,
+   "high_level_total": 219,
+   "hourly": [
+    {
+     "n": 32,
+     "t": "2026-11-19T12:00:00.000Z"
+    },
+    {
+     "n": 35,
+     "t": "2026-11-19T13:00:00.000Z"
+    },
+    {
+     "n": 31,
+     "t": "2026-11-19T14:00:00.000Z"
+    },
+    {
+     "n": 31,
+     "t": "2026-11-19T15:00:00.000Z"
+    },
+    {
+     "n": 30,
+     "t": "2026-11-19T16:00:00.000Z"
+    },
+    {
+     "n": 112,
+     "t": "2026-11-19T17:00:00.000Z"
+    },
+    {
+     "n": 54,
+     "t": "2026-11-19T18:00:00.000Z"
+    },
+    {
+     "n": 54,
+     "t": "2026-11-19T19:00:00.000Z"
+    },
+    {
+     "n": 49,
+     "t": "2026-11-19T20:00:00.000Z"
+    },
+    {
+     "n": 41,
+     "t": "2026-11-19T21:00:00.000Z"
+    },
+    {
+     "n": 41,
+     "t": "2026-11-19T22:00:00.000Z"
+    },
+    {
+     "n": 43,
+     "t": "2026-11-19T23:00:00.000Z"
+    },
+    {
+     "n": 27,
+     "t": "2026-11-20T00:00:00.000Z"
+    },
+    {
+     "n": 32,
+     "t": "2026-11-20T01:00:00.000Z"
+    },
+    {
+     "n": 40,
+     "t": "2026-11-20T02:00:00.000Z"
+    },
+    {
+     "n": 1719,
+     "t": "2026-11-20T03:00:00.000Z"
+    },
+    {
+     "n": 39,
+     "t": "2026-11-20T04:00:00.000Z"
+    },
+    {
+     "n": 47,
+     "t": "2026-11-20T05:00:00.000Z"
+    },
+    {
+     "n": 45,
+     "t": "2026-11-20T06:00:00.000Z"
+    },
+    {
+     "n": 282,
+     "t": "2026-11-20T07:00:00.000Z"
+    },
+    {
+     "n": 40,
+     "t": "2026-11-20T08:00:00.000Z"
+    },
+    {
+     "n": 46,
+     "t": "2026-11-20T09:00:00.000Z"
+    },
+    {
+     "n": 28,
+     "t": "2026-11-20T10:00:00.000Z"
+    },
+    {
+     "n": 33,
+     "t": "2026-11-20T11:00:00.000Z"
+    }
+   ],
+   "levels": {
+    "10": 88,
+    "12": 80,
+    "3": 3,
+    "5": 2709,
+    "7": 12,
+    "9": 39
+   },
+   "per_manager": {
+    "wazuh-manager-worker-0": 2931
+   },
+   "total": 2931
+  },
+  "vulnerabilities": {
+   "critical_by_agent": {
+    "db01": 5,
+    "k8s-cp1": 2,
+    "k8s-w2": 4,
+    "laptop-ops": 3,
+    "web01": 2
+   },
+   "critical_by_package": {
+    "curl": 5,
+    "libxml2": 1,
+    "linux-image-6.8.0-139-generic": 2,
+    "openssl": 3,
+    "python3.12": 4,
+    "sudo": 1
+   },
+   "severity": {
+    "Critical": 16,
+    "High": 61,
+    "Low": 46,
+    "Medium": 135
+   },
+   "sla": {
+    "Critical": {
+     "by_agent": {
+      "db01": 4,
+      "k8s-cp1": 2,
+      "k8s-w2": 4,
+      "laptop-ops": 3,
+      "web01": 2
+     },
+     "by_package": {
+      "curl": 5,
+      "libxml2": 1,
+      "linux-image-6.8.0-139-generic": 2,
+      "openssl": 3,
+      "python3.12": 3,
+      "sudo": 1
+     },
+     "days": 15,
+     "oldest": "2026-08-04T17:00:00.000Z",
+     "overdue": 15
+    },
+    "High": {
+     "by_agent": {
+      "db01": 6,
+      "jenkins": 3,
+      "k8s-cp1": 6,
+      "k8s-w1": 3,
+      "k8s-w2": 11,
+      "laptop-ops": 8,
+      "web01": 2
+     },
+     "by_package": {
+      "curl": 3,
+      "libxml2": 8,
+      "linux-image-6.8.0-139-generic": 4,
+      "openssl": 7,
+      "python3.12": 7,
+      "sudo": 10
+     },
+     "days": 30,
+     "oldest": "2026-07-23T06:00:00.000Z",
+     "overdue": 39
+    },
+    "Medium": {
+     "by_agent": {
+      "db01": 6,
+      "jenkins": 4,
+      "k8s-cp1": 6,
+      "k8s-w1": 3,
+      "k8s-w2": 8,
+      "laptop-ops": 5,
+      "web01": 7
+     },
+     "by_package": {
+      "curl": 5,
+      "libxml2": 11,
+      "linux-image-6.8.0-139-generic": 5,
+      "openssl": 4,
+      "python3.12": 9,
+      "sudo": 5
+     },
+     "days": 90,
+     "oldest": "2026-07-23T02:00:00.000Z",
+     "overdue": 39
+    }
+   }
+  },
+  "watch": {
+   "100212": 1600,
+   "100213": 80
+  },
+  "window": {
+   "from": "2026-11-19T12:00:00.000Z",
+   "hours": 24,
+   "to": "2026-11-20T12:00:00.000Z"
+  }
+ },
+ "dash_24h": {
+  "agents": 7,
+  "bands": [
+   {
+    "band": "critical",
+    "count": 80,
+    "from": 12,
+    "to": 15
+   },
+   {
+    "band": "high",
+    "count": 139,
+    "from": 7,
+    "to": 11
+   },
+   {
+    "band": "medium",
+    "count": 2709,
+    "from": 4,
+    "to": 6
+   },
+   {
+    "band": "low",
+    "count": 3,
+    "from": 0,
+    "to": 3
+   }
+  ],
+  "crit": 80,
+  "delta_crit": null,
+  "delta_high": 3.469,
+  "delta_total": 2.115,
+  "from": "2026-11-19T12:00:00+00:00",
+  "high": 219,
+  "high_level": 7,
+  "hours": 24,
+  "interval": "1h",
+  "levels": {
+   "10": 88,
+   "12": 80,
+   "3": 3,
+   "5": 2709,
+   "7": 12,
+   "9": 39
+  },
+  "mitre_total": 2194,
+  "period": "24h",
+  "prev": {
+   "crit": 0,
+   "high": 49,
+   "total": 941
+  },
+  "series": [
+   {
+    "crit": 0,
+    "high": 3,
+    "t": "2026-11-19T12:00:00.000Z",
+    "total": 32
+   },
+   {
+    "crit": 0,
+    "high": 3,
+    "t": "2026-11-19T13:00:00.000Z",
+    "total": 35
+   },
+   {
+    "crit": 0,
+    "high": 3,
+    "t": "2026-11-19T14:00:00.000Z",
+    "total": 31
+   },
+   {
+    "crit": 0,
+    "high": 3,
+    "t": "2026-11-19T15:00:00.000Z",
+    "total": 31
+   },
+   {
+    "crit": 0,
+    "high": 3,
+    "t": "2026-11-19T16:00:00.000Z",
+    "total": 30
+   },
+   {
+    "crit": 0,
+    "high": 68,
+    "t": "2026-11-19T17:00:00.000Z",
+    "total": 112
+   },
+   {
+    "crit": 0,
+    "high": 8,
+    "t": "2026-11-19T18:00:00.000Z",
+    "total": 54
+   },
+   {
+    "crit": 0,
+    "high": 2,
+    "t": "2026-11-19T19:00:00.000Z",
+    "total": 54
+   },
+   {
+    "crit": 0,
+    "high": 1,
+    "t": "2026-11-19T20:00:00.000Z",
+    "total": 49
+   },
+   {
+    "crit": 0,
+    "high": 5,
+    "t": "2026-11-19T21:00:00.000Z",
+    "total": 41
+   },
+   {
+    "crit": 0,
+    "high": 2,
+    "t": "2026-11-19T22:00:00.000Z",
+    "total": 41
+   },
+   {
+    "crit": 0,
+    "high": 1,
+    "t": "2026-11-19T23:00:00.000Z",
+    "total": 43
+   },
+   {
+    "crit": 0,
+    "high": 1,
+    "t": "2026-11-20T00:00:00.000Z",
+    "total": 27
+   },
+   {
+    "crit": 0,
+    "high": 3,
+    "t": "2026-11-20T01:00:00.000Z",
+    "total": 32
+   },
+   {
+    "crit": 0,
+    "high": 2,
+    "t": "2026-11-20T02:00:00.000Z",
+    "total": 40
+   },
+   {
+    "crit": 80,
+    "high": 82,
+    "t": "2026-11-20T03:00:00.000Z",
+    "total": 1719
+   },
+   {
+    "crit": 0,
+    "high": 0,
+    "t": "2026-11-20T04:00:00.000Z",
+    "total": 39
+   },
+   {
+    "crit": 0,
+    "high": 2,
+    "t": "2026-11-20T05:00:00.000Z",
+    "total": 47
+   },
+   {
+    "crit": 0,
+    "high": 6,
+    "t": "2026-11-20T06:00:00.000Z",
+    "total": 45
+   },
+   {
+    "crit": 0,
+    "high": 7,
+    "t": "2026-11-20T07:00:00.000Z",
+    "total": 282
+   },
+   {
+    "crit": 0,
+    "high": 4,
+    "t": "2026-11-20T08:00:00.000Z",
+    "total": 40
+   },
+   {
+    "crit": 0,
+    "high": 4,
+    "t": "2026-11-20T09:00:00.000Z",
+    "total": 46
+   },
+   {
+    "crit": 0,
+    "high": 3,
+    "t": "2026-11-20T10:00:00.000Z",
+    "total": 28
+   },
+   {
+    "crit": 0,
+    "high": 3,
+    "t": "2026-11-20T11:00:00.000Z",
+    "total": 33
+   },
+   {
+    "crit": 0,
+    "high": 0,
+    "t": "2026-11-20T12:00:00.000Z",
+    "total": 0
+   }
+  ],
+  "tactics": [
+   {
+    "count": 7,
+    "heat": "h1",
+    "high": 7,
+    "id": "TA0043",
+    "prev": 9,
+    "tactic": "Reconnaissance",
+    "techniques": 1,
+    "trend": -0.222
+   },
+   {
+    "count": 0,
+    "heat": "h0",
+    "high": 0,
+    "id": "TA0042",
+    "prev": 0,
+    "tactic": "Resource Development",
+    "techniques": 0,
+    "trend": null
+   },
+   {
+    "count": 3,
+    "heat": "h1",
+    "high": 0,
+    "id": "TA0001",
+    "prev": 3,
+    "tactic": "Initial Access",
+    "techniques": 1,
+    "trend": 0.0
+   },
+   {
+    "count": 0,
+    "heat": "h0",
+    "high": 0,
+    "id": "TA0002",
+    "prev": 0,
+    "tactic": "Execution",
+    "techniques": 0,
+    "trend": null
+   },
+   {
+    "count": 3,
+    "heat": "h1",
+    "high": 0,
+    "id": "TA0003",
+    "prev": 3,
+    "tactic": "Persistence",
+    "techniques": 1,
+    "trend": 0.0
+   },
+   {
+    "count": 3,
+    "heat": "h1",
+    "high": 0,
+    "id": "TA0004",
+    "prev": 3,
+    "tactic": "Privilege Escalation",
+    "techniques": 1,
+    "trend": 0.0
+   },
+   {
+    "count": 3,
+    "heat": "h1",
+    "high": 0,
+    "id": "TA0005",
+    "prev": 4,
+    "tactic": "Defense Evasion",
+    "techniques": 1,
+    "trend": -0.25
+   },
+   {
+    "count": 1929,
+    "heat": "h5",
+    "high": 89,
+    "id": "TA0006",
+    "prev": 0,
+    "tactic": "Credential Access",
+    "techniques": 4,
+    "trend": null
+   },
+   {
+    "count": 5,
+    "heat": "h1",
+    "high": 5,
+    "id": "TA0007",
+    "prev": 3,
+    "tactic": "Discovery",
+    "techniques": 1,
+    "trend": 0.667
+   },
+   {
+    "count": 240,
+    "heat": "h3",
+    "high": 0,
+    "id": "TA0008",
+    "prev": 0,
+    "tactic": "Lateral Movement",
+    "techniques": 2,
+    "trend": null
+   },
+   {
+    "count": 0,
+    "heat": "h0",
+    "high": 0,
+    "id": "TA0009",
+    "prev": 0,
+    "tactic": "Collection",
+    "techniques": 0,
+    "trend": null
+   },
+   {
+    "count": 0,
+    "heat": "h0",
+    "high": 0,
+    "id": "TA0011",
+    "prev": 0,
+    "tactic": "Command and Control",
+    "techniques": 0,
+    "trend": null
+   },
+   {
+    "count": 0,
+    "heat": "h0",
+    "high": 0,
+    "id": "TA0010",
+    "prev": 0,
+    "tactic": "Exfiltration",
+    "techniques": 0,
+    "trend": null
+   },
+   {
+    "count": 1,
+    "heat": "h1",
+    "high": 1,
+    "id": "TA0040",
+    "prev": 0,
+    "tactic": "Impact",
+    "techniques": 1,
+    "trend": null
+   }
+  ],
+  "to": "2026-11-20T12:00:00+00:00",
+  "top_agents": [
+   {
+    "count": 1698,
+    "high": 98,
+    "name": "jenkins"
+   },
+   {
+    "count": 889,
+    "high": 20,
+    "name": "web01"
+   },
+   {
+    "count": 261,
+    "high": 20,
+    "name": "db01"
+   },
+   {
+    "count": 39,
+    "high": 39,
+    "name": "laptop-ops"
+   },
+   {
+    "count": 16,
+    "high": 16,
+    "name": "k8s-cp1"
+   },
+   {
+    "count": 14,
+    "high": 13,
+    "name": "k8s-w1"
+   },
+   {
+    "count": 14,
+    "high": 13,
+    "name": "k8s-w2"
+   }
+  ],
+  "top_high_rules": [
+   {
+    "count": 80,
+    "desc": "Jenkins: Basic Auth brute force from same IP",
+    "id": "100213",
+    "level": 12
+   },
+   {
+    "count": 72,
+    "desc": "CVE-2026-0001 affects openssl",
+    "id": "23505",
+    "level": 10
+   },
+   {
+    "count": 39,
+    "desc": "Windows application error event.",
+    "id": "60602",
+    "level": 9
+   },
+   {
+    "count": 7,
+    "desc": "Multiple web server 400 error codes from same source ip.",
+    "id": "31151",
+    "level": 10
+   },
+   {
+    "count": 6,
+    "desc": "New dpkg (Debian Package) installed.",
+    "id": "2902",
+    "level": 7
+   },
+   {
+    "count": 6,
+    "desc": "sshd: brute force trying to get access to the system. Non existent user.",
+    "id": "5712",
+    "level": 10
+   },
+   {
+    "count": 5,
+    "desc": "Listened ports status (netstat) changed (new port opened or closed).",
+    "id": "533",
+    "level": 7
+   },
+   {
+    "count": 3,
+    "desc": "K8s secret changed",
+    "id": "110014",
+    "level": 10
+   }
+  ],
+  "top_rules": [
+   {
+    "count": 1600,
+    "desc": "Jenkins: 401 with Basic Auth username",
+    "id": "100212",
+    "level": 5
+   },
+   {
+    "count": 869,
+    "desc": "Web server 400 error code.",
+    "id": "31101",
+    "level": 5
+   },
+   {
+    "count": 240,
+    "desc": "sshd: Attempt to login using a non-existent user",
+    "id": "5710",
+    "level": 5
+   },
+   {
+    "count": 80,
+    "desc": "Jenkins: Basic Auth brute force from same IP",
+    "id": "100213",
+    "level": 12
+   },
+   {
+    "count": 72,
+    "desc": "CVE-2026-0001 affects openssl",
+    "id": "23505",
+    "level": 10
+   },
+   {
+    "count": 39,
+    "desc": "Windows application error event.",
+    "id": "60602",
+    "level": 9
+   },
+   {
+    "count": 7,
+    "desc": "Multiple web server 400 error codes from same source ip.",
+    "id": "31151",
+    "level": 10
+   },
+   {
+    "count": 6,
+    "desc": "New dpkg (Debian Package) installed.",
+    "id": "2902",
+    "level": 7
+   }
+  ],
+  "top_sources": [
+   {
+    "count": 1680,
+    "high": 80,
+    "ip": "192.0.2.45"
+   },
+   {
+    "count": 246,
+    "high": 6,
+    "ip": "198.51.100.23"
+   },
+   {
+    "count": 227,
+    "high": 1,
+    "ip": "203.0.113.45"
+   },
+   {
+    "count": 224,
+    "high": 2,
+    "ip": "198.51.100.77"
+   },
+   {
+    "count": 217,
+    "high": 1,
+    "ip": "203.0.113.10"
+   },
+   {
+    "count": 208,
+    "high": 3,
+    "ip": "192.0.2.150"
+   },
+   {
+    "count": 3,
+    "high": 0,
+    "ip": "100.124.10.5"
+   }
+  ],
+  "total": 2931
+ },
+ "dash_7d": {
+  "agents": 8,
+  "bands": [
+   {
+    "band": "critical",
+    "count": 80,
+    "from": 12,
+    "to": 15
+   },
+   {
+    "band": "high",
+    "count": 461,
+    "from": 7,
+    "to": 11
+   },
+   {
+    "band": "medium",
+    "count": 8170,
+    "from": 4,
+    "to": 6
+   },
+   {
+    "band": "low",
+    "count": 18,
+    "from": 0,
+    "to": 3
+   }
+  ],
+  "crit": 80,
+  "delta_crit": null,
+  "delta_high": 0.413,
+  "delta_total": 0.271,
+  "from": "2026-11-13T12:00:00+00:00",
+  "high": 541,
+  "high_level": 7,
+  "hours": 168,
+  "interval": "6h",
+  "levels": {
+   "10": 125,
+   "12": 80,
+   "3": 18,
+   "5": 8170,
+   "7": 88,
+   "9": 248
+  },
+  "mitre_total": 2328,
+  "period": "7d",
+  "prev": {
+   "crit": 0,
+   "high": 383,
+   "total": 6870
+  },
+  "series": [
+   {
+    "crit": 0,
+    "high": 11,
+    "t": "2026-11-13T12:00:00.000Z",
+    "total": 233
+   },
+   {
+    "crit": 0,
+    "high": 12,
+    "t": "2026-11-13T18:00:00.000Z",
+    "total": 267
+   },
+   {
+    "crit": 0,
+    "high": 13,
+    "t": "2026-11-14T00:00:00.000Z",
+    "total": 202
+   },
+   {
+    "crit": 0,
+    "high": 18,
+    "t": "2026-11-14T06:00:00.000Z",
+    "total": 229
+   },
+   {
+    "crit": 0,
+    "high": 14,
+    "t": "2026-11-14T12:00:00.000Z",
+    "total": 264
+   },
+   {
+    "crit": 0,
+    "high": 15,
+    "t": "2026-11-14T18:00:00.000Z",
+    "total": 279
+   },
+   {
+    "crit": 0,
+    "high": 15,
+    "t": "2026-11-15T00:00:00.000Z",
+    "total": 232
+   },
+   {
+    "crit": 0,
+    "high": 18,
+    "t": "2026-11-15T06:00:00.000Z",
+    "total": 247
+   },
+   {
+    "crit": 0,
+    "high": 15,
+    "t": "2026-11-15T12:00:00.000Z",
+    "total": 253
+   },
+   {
+    "crit": 0,
+    "high": 9,
+    "t": "2026-11-15T18:00:00.000Z",
+    "total": 288
+   },
+   {
+    "crit": 0,
+    "high": 21,
+    "t": "2026-11-16T00:00:00.000Z",
+    "total": 181
+   },
+   {
+    "crit": 0,
+    "high": 16,
+    "t": "2026-11-16T06:00:00.000Z",
+    "total": 238
+   },
+   {
+    "crit": 0,
+    "high": 12,
+    "t": "2026-11-16T12:00:00.000Z",
+    "total": 236
+   },
+   {
+    "crit": 0,
+    "high": 5,
+    "t": "2026-11-16T18:00:00.000Z",
+    "total": 292
+   },
+   {
+    "crit": 0,
+    "high": 11,
+    "t": "2026-11-17T00:00:00.000Z",
+    "total": 198
+   },
+   {
+    "crit": 0,
+    "high": 14,
+    "t": "2026-11-17T06:00:00.000Z",
+    "total": 230
+   },
+   {
+    "crit": 0,
+    "high": 11,
+    "t": "2026-11-17T12:00:00.000Z",
+    "total": 235
+   },
+   {
+    "crit": 0,
+    "high": 12,
+    "t": "2026-11-17T18:00:00.000Z",
+    "total": 291
+   },
+   {
+    "crit": 0,
+    "high": 11,
+    "t": "2026-11-18T00:00:00.000Z",
+    "total": 226
+   },
+   {
+    "crit": 0,
+    "high": 20,
+    "t": "2026-11-18T06:00:00.000Z",
+    "total": 236
+   },
+   {
+    "crit": 0,
+    "high": 14,
+    "t": "2026-11-18T12:00:00.000Z",
+    "total": 224
+   },
+   {
+    "crit": 0,
+    "high": 12,
+    "t": "2026-11-18T18:00:00.000Z",
+    "total": 279
+   },
+   {
+    "crit": 0,
+    "high": 9,
+    "t": "2026-11-19T00:00:00.000Z",
+    "total": 220
+   },
+   {
+    "crit": 0,
+    "high": 14,
+    "t": "2026-11-19T06:00:00.000Z",
+    "total": 218
+   },
+   {
+    "crit": 0,
+    "high": 83,
+    "t": "2026-11-19T12:00:00.000Z",
+    "total": 271
+   },
+   {
+    "crit": 0,
+    "high": 19,
+    "t": "2026-11-19T18:00:00.000Z",
+    "total": 282
+   },
+   {
+    "crit": 80,
+    "high": 90,
+    "t": "2026-11-20T00:00:00.000Z",
+    "total": 1904
+   },
+   {
+    "crit": 0,
+    "high": 27,
+    "t": "2026-11-20T06:00:00.000Z",
+    "total": 474
+   },
+   {
+    "crit": 0,
+    "high": 0,
+    "t": "2026-11-20T12:00:00.000Z",
+    "total": 0
+   }
+  ],
+  "tactics": [
+   {
+    "count": 44,
+    "heat": "h2",
+    "high": 44,
+    "id": "TA0043",
+    "prev": 40,
+    "tactic": "Reconnaissance",
+    "techniques": 1,
+    "trend": 0.1
+   },
+   {
+    "count": 0,
+    "heat": "h0",
+    "high": 0,
+    "id": "TA0042",
+    "prev": 0,
+    "tactic": "Resource Development",
+    "techniques": 0,
+    "trend": null
+   },
+   {
+    "count": 17,
+    "heat": "h1",
+    "high": 0,
+    "id": "TA0001",
+    "prev": 16,
+    "tactic": "Initial Access",
+    "techniques": 1,
+    "trend": 0.062
+   },
+   {
+    "count": 0,
+    "heat": "h0",
+    "high": 0,
+    "id": "TA0002",
+    "prev": 0,
+    "tactic": "Execution",
+    "techniques": 0,
+    "trend": null
+   },
+   {
+    "count": 17,
+    "heat": "h1",
+    "high": 0,
+    "id": "TA0003",
+    "prev": 16,
+    "tactic": "Persistence",
+    "techniques": 1,
+    "trend": 0.062
+   },
+   {
+    "count": 17,
+    "heat": "h1",
+    "high": 0,
+    "id": "TA0004",
+    "prev": 16,
+    "tactic": "Privilege Escalation",
+    "techniques": 1,
+    "trend": 0.062
+   },
+   {
+    "count": 18,
+    "heat": "h1",
+    "high": 0,
+    "id": "TA0005",
+    "prev": 16,
+    "tactic": "Defense Evasion",
+    "techniques": 2,
+    "trend": 0.125
+   },
+   {
+    "count": 1929,
+    "heat": "h5",
+    "high": 89,
+    "id": "TA0006",
+    "prev": 0,
+    "tactic": "Credential Access",
+    "techniques": 4,
+    "trend": null
+   },
+   {
+    "count": 45,
+    "heat": "h2",
+    "high": 45,
+    "id": "TA0007",
+    "prev": 48,
+    "tactic": "Discovery",
+    "techniques": 1,
+    "trend": -0.062
+   },
+   {
+    "count": 240,
+    "heat": "h3",
+    "high": 0,
+    "id": "TA0008",
+    "prev": 0,
+    "tactic": "Lateral Movement",
+    "techniques": 2,
+    "trend": null
+   },
+   {
+    "count": 0,
+    "heat": "h0",
+    "high": 0,
+    "id": "TA0009",
+    "prev": 0,
+    "tactic": "Collection",
+    "techniques": 0,
+    "trend": null
+   },
+   {
+    "count": 0,
+    "heat": "h0",
+    "high": 0,
+    "id": "TA0011",
+    "prev": 0,
+    "tactic": "Command and Control",
+    "techniques": 0,
+    "trend": null
+   },
+   {
+    "count": 0,
+    "heat": "h0",
+    "high": 0,
+    "id": "TA0010",
+    "prev": 0,
+    "tactic": "Exfiltration",
+    "techniques": 0,
+    "trend": null
+   },
+   {
+    "count": 1,
+    "heat": "h1",
+    "high": 1,
+    "id": "TA0040",
+    "prev": 0,
+    "tactic": "Impact",
+    "techniques": 1,
+    "trend": null
+   }
+  ],
+  "to": "2026-11-20T12:00:00+00:00",
+  "top_agents": [
+   {
+    "count": 6393,
+    "high": 63,
+    "name": "web01"
+   },
+   {
+    "count": 1747,
+    "high": 144,
+    "name": "jenkins"
+   },
+   {
+    "count": 270,
+    "high": 26,
+    "name": "db01"
+   },
+   {
+    "count": 248,
+    "high": 248,
+    "name": "laptop-ops"
+   },
+   {
+    "count": 24,
+    "high": 19,
+    "name": "k8s-w2"
+   },
+   {
+    "count": 23,
+    "high": 22,
+    "name": "k8s-cp1"
+   },
+   {
+    "count": 23,
+    "high": 19,
+    "name": "k8s-w1"
+   },
+   {
+    "count": 1,
+    "high": 0,
+    "name": "mail01"
+   }
+  ],
+  "top_high_rules": [
+   {
+    "count": 248,
+    "desc": "Windows application error event.",
+    "id": "60602",
+    "level": 9
+   },
+   {
+    "count": 80,
+    "desc": "Jenkins: Basic Auth brute force from same IP",
+    "id": "100213",
+    "level": 12
+   },
+   {
+    "count": 72,
+    "desc": "CVE-2026-0001 affects openssl",
+    "id": "23505",
+    "level": 10
+   },
+   {
+    "count": 45,
+    "desc": "Listened ports status (netstat) changed (new port opened or closed).",
+    "id": "533",
+    "level": 7
+   },
+   {
+    "count": 44,
+    "desc": "Multiple web server 400 error codes from same source ip.",
+    "id": "31151",
+    "level": 10
+   },
+   {
+    "count": 42,
+    "desc": "New dpkg (Debian Package) installed.",
+    "id": "2902",
+    "level": 7
+   },
+   {
+    "count": 6,
+    "desc": "sshd: brute force trying to get access to the system. Non existent user.",
+    "id": "5712",
+    "level": 10
+   },
+   {
+    "count": 3,
+    "desc": "K8s secret changed",
+    "id": "110014",
+    "level": 10
+   }
+  ],
+  "top_rules": [
+   {
+    "count": 6330,
+    "desc": "Web server 400 error code.",
+    "id": "31101",
+    "level": 5
+   },
+   {
+    "count": 1600,
+    "desc": "Jenkins: 401 with Basic Auth username",
+    "id": "100212",
+    "level": 5
+   },
+   {
+    "count": 248,
+    "desc": "Windows application error event.",
+    "id": "60602",
+    "level": 9
+   },
+   {
+    "count": 240,
+    "desc": "sshd: Attempt to login using a non-existent user",
+    "id": "5710",
+    "level": 5
+   },
+   {
+    "count": 80,
+    "desc": "Jenkins: Basic Auth brute force from same IP",
+    "id": "100213",
+    "level": 12
+   },
+   {
+    "count": 72,
+    "desc": "CVE-2026-0001 affects openssl",
+    "id": "23505",
+    "level": 10
+   },
+   {
+    "count": 45,
+    "desc": "Listened ports status (netstat) changed (new port opened or closed).",
+    "id": "533",
+    "level": 7
+   },
+   {
+    "count": 44,
+    "desc": "Multiple web server 400 error codes from same source ip.",
+    "id": "31151",
+    "level": 10
+   }
+  ],
+  "top_sources": [
+   {
+    "count": 1680,
+    "high": 80,
+    "ip": "192.0.2.45"
+   },
+   {
+    "count": 1610,
+    "high": 5,
+    "ip": "203.0.113.45"
+   },
+   {
+    "count": 1606,
+    "high": 8,
+    "ip": "198.51.100.77"
+   },
+   {
+    "count": 1585,
+    "high": 16,
+    "ip": "203.0.113.10"
+   },
+   {
+    "count": 1573,
+    "high": 15,
+    "ip": "192.0.2.150"
+   },
+   {
+    "count": 246,
+    "high": 6,
+    "ip": "198.51.100.23"
+   },
+   {
+    "count": 17,
+    "high": 0,
+    "ip": "100.124.10.5"
+   }
+  ],
+  "total": 8729
+ },
+ "mitre_matrix": {
+  "columns": [
+   {
+    "cells": [
+     {
+      "agents": 1,
+      "count": 44,
+      "heat": "h2",
+      "high": 44,
+      "id": "T1595.002",
+      "last": "2026-11-20T05:29:00.000Z",
+      "level": 10,
+      "name": "Vulnerability Scanning",
+      "new": false,
+      "prev": 40,
+      "rules": [
+       "31151"
+      ],
+      "trend": 0.1,
+      "url": "https://attack.mitre.org/techniques/T1595/002/"
+     }
+    ],
+    "count": 44,
+    "high": 44,
+    "id": "TA0043",
+    "prev": 40,
+    "tactic": "Reconnaissance",
+    "url": "https://attack.mitre.org/tactics/TA0043/"
+   },
+   {
+    "cells": [],
+    "count": 0,
+    "high": 0,
+    "id": "TA0042",
+    "prev": 0,
+    "tactic": "Resource Development",
+    "url": "https://attack.mitre.org/tactics/TA0042/"
+   },
+   {
+    "cells": [
+     {
+      "agents": 5,
+      "count": 17,
+      "heat": "h1",
+      "high": 0,
+      "id": "T1078",
+      "last": "2026-11-20T09:39:00.000Z",
+      "level": 3,
+      "name": "Valid Accounts",
+      "new": false,
+      "prev": 16,
+      "rules": [
+       "5715"
+      ],
+      "trend": 0.062,
+      "url": "https://attack.mitre.org/techniques/T1078/"
+     }
+    ],
+    "count": 17,
+    "high": 0,
+    "id": "TA0001",
+    "prev": 16,
+    "tactic": "Initial Access",
+    "url": "https://attack.mitre.org/tactics/TA0001/"
+   },
+   {
+    "cells": [],
+    "count": 0,
+    "high": 0,
+    "id": "TA0002",
+    "prev": 0,
+    "tactic": "Execution",
+    "url": "https://attack.mitre.org/tactics/TA0002/"
+   },
+   {
+    "cells": [
+     {
+      "agents": 5,
+      "count": 17,
+      "heat": "h1",
+      "high": 0,
+      "id": "T1078",
+      "last": "2026-11-20T09:39:00.000Z",
+      "level": 3,
+      "name": "Valid Accounts",
+      "new": false,
+      "prev": 16,
+      "rules": [
+       "5715"
+      ],
+      "trend": 0.062,
+      "url": "https://attack.mitre.org/techniques/T1078/"
+     }
+    ],
+    "count": 17,
+    "high": 0,
+    "id": "TA0003",
+    "prev": 16,
+    "tactic": "Persistence",
+    "url": "https://attack.mitre.org/tactics/TA0003/"
+   },
+   {
+    "cells": [
+     {
+      "agents": 5,
+      "count": 17,
+      "heat": "h1",
+      "high": 0,
+      "id": "T1078",
+      "last": "2026-11-20T09:39:00.000Z",
+      "level": 3,
+      "name": "Valid Accounts",
+      "new": false,
+      "prev": 16,
+      "rules": [
+       "5715"
+      ],
+      "trend": 0.062,
+      "url": "https://attack.mitre.org/techniques/T1078/"
+     }
+    ],
+    "count": 17,
+    "high": 0,
+    "id": "TA0004",
+    "prev": 16,
+    "tactic": "Privilege Escalation",
+    "url": "https://attack.mitre.org/tactics/TA0004/"
+   },
+   {
+    "cells": [
+     {
+      "agents": 5,
+      "count": 17,
+      "heat": "h1",
+      "high": 0,
+      "id": "T1078",
+      "last": "2026-11-20T09:39:00.000Z",
+      "level": 3,
+      "name": "Valid Accounts",
+      "new": false,
+      "prev": 16,
+      "rules": [
+       "5715"
+      ],
+      "trend": 0.062,
+      "url": "https://attack.mitre.org/techniques/T1078/"
+     },
+     {
+      "agents": 1,
+      "count": 1,
+      "heat": "h1",
+      "high": 0,
+      "id": "T1562.001",
+      "last": "2026-11-19T06:00:00.000Z",
+      "level": 3,
+      "name": "Disable or Modify Tools",
+      "new": true,
+      "prev": 0,
+      "rules": [
+       "506"
+      ],
+      "trend": null,
+      "url": "https://attack.mitre.org/techniques/T1562/001/"
+     }
+    ],
+    "count": 18,
+    "high": 0,
+    "id": "TA0005",
+    "prev": 16,
+    "tactic": "Defense Evasion",
+    "url": "https://attack.mitre.org/tactics/TA0005/"
+   },
+   {
+    "cells": [
+     {
+      "agents": 2,
+      "count": 1840,
+      "heat": "h5",
+      "high": 0,
+      "id": "T1110.001",
+      "last": "2026-11-20T07:55:58.000Z",
+      "level": 5,
+      "name": "Password Guessing",
+      "new": true,
+      "prev": 0,
+      "rules": [
+       "100212",
+       "5710"
+      ],
+      "trend": null,
+      "url": "https://attack.mitre.org/techniques/T1110/001/"
+     },
+     {
+      "agents": 1,
+      "count": 240,
+      "heat": "h3",
+      "high": 0,
+      "id": "T1021.004",
+      "last": "2026-11-20T07:55:58.000Z",
+      "level": 5,
+      "name": "SSH",
+      "new": true,
+      "prev": 0,
+      "rules": [
+       "5710"
+      ],
+      "trend": null,
+      "url": "https://attack.mitre.org/techniques/T1021/004/"
+     },
+     {
+      "agents": 2,
+      "count": 86,
+      "heat": "h2",
+      "high": 86,
+      "id": "T1110",
+      "last": "2026-11-20T07:55:58.000Z",
+      "level": 12,
+      "name": "Brute Force",
+      "new": true,
+      "prev": 0,
+      "rules": [
+       "100213",
+       "5712"
+      ],
+      "trend": null,
+      "url": "https://attack.mitre.org/techniques/T1110/"
+     },
+     {
+      "agents": 1,
+      "count": 3,
+      "heat": "h1",
+      "high": 3,
+      "id": "T1552.007",
+      "last": "2026-11-20T10:00:00.000Z",
+      "level": 10,
+      "name": "Container API",
+      "new": true,
+      "prev": 0,
+      "rules": [
+       "110014"
+      ],
+      "trend": null,
+      "url": "https://attack.mitre.org/techniques/T1552/007/"
+     }
+    ],
+    "count": 1929,
+    "high": 89,
+    "id": "TA0006",
+    "prev": 0,
+    "tactic": "Credential Access",
+    "url": "https://attack.mitre.org/tactics/TA0006/"
+   },
+   {
+    "cells": [
+     {
+      "agents": 1,
+      "count": 45,
+      "heat": "h2",
+      "high": 45,
+      "id": "T1049",
+      "last": "2026-11-20T03:02:00.000Z",
+      "level": 7,
+      "name": "System Network Connections Discovery",
+      "new": false,
+      "prev": 48,
+      "rules": [
+       "533"
+      ],
+      "trend": -0.062,
+      "url": "https://attack.mitre.org/techniques/T1049/"
+     }
+    ],
+    "count": 45,
+    "high": 45,
+    "id": "TA0007",
+    "prev": 48,
+    "tactic": "Discovery",
+    "url": "https://attack.mitre.org/tactics/TA0007/"
+   },
+   {
+    "cells": [
+     {
+      "agents": 1,
+      "count": 240,
+      "heat": "h3",
+      "high": 0,
+      "id": "T1021.004",
+      "last": "2026-11-20T07:55:58.000Z",
+      "level": 5,
+      "name": "SSH",
+      "new": true,
+      "prev": 0,
+      "rules": [
+       "5710"
+      ],
+      "trend": null,
+      "url": "https://attack.mitre.org/techniques/T1021/004/"
+     },
+     {
+      "agents": 1,
+      "count": 240,
+      "heat": "h3",
+      "high": 0,
+      "id": "T1110.001",
+      "last": "2026-11-20T07:55:58.000Z",
+      "level": 5,
+      "name": "Password Guessing",
+      "new": true,
+      "prev": 0,
+      "rules": [
+       "5710"
+      ],
+      "trend": null,
+      "url": "https://attack.mitre.org/techniques/T1110/001/"
+     }
+    ],
+    "count": 240,
+    "high": 0,
+    "id": "TA0008",
+    "prev": 0,
+    "tactic": "Lateral Movement",
+    "url": "https://attack.mitre.org/tactics/TA0008/"
+   },
+   {
+    "cells": [],
+    "count": 0,
+    "high": 0,
+    "id": "TA0009",
+    "prev": 0,
+    "tactic": "Collection",
+    "url": "https://attack.mitre.org/tactics/TA0009/"
+   },
+   {
+    "cells": [],
+    "count": 0,
+    "high": 0,
+    "id": "TA0011",
+    "prev": 0,
+    "tactic": "Command and Control",
+    "url": "https://attack.mitre.org/tactics/TA0011/"
+   },
+   {
+    "cells": [],
+    "count": 0,
+    "high": 0,
+    "id": "TA0010",
+    "prev": 0,
+    "tactic": "Exfiltration",
+    "url": "https://attack.mitre.org/tactics/TA0010/"
+   },
+   {
+    "cells": [
+     {
+      "agents": 1,
+      "count": 1,
+      "heat": "h1",
+      "high": 1,
+      "id": "T1565.001",
+      "last": "2026-11-20T08:20:00.000Z",
+      "level": 7,
+      "name": "Stored Data Manipulation",
+      "new": true,
+      "prev": 0,
+      "rules": [
+       "550"
+      ],
+      "trend": null,
+      "url": "https://attack.mitre.org/techniques/T1565/001/"
+     }
+    ],
+    "count": 1,
+    "high": 1,
+    "id": "TA0040",
+    "prev": 0,
+    "tactic": "Impact",
+    "url": "https://attack.mitre.org/tactics/TA0040/"
+   }
+  ],
+  "days": 7,
+  "gone": [],
+  "high_level": 7,
+  "lookback_days": 30,
+  "mapped": 2037,
+  "mapped_share": 0.2334,
+  "new": [
+   {
+    "agents": 2,
+    "count": 1840,
+    "high": 0,
+    "id": "T1110.001",
+    "last": "2026-11-20T07:55:58.000Z",
+    "level": 5,
+    "name": "Password Guessing",
+    "new": true,
+    "prev": 0,
+    "rules": [
+     "100212",
+     "5710"
+    ],
+    "tactics": [
+     "Credential Access",
+     "Lateral Movement"
+    ],
+    "trend": null,
+    "url": "https://attack.mitre.org/techniques/T1110/001/"
+   },
+   {
+    "agents": 1,
+    "count": 240,
+    "high": 0,
+    "id": "T1021.004",
+    "last": "2026-11-20T07:55:58.000Z",
+    "level": 5,
+    "name": "SSH",
+    "new": true,
+    "prev": 0,
+    "rules": [
+     "5710"
+    ],
+    "tactics": [
+     "Credential Access",
+     "Lateral Movement"
+    ],
+    "trend": null,
+    "url": "https://attack.mitre.org/techniques/T1021/004/"
+   },
+   {
+    "agents": 2,
+    "count": 86,
+    "high": 86,
+    "id": "T1110",
+    "last": "2026-11-20T07:55:58.000Z",
+    "level": 12,
+    "name": "Brute Force",
+    "new": true,
+    "prev": 0,
+    "rules": [
+     "100213",
+     "5712"
+    ],
+    "tactics": [
+     "Credential Access"
+    ],
+    "trend": null,
+    "url": "https://attack.mitre.org/techniques/T1110/"
+   },
+   {
+    "agents": 1,
+    "count": 3,
+    "high": 3,
+    "id": "T1552.007",
+    "last": "2026-11-20T10:00:00.000Z",
+    "level": 10,
+    "name": "Container API",
+    "new": true,
+    "prev": 0,
+    "rules": [
+     "110014"
+    ],
+    "tactics": [
+     "Credential Access"
+    ],
+    "trend": null,
+    "url": "https://attack.mitre.org/techniques/T1552/007/"
+   },
+   {
+    "agents": 1,
+    "count": 1,
+    "high": 0,
+    "id": "T1562.001",
+    "last": "2026-11-19T06:00:00.000Z",
+    "level": 3,
+    "name": "Disable or Modify Tools",
+    "new": true,
+    "prev": 0,
+    "rules": [
+     "506"
+    ],
+    "tactics": [
+     "Defense Evasion"
+    ],
+    "trend": null,
+    "url": "https://attack.mitre.org/techniques/T1562/001/"
+   },
+   {
+    "agents": 1,
+    "count": 1,
+    "high": 1,
+    "id": "T1565.001",
+    "last": "2026-11-20T08:20:00.000Z",
+    "level": 7,
+    "name": "Stored Data Manipulation",
+    "new": true,
+    "prev": 0,
+    "rules": [
+     "550"
+    ],
+    "tactics": [
+     "Impact"
+    ],
+    "trend": null,
+    "url": "https://attack.mitre.org/techniques/T1565/001/"
+   }
+  ],
+  "silent": [
+   "Resource Development",
+   "Execution",
+   "Collection",
+   "Command and Control",
+   "Exfiltration"
+  ],
+  "silent_lookback": [
+   "Resource Development",
+   "Execution",
+   "Collection",
+   "Command and Control",
+   "Exfiltration"
+  ],
+  "techniques": [
+   {
+    "agents": 2,
+    "count": 1840,
+    "high": 0,
+    "id": "T1110.001",
+    "last": "2026-11-20T07:55:58.000Z",
+    "level": 5,
+    "name": "Password Guessing",
+    "new": true,
+    "prev": 0,
+    "rules": [
+     "100212",
+     "5710"
+    ],
+    "tactics": [
+     "Credential Access",
+     "Lateral Movement"
+    ],
+    "trend": null,
+    "url": "https://attack.mitre.org/techniques/T1110/001/"
+   },
+   {
+    "agents": 1,
+    "count": 240,
+    "high": 0,
+    "id": "T1021.004",
+    "last": "2026-11-20T07:55:58.000Z",
+    "level": 5,
+    "name": "SSH",
+    "new": true,
+    "prev": 0,
+    "rules": [
+     "5710"
+    ],
+    "tactics": [
+     "Credential Access",
+     "Lateral Movement"
+    ],
+    "trend": null,
+    "url": "https://attack.mitre.org/techniques/T1021/004/"
+   },
+   {
+    "agents": 2,
+    "count": 86,
+    "high": 86,
+    "id": "T1110",
+    "last": "2026-11-20T07:55:58.000Z",
+    "level": 12,
+    "name": "Brute Force",
+    "new": true,
+    "prev": 0,
+    "rules": [
+     "100213",
+     "5712"
+    ],
+    "tactics": [
+     "Credential Access"
+    ],
+    "trend": null,
+    "url": "https://attack.mitre.org/techniques/T1110/"
+   },
+   {
+    "agents": 1,
+    "count": 45,
+    "high": 45,
+    "id": "T1049",
+    "last": "2026-11-20T03:02:00.000Z",
+    "level": 7,
+    "name": "System Network Connections Discovery",
+    "new": false,
+    "prev": 48,
+    "rules": [
+     "533"
+    ],
+    "tactics": [
+     "Discovery"
+    ],
+    "trend": -0.062,
+    "url": "https://attack.mitre.org/techniques/T1049/"
+   },
+   {
+    "agents": 1,
+    "count": 44,
+    "high": 44,
+    "id": "T1595.002",
+    "last": "2026-11-20T05:29:00.000Z",
+    "level": 10,
+    "name": "Vulnerability Scanning",
+    "new": false,
+    "prev": 40,
+    "rules": [
+     "31151"
+    ],
+    "tactics": [
+     "Reconnaissance"
+    ],
+    "trend": 0.1,
+    "url": "https://attack.mitre.org/techniques/T1595/002/"
+   },
+   {
+    "agents": 5,
+    "count": 17,
+    "high": 0,
+    "id": "T1078",
+    "last": "2026-11-20T09:39:00.000Z",
+    "level": 3,
+    "name": "Valid Accounts",
+    "new": false,
+    "prev": 16,
+    "rules": [
+     "5715"
+    ],
+    "tactics": [
+     "Defense Evasion",
+     "Initial Access",
+     "Persistence",
+     "Privilege Escalation"
+    ],
+    "trend": 0.062,
+    "url": "https://attack.mitre.org/techniques/T1078/"
+   },
+   {
+    "agents": 1,
+    "count": 3,
+    "high": 3,
+    "id": "T1552.007",
+    "last": "2026-11-20T10:00:00.000Z",
+    "level": 10,
+    "name": "Container API",
+    "new": true,
+    "prev": 0,
+    "rules": [
+     "110014"
+    ],
+    "tactics": [
+     "Credential Access"
+    ],
+    "trend": null,
+    "url": "https://attack.mitre.org/techniques/T1552/007/"
+   },
+   {
+    "agents": 1,
+    "count": 1,
+    "high": 0,
+    "id": "T1562.001",
+    "last": "2026-11-19T06:00:00.000Z",
+    "level": 3,
+    "name": "Disable or Modify Tools",
+    "new": true,
+    "prev": 0,
+    "rules": [
+     "506"
+    ],
+    "tactics": [
+     "Defense Evasion"
+    ],
+    "trend": null,
+    "url": "https://attack.mitre.org/techniques/T1562/001/"
+   },
+   {
+    "agents": 1,
+    "count": 1,
+    "high": 1,
+    "id": "T1565.001",
+    "last": "2026-11-20T08:20:00.000Z",
+    "level": 7,
+    "name": "Stored Data Manipulation",
+    "new": true,
+    "prev": 0,
+    "rules": [
+     "550"
+    ],
+    "tactics": [
+     "Impact"
+    ],
+    "trend": null,
+    "url": "https://attack.mitre.org/techniques/T1565/001/"
+   }
+  ],
+  "total": 8729
+ },
+ "tool_aggregate_alerts": {
+  "buckets": [
+   {
+    "count": 1698,
+    "first": "2026-11-19T17:49:00.000Z",
+    "key": "jenkins",
+    "last": "2026-11-20T06:06:00.000Z"
+   },
+   {
+    "count": 889,
+    "first": "2026-11-19T12:00:07.000Z",
+    "key": "web01",
+    "last": "2026-11-20T11:59:58.000Z"
+   },
+   {
+    "count": 261,
+    "first": "2026-11-19T14:17:00.000Z",
+    "key": "db01",
+    "last": "2026-11-20T08:20:00.000Z"
+   },
+   {
+    "count": 39,
+    "first": "2026-11-19T12:12:00.000Z",
+    "key": "laptop-ops",
+    "last": "2026-11-20T11:33:00.000Z"
+   },
+   {
+    "count": 16,
+    "first": "2026-11-19T17:49:00.000Z",
+    "key": "k8s-cp1",
+    "last": "2026-11-20T10:00:00.000Z"
+   },
+   {
+    "count": 14,
+    "first": "2026-11-19T17:49:00.000Z",
+    "key": "k8s-w1",
+    "last": "2026-11-20T09:39:00.000Z"
+   },
+   {
+    "count": 14,
+    "first": "2026-11-19T17:49:00.000Z",
+    "key": "k8s-w2",
+    "last": "2026-11-20T06:23:00.000Z"
+   }
+  ],
+  "field": "agent.name",
+  "other": 0,
+  "total": 2931
+ },
+ "tool_aggregate_alerts_rule": {
+  "buckets": [
+   {
+    "count": 80,
+    "first": "2026-11-20T03:00:01.140Z",
+    "key": "100213",
+    "last": "2026-11-20T03:01:35.940Z"
+   },
+   {
+    "count": 72,
+    "first": "2026-11-19T17:49:00.000Z",
+    "key": "23505",
+    "last": "2026-11-19T18:00:00.000Z"
+   },
+   {
+    "count": 39,
+    "first": "2026-11-19T12:12:00.000Z",
+    "key": "60602",
+    "last": "2026-11-20T11:33:00.000Z"
+   },
+   {
+    "count": 7,
+    "first": "2026-11-19T12:24:00.000Z",
+    "key": "31151",
+    "last": "2026-11-20T05:29:00.000Z"
+   },
+   {
+    "count": 6,
+    "first": "2026-11-20T06:04:00.000Z",
+    "key": "2902",
+    "last": "2026-11-20T06:16:00.000Z"
+   },
+   {
+    "count": 6,
+    "first": "2026-11-20T07:49:18.000Z",
+    "key": "5712",
+    "last": "2026-11-20T07:55:58.000Z"
+   },
+   {
+    "count": 5,
+    "first": "2026-11-19T17:54:00.000Z",
+    "key": "533",
+    "last": "2026-11-20T03:02:00.000Z"
+   },
+   {
+    "count": 3,
+    "first": "2026-11-20T09:58:00.000Z",
+    "key": "110014",
+    "last": "2026-11-20T10:00:00.000Z"
+   },
+   {
+    "count": 1,
+    "first": "2026-11-20T08:20:00.000Z",
+    "key": "550",
+    "last": "2026-11-20T08:20:00.000Z"
+   }
+  ],
+  "field": "rule.id",
+  "other": 0,
+  "total": 219
+ },
+ "tool_ip_profile": {
+  "agents": {
+   "db01": 246
+  },
+  "distinct_urls": 0,
+  "ips": {
+   "198.51.100.23": 246
+  },
+  "note": "data.srcip is a keyword field; use a prefix (\"203.0.113.\") for ranges, not CIDR.",
+  "rules": [
+   {
+    "desc": "sshd: Attempt to login using a non-existent user",
+    "id": "5710",
+    "n": 240
+   },
+   {
+    "desc": "sshd: brute force trying to get access to the system. Non existent user.",
+    "id": "5712",
+    "n": 6
+   }
+  ],
+  "samples": [
+   {
+    "agent.id": "002",
+    "agent.name": "db01",
+    "data.srcip": "198.51.100.23",
+    "data.srcuser": "user29",
+    "decoder.name": "syslog",
+    "full_log": "sshd[2211]: Invalid user user29 from 198.51.100.23 port 40239",
+    "location": "/var/log/syslog",
+    "rule.description": "sshd: Attempt to login using a non-existent user",
+    "rule.groups": [
+     "syslog",
+     "sshd",
+     "authentication_failed",
+     "invalid_login"
+    ],
+    "rule.id": "5710",
+    "rule.level": 5,
+    "timestamp": "2026-11-20T07:55:58.000+0000"
+   },
+   {
+    "agent.id": "002",
+    "agent.name": "db01",
+    "data.srcip": "198.51.100.23",
+    "decoder.name": "syslog",
+    "location": "/var/log/syslog",
+    "rule.description": "sshd: brute force trying to get access to the system. Non existent user.",
+    "rule.groups": [
+     "syslog",
+     "sshd",
+     "authentication_failures"
+    ],
+    "rule.id": "5712",
+    "rule.level": 10,
+    "timestamp": "2026-11-20T07:55:58.000+0000"
+   },
+   {
+    "agent.id": "002",
+    "agent.name": "db01",
+    "data.srcip": "198.51.100.23",
+    "data.srcuser": "user28",
+    "decoder.name": "syslog",
+    "full_log": "sshd[2211]: Invalid user user28 from 198.51.100.23 port 40238",
+    "location": "/var/log/syslog",
+    "rule.description": "sshd: Attempt to login using a non-existent user",
+    "rule.groups": [
+     "syslog",
+     "sshd",
+     "authentication_failed",
+     "invalid_login"
+    ],
+    "rule.id": "5710",
+    "rule.level": 5,
+    "timestamp": "2026-11-20T07:55:56.000+0000"
+   }
+  ],
+  "status_codes": {},
+  "timeline": [
+   {
+    "n": 246,
+    "t": "2026-11-20T07:30:00.000Z"
+   }
+  ],
+  "top_urls": {},
+  "total": 246,
+  "users": {
+   "user0": 8,
+   "user1": 8,
+   "user10": 8,
+   "user11": 8,
+   "user12": 8,
+   "user13": 8,
+   "user14": 8,
+   "user15": 8,
+   "user16": 8,
+   "user17": 8
+  }
+ },
+ "tool_rule_timeline": {
+  "buckets": [
+   {
+    "n": 32,
+    "t": "2026-11-19T12:00:00.000Z"
+   },
+   {
+    "n": 35,
+    "t": "2026-11-19T13:00:00.000Z"
+   },
+   {
+    "n": 31,
+    "t": "2026-11-19T14:00:00.000Z"
+   },
+   {
+    "n": 31,
+    "t": "2026-11-19T15:00:00.000Z"
+   },
+   {
+    "n": 30,
+    "t": "2026-11-19T16:00:00.000Z"
+   },
+   {
+    "n": 112,
+    "t": "2026-11-19T17:00:00.000Z"
+   },
+   {
+    "n": 54,
+    "t": "2026-11-19T18:00:00.000Z"
+   },
+   {
+    "n": 54,
+    "t": "2026-11-19T19:00:00.000Z"
+   },
+   {
+    "n": 49,
+    "t": "2026-11-19T20:00:00.000Z"
+   },
+   {
+    "n": 41,
+    "t": "2026-11-19T21:00:00.000Z"
+   },
+   {
+    "n": 41,
+    "t": "2026-11-19T22:00:00.000Z"
+   },
+   {
+    "n": 43,
+    "t": "2026-11-19T23:00:00.000Z"
+   },
+   {
+    "n": 27,
+    "t": "2026-11-20T00:00:00.000Z"
+   },
+   {
+    "n": 32,
+    "t": "2026-11-20T01:00:00.000Z"
+   },
+   {
+    "n": 40,
+    "t": "2026-11-20T02:00:00.000Z"
+   },
+   {
+    "n": 1719,
+    "t": "2026-11-20T03:00:00.000Z"
+   },
+   {
+    "n": 39,
+    "t": "2026-11-20T04:00:00.000Z"
+   },
+   {
+    "n": 47,
+    "t": "2026-11-20T05:00:00.000Z"
+   },
+   {
+    "n": 45,
+    "t": "2026-11-20T06:00:00.000Z"
+   },
+   {
+    "n": 282,
+    "t": "2026-11-20T07:00:00.000Z"
+   },
+   {
+    "n": 40,
+    "t": "2026-11-20T08:00:00.000Z"
+   },
+   {
+    "n": 46,
+    "t": "2026-11-20T09:00:00.000Z"
+   },
+   {
+    "n": 28,
+    "t": "2026-11-20T10:00:00.000Z"
+   },
+   {
+    "n": 33,
+    "t": "2026-11-20T11:00:00.000Z"
+   }
+  ],
+  "interval": "1h",
+  "note": "Non-empty buckets only. Look at the distribution, not the average: everything may sit in one short window.",
+  "total": 2931
+ },
+ "tool_search_alerts": {
+  "events": [
+   {
+    "agent.id": "004",
+    "agent.name": "k8s-cp1",
+    "data.objectRef": "{\"resource\": \"secrets\", \"namespace\": \"cattle-tokens\", \"name\": \"token-ab0\"}",
+    "data.responseStatus.code": "200",
+    "data.user.username": "system:serviceaccount:cattle-system:rancher",
+    "data.verb": "patch",
+    "decoder.name": "json",
+    "location": "/k8s-audit/audit.json",
+    "rule.description": "K8s secret changed",
+    "rule.groups": [
+     "k8s_audit",
+     "k8s_secret"
+    ],
+    "rule.id": "110014",
+    "rule.level": 10,
+    "timestamp": "2026-11-20T10:00:00.000+0000"
+   },
+   {
+    "agent.id": "004",
+    "agent.name": "k8s-cp1",
+    "data.objectRef": "{\"resource\": \"secrets\", \"namespace\": \"cattle-tokens\", \"name\": \"token-ab1\"}",
+    "data.responseStatus.code": "200",
+    "data.user.username": "system:serviceaccount:cattle-system:rancher",
+    "data.verb": "patch",
+    "decoder.name": "json",
+    "location": "/k8s-audit/audit.json",
+    "rule.description": "K8s secret changed",
+    "rule.groups": [
+     "k8s_audit",
+     "k8s_secret"
+    ],
+    "rule.id": "110014",
+    "rule.level": 10,
+    "timestamp": "2026-11-20T09:59:00.000+0000"
+   },
+   {
+    "agent.id": "004",
+    "agent.name": "k8s-cp1",
+    "data.objectRef": "{\"resource\": \"secrets\", \"namespace\": \"cattle-tokens\", \"name\": \"token-ab2\"}",
+    "data.responseStatus.code": "200",
+    "data.user.username": "system:serviceaccount:cattle-system:rancher",
+    "data.verb": "patch",
+    "decoder.name": "json",
+    "location": "/k8s-audit/audit.json",
+    "rule.description": "K8s secret changed",
+    "rule.groups": [
+     "k8s_audit",
+     "k8s_secret"
+    ],
+    "rule.id": "110014",
+    "rule.level": 10,
+    "timestamp": "2026-11-20T09:58:00.000+0000"
+   },
+   {
+    "agent.id": "002",
+    "agent.name": "db01",
+    "data.srcip": "198.51.100.23",
+    "decoder.name": "syslog",
+    "location": "/var/log/syslog",
+    "rule.description": "sshd: brute force trying to get access to the system. Non existent user.",
+    "rule.groups": [
+     "syslog",
+     "sshd",
+     "authentication_failures"
+    ],
+    "rule.id": "5712",
+    "rule.level": 10,
+    "timestamp": "2026-11-20T07:55:58.000+0000"
+   },
+   {
+    "agent.id": "002",
+    "agent.name": "db01",
+    "data.srcip": "198.51.100.23",
+    "decoder.name": "syslog",
+    "location": "/var/log/syslog",
+    "rule.description": "sshd: brute force trying to get access to the system. Non existent user.",
+    "rule.groups": [
+     "syslog",
+     "sshd",
+     "authentication_failures"
+    ],
+    "rule.id": "5712",
+    "rule.level": 10,
+    "timestamp": "2026-11-20T07:54:38.000+0000"
+   }
+  ],
+  "total": 168
+ },
+ "tool_search_alerts_q": {
+  "events": [
+   {
+    "agent.id": "002",
+    "agent.name": "db01",
+    "data.srcip": "198.51.100.23",
+    "data.srcuser": "user29",
+    "decoder.name": "syslog",
+    "full_log": "sshd[2211]: Invalid user user29 from 198.51.100.23 port 40239",
+    "location": "/var/log/syslog",
+    "rule.description": "sshd: Attempt to login using a non-existent user",
+    "rule.groups": [
+     "syslog",
+     "sshd",
+     "authentication_failed",
+     "invalid_login"
+    ],
+    "rule.id": "5710",
+    "rule.level": 5,
+    "timestamp": "2026-11-20T07:55:58.000+0000"
+   },
+   {
+    "agent.id": "002",
+    "agent.name": "db01",
+    "data.srcip": "198.51.100.23",
+    "data.srcuser": "user28",
+    "decoder.name": "syslog",
+    "full_log": "sshd[2211]: Invalid user user28 from 198.51.100.23 port 40238",
+    "location": "/var/log/syslog",
+    "rule.description": "sshd: Attempt to login using a non-existent user",
+    "rule.groups": [
+     "syslog",
+     "sshd",
+     "authentication_failed",
+     "invalid_login"
+    ],
+    "rule.id": "5710",
+    "rule.level": 5,
+    "timestamp": "2026-11-20T07:55:56.000+0000"
+   },
+   {
+    "agent.id": "002",
+    "agent.name": "db01",
+    "data.srcip": "198.51.100.23",
+    "data.srcuser": "user27",
+    "decoder.name": "syslog",
+    "full_log": "sshd[2211]: Invalid user user27 from 198.51.100.23 port 40237",
+    "location": "/var/log/syslog",
+    "rule.description": "sshd: Attempt to login using a non-existent user",
+    "rule.groups": [
+     "syslog",
+     "sshd",
+     "authentication_failed",
+     "invalid_login"
+    ],
+    "rule.id": "5710",
+    "rule.level": 5,
+    "timestamp": "2026-11-20T07:55:54.000+0000"
+   }
+  ],
+  "total": 240
+ },
+ "tool_vulnerabilities": {
+  "note": "The Critical count alone is not a risk measure: leftover kernel packages and feed false positives inflate it.",
+  "severity": {
+   "Critical": 16
+  },
+  "top_cves": [
+   {
+    "agents": 1,
+    "cve": "CVE-2025-1328",
+    "n": 1,
+    "packages": [
+     "libxml2"
+    ]
+   },
+   {
+    "agents": 1,
+    "cve": "CVE-2025-1393",
+    "n": 1,
+    "packages": [
+     "curl"
+    ]
+   },
+   {
+    "agents": 1,
+    "cve": "CVE-2025-1540",
+    "n": 1,
+    "packages": [
+     "python3.12"
+    ]
+   },
+   {
+    "agents": 1,
+    "cve": "CVE-2025-1724",
+    "n": 1,
+    "packages": [
+     "linux-image-6.8.0-139-generic"
+    ]
+   },
+   {
+    "agents": 1,
+    "cve": "CVE-2025-1883",
+    "n": 1,
+    "packages": [
+     "python3.12"
+    ]
+   },
+   {
+    "agents": 1,
+    "cve": "CVE-2025-2901",
+    "n": 1,
+    "packages": [
+     "curl"
+    ]
+   },
+   {
+    "agents": 1,
+    "cve": "CVE-2025-3078",
+    "n": 1,
+    "packages": [
+     "linux-image-6.8.0-139-generic"
+    ]
+   },
+   {
+    "agents": 1,
+    "cve": "CVE-2025-3981",
+    "n": 1,
+    "packages": [
+     "sudo"
+    ]
+   },
+   {
+    "agents": 1,
+    "cve": "CVE-2025-4251",
+    "n": 1,
+    "packages": [
+     "curl"
+    ]
+   },
+   {
+    "agents": 1,
+    "cve": "CVE-2025-4397",
+    "n": 1,
+    "packages": [
+     "openssl"
+    ]
+   },
+   {
+    "agents": 1,
+    "cve": "CVE-2025-6095",
+    "n": 1,
+    "packages": [
+     "openssl"
+    ]
+   },
+   {
+    "agents": 1,
+    "cve": "CVE-2025-8116",
+    "n": 1,
+    "packages": [
+     "curl"
+    ]
+   },
+   {
+    "agents": 1,
+    "cve": "CVE-2025-8659",
+    "n": 1,
+    "packages": [
+     "python3.12"
+    ]
+   },
+   {
+    "agents": 1,
+    "cve": "CVE-2025-8960",
+    "n": 1,
+    "packages": [
+     "python3.12"
+    ]
+   },
+   {
+    "agents": 1,
+    "cve": "CVE-2025-9244",
+    "n": 1,
+    "packages": [
+     "openssl"
+    ]
+   }
+  ],
+  "top_packages": {
+   "curl": 5,
+   "libxml2": 1,
+   "linux-image-6.8.0-139-generic": 2,
+   "openssl": 3,
+   "python3.12": 4,
+   "sudo": 1
+  },
+  "total": 16
+ },
+ "watch": [
+  {
+   "agents": [
+    "db01"
+   ],
+   "count": 6,
+   "env": "demo",
+   "first_seen": "2026-11-20T07:49:18.000+0000",
+   "key": "groups:5712:db01",
+   "last_seen": "2026-11-20T07:55:58.000+0000",
+   "level": 10,
+   "rule_ids": [
+    "5712"
+   ],
+   "sample": "",
+   "severity": "high",
+   "srcips": [
+    "198.51.100.23"
+   ],
+   "status": "new",
+   "title": "sshd: brute force trying to get access to the system. Non existent user.",
+   "trigger": "groups",
+   "truncated": 1693,
+   "verdict": null
+  },
+  {
+   "agents": [
+    "web01"
+   ],
+   "count": 1,
+   "env": "demo",
+   "first_seen": "2026-11-20T05:29:00.000+0000",
+   "key": "groups:31151:web01",
+   "last_seen": "2026-11-20T05:29:00.000+0000",
+   "level": 10,
+   "rule_ids": [
+    "31151"
+   ],
+   "sample": "",
+   "severity": "high",
+   "srcips": [
+    "203.0.113.45"
+   ],
+   "status": "new",
+   "title": "Multiple web server 400 error codes from same source ip.",
+   "trigger": "groups",
+   "verdict": null
+  },
+  {
+   "agents": [
+    "jenkins"
+   ],
+   "count": 469,
+   "env": "demo",
+   "first_seen": "2026-11-20T03:01:07.860+0000",
+   "key": "rules:100212:jenkins",
+   "last_seen": "2026-11-20T03:01:35.940+0000",
+   "level": 5,
+   "rule_ids": [
+    "100212"
+   ],
+   "sample": "192.0.2.45 - admin [..] \"GET /manage HTTP/1.1\" 401 0 \"-\" \"Mozilla/5.0 Chrome/91.0.4472.124\"",
+   "severity": "high",
+   "srcips": [
+    "192.0.2.45"
+   ],
+   "status": "new",
+   "title": "Jenkins: 401 with Basic Auth username",
+   "trigger": "rules",
+   "verdict": null
+  },
+  {
+   "agents": [
+    "jenkins"
+   ],
+   "count": 24,
+   "env": "demo",
+   "first_seen": "2026-11-20T03:01:08.340+0000",
+   "key": "level:100213:jenkins",
+   "last_seen": "2026-11-20T03:01:35.940+0000",
+   "level": 12,
+   "rule_ids": [
+    "100213"
+   ],
+   "sample": "",
+   "severity": "high",
+   "srcips": [
+    "192.0.2.45"
+   ],
+   "status": "new",
+   "title": "Jenkins: Basic Auth brute force from same IP",
+   "trigger": "level",
+   "verdict": null
+  }
+ ]
+}
