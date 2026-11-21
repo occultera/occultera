@@ -26,7 +26,6 @@ INDEX = re.compile(r'"wazuh-(?:alerts|states|archives|events|findings)[^"]*"')
 
 MAX_LINES = 450
 CEILING = {   # current size of the modules still to split; lower these as they shrink, never raise them
-    "config.py": 654,
     "demo.py": 618, "web/api.py": 525, "privacy.py": 497, "rules.py": 465,
 }
 
@@ -47,8 +46,7 @@ def test_wazuh_paths_only_in_the_adapter():
             if m.group(1) not in NOT_FIELDS:
                 bad.append(f"{rel}:{text.count(chr(10), 0, m.start()) + 1}: {m.group(0)} -> use S.<FIELD>")
         for m in INDEX.finditer(text):
-            if rel != "config.py":      # the configurable defaults
-                bad.append(f"{rel}:{text.count(chr(10), 0, m.start()) + 1}: {m.group(0)}")
+            bad.append(f"{rel}:{text.count(chr(10), 0, m.start()) + 1}: {m.group(0)}")
     assert not bad, "raw Wazuh paths outside app/wazuh:\n" + "\n".join(bad)
 
 
