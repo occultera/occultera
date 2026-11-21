@@ -5,6 +5,8 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.16.0] — 2026-11-21
+
 ### Added
 - **Named MCP tokens.** `MCP_TOKENS` / `MCP_TOKENS_FILE` take `name=token` pairs. Each client is audited as
   `mcp:<name>`, has its own rate limit and is revoked by removing its line (read per request). `MCP_TOKEN` keeps

@@ -14,7 +14,7 @@ changes in Wazuh without human approval.
 Try the MCP server in one line, with demo data — no Wazuh needed:
 
 ```sh
-docker run -i --rm -e WDT_DEMO=true ghcr.io/occultera/occultera:0.15.0 python -m app.mcp_stdio
+docker run -i --rm -e WDT_DEMO=true ghcr.io/occultera/occultera:0.16.0 python -m app.mcp_stdio
 ```
 
 **An on-call companion for [Wazuh](https://wazuh.com) SIEM.** A rule-based watch tells you within minutes when

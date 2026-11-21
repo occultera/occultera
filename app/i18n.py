@@ -1374,7 +1374,7 @@ from .i18n_v140 import EXTRA as _V140  # noqa: E402 - 0.15.0 messages (cluster a
 
 for _lang, _msgs in _V140.items():
     CATALOG[_lang].update(_msgs)
-from .i18n_unreleased import EXTRA as _VNEXT  # noqa: E402 - messages after 0.15.0
+from .i18n_unreleased import EXTRA as _VNEXT  # noqa: E402 - 0.16.0 messages
 
 for _lang, _msgs in _VNEXT.items():
     CATALOG[_lang].update(_msgs)

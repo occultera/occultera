@@ -70,6 +70,19 @@ you took before the upgrade.
 
 ## Version notes
 
+### 0.16.0
+
+- **No configuration change is required.** Same indices, same variables; replace the image (Kustomize `newTag` /
+  `?ref=v0.16.0`, Helm chart 0.8.0).
+- **The image installs pinned, hashed dependencies** (`requirements.lock`). A custom image built on top of ours that
+  runs `pip install` keeps working; a fork that edits `requirements.txt` must regenerate the lock with
+  `tools/update-lock.sh`.
+- **Behind a reverse proxy** the connection test now shows a failed *Reverse proxy* row when `X-Forwarded-For`
+  arrives from a peer that is not trusted. Set `FORWARDED_ALLOW_IPS` (the ingress controller's pod CIDR) or
+  `TRUSTED_PROXIES`; in SSO mode also `PROXY_SECRET`. Until then every user shares one rate limit.
+- **Optional:** `notify.mask` for chat channels, `MCP_TOKENS` for named MCP clients, `notify.on_weekly` for the
+  weekly summary, `APP_LANGUAGE=fr`.
+
 ### 0.15.0
 
 - **Kustomize: the resources are now called `occultera`** (Deployment, Service, ServiceAccount, ClusterRole

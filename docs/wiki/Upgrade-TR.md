@@ -72,6 +72,19 @@ etkisizdir. Eski sürüm yeni veriyle düzgün çalışmazsa yükseltmeden önce
 
 ## Sürüm notları
 
+### 0.16.0
+
+- **Yapılandırma değişikliği gerekmiyor.** İndeksler ve değişkenler aynı; yalnız imajı değiştirin (Kustomize
+  `newTag` / `?ref=v0.16.0`, Helm chart 0.8.0).
+- **İmaj sabitlenmiş, hash'li bağımlılıklarla kurulur** (`requirements.lock`). Bizim imajın üstüne `pip install`
+  yapan özel imajlar çalışmaya devam eder; `requirements.txt` değiştiren bir fork kilidi `tools/update-lock.sh` ile
+  yeniden üretmelidir.
+- **Ters proxy arkasında** `X-Forwarded-For` güvenilmeyen bir eşten gelirse bağlantı testi *Reverse proxy* satırını
+  başarısız gösterir. `FORWARDED_ALLOW_IPS` (ingress controller pod CIDR'ı) ya da `TRUSTED_PROXIES` verin; SSO
+  modunda `PROXY_SECRET` de. Verilene kadar tüm kullanıcılar tek bir hız sınırını paylaşır.
+- **İsteğe bağlı:** sohbet kanalları için `notify.mask`, adlandırılmış MCP istemcileri için `MCP_TOKENS`, haftalık
+  özet için `notify.on_weekly`, `APP_LANGUAGE=fr`.
+
 ### 0.15.0
 
 - **Kustomize: kaynakların adı artık `occultera`** (Deployment, Service, ServiceAccount, ClusterRole

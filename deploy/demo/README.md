@@ -1,6 +1,6 @@
 # Public demo (demo.occultera.dev)
 
-A read-only Occultera with synthetic data that anyone can open without a password. It needs the code after 0.15.0
+A read-only Occultera with synthetic data that anyone can open without a password. It needs 0.16.0 or later
 (`WDT_PUBLIC_DEMO`); use the first release that contains it.
 
 What makes it safe to publish:

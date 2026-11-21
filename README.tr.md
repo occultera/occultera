@@ -14,7 +14,7 @@ onayı olmadan Wazuh'ta hiçbir şey değişmez.
 MCP sunucusunu demo verisiyle tek satırda deneyin — Wazuh gerekmez:
 
 ```sh
-docker run -i --rm -e WDT_DEMO=true ghcr.io/occultera/occultera:0.15.0 python -m app.mcp_stdio
+docker run -i --rm -e WDT_DEMO=true ghcr.io/occultera/occultera:0.16.0 python -m app.mcp_stdio
 ```
 
 **[Wazuh](https://wazuh.com) SIEM için nöbet yardımcısı.** Kural tabanlı nöbet, acil bir durum olduğunda
