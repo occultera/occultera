@@ -73,7 +73,7 @@ Vaka başına recall, kaçırılanlar, olay diye raporlanan gürültü, araç ad
 
 ### Yeni bir arayüz dili
 
-Arayüz metinleri `app/i18n.py` ve `app/i18n_v10.py` içindeki sözlüklerdir. Birebir aynı anahtarlarla bir sözlük
+Arayüz metinleri `app/i18n/` altında, her dil için bir modüldeki (`en.py`, `tr.py`, …) sözlüklerdir. Birebir aynı anahtarlarla bir sözlük
 ekleyin (bir test bunu zorlar), `CATALOG`, `LANG_NAMES` ve `OUTPUT_LANGUAGE` içine kaydedin ve kodu
 `app/config.py` içindeki `LANGUAGES` listesine ekleyin. Rapor dili ortamın `language` ayarını izler.
 
