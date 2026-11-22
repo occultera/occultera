@@ -35,6 +35,18 @@
 {% endif %}
 
 {% if run.status == 'running' %}<div class="runstate" data-runstate="{{ env.id }}" data-poll="{{ run.run_id }}" data-reload="1"></div>{% endif %}
+{% if run.status == 'awaiting' %}
+<section class="card external">
+  <h2>{{ _('ext.title') }}</h2>
+  <p>{{ _('ext.help', ch=run.external.channel, exp=(run.external.expires or '')[:10]) }}</p>
+  {% if run.external.channel == 'mcp' %}<p class="small muted">{{ _('ext.mcp_hint', run=run.run_id) }}</p>{% endif %}
+  <div data-ext-answer="/api/e/{{ env.id }}/external/{{ run.run_id }}">
+    <textarea rows="10" placeholder="{{ _('ext.paste') }}" aria-label="{{ _('ext.paste') }}"></textarea>
+    <div class="row"><input type="file" accept=".md,.txt,.json" aria-label="{{ _('ext.file') }}">
+      <button type="button" class="btn primary" data-busy="{{ _('ext.checking') }}">{{ _('ext.submit') }}</button><span class="small" data-out></span></div>
+  </div>
+</section>
+{% endif %}
 {% if run.error %}<div class="card err"><b>{{ _('rep.failed') }}</b> {{ run.error }}</div>{% endif %}
 
 {% if run.flags %}

@@ -30,6 +30,7 @@ from .admin import AdminMixin
 from .backup import BackupMixin
 from .config import Environment, LLMConfig, Settings
 from .diagnostics import DiagnosticsMixin
+from .external import ExternalMixin
 from .incident_ops import IncidentMixin
 from .jobs import Jobs
 from .knowledgeio import KnowledgeIOMixin
@@ -55,7 +56,7 @@ __all__ = ["Runtime", "EnvRuntime", "build_sources", "demo_enabled", "normalize_
            "_fmt_local", "_neg_ts", "flags_only_report", "UTC"]
 
 
-class Runtime(KnowledgeIOMixin, RunMixin, ReviewMixin, RuleDeployMixin, IncidentMixin, DiagnosticsMixin,
+class Runtime(KnowledgeIOMixin, RunMixin, ExternalMixin, ReviewMixin, RuleDeployMixin, IncidentMixin, DiagnosticsMixin,
               WatchMixin, AdminMixin, BackupMixin, WeeklyMixin, SchedulerMixin):
     def __init__(self, settings: Settings, demo: bool = False):
         self.settings = settings

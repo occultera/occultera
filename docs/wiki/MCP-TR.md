@@ -148,6 +148,27 @@ curl -s https://occultera.example.com/mcp \
 Araç sonuçları, JSON içeren tek bir `text` öğesi barındıran `content` dizisi olarak gelir; araç hatalarında
 `isError` `true` olur. Desteklenen protokol sürümleri: `2025-06-18`, `2025-03-26`, `2024-11-05`.
 
+## API anahtarı olmadan AI turu
+
+Model API anahtarınız yok mu? Günlük raporu bir MCP istemcisine ya da herhangi bir sohbet asistanına yazdırın.
+`LLM_PROVIDER=none` yapın: zamanlanmış turlar deterministik kısmını (bayraklar, sağlık, nöbet) korur, analiz iki
+yoldan biriyle yapılır. *(1.0)*
+
+**MCP istemcisinde** (Claude Desktop, Cursor, VS Code …) **daily_review** komutunu seçin (Claude Desktop'ta
+**+** menüsü → *occultera'dan ekle*). İstemci `start_review` çağırır, brifingi okur (yöntem, bağlam, bilgi tabanı ve
+dönemin verisi — kişisel veriler maskeli), her zamanki araçlarla inceler, yalnız bir kişinin bilebileceğini size
+sorabilir, kural taslaklarını `propose_knowledge` ile önerir ve `submit_review` ile bitirir. Koşu, *MCP · istemci adı*
+işaretiyle normal bir rapor olarak görünür. `start_review` ve `submit_review` yazma işlemidir; `propose_knowledge`
+gibi denetim kaydına geçer.
+
+**Herhangi bir sohbet asistanında** (Gemini, ChatGPT, Claude.ai …) ortam sayfasında **AI turunu başka asistanda yap**
+düğmesine basın. Occultera dönemi toplar ve `occultera-<koşu>.md` dosyasını indirir. Dosyayı asistana verin, cevabını
+rapor sayfasına yapıştırın (JSON bloğu yeterli) ya da kaydettiğiniz dosyayı seçin ve *Kontrol et ve raporu kaydet*'e
+basın. Asistanın orada aracı olmadığı için brifing daha fazla veri taşır, analiz MCP'ye göre daha sığdır.
+
+İki kanalda da takma adlar kurulumunuzun içinde gerçek değerlere çevrilir, kural taslakları aynı ID aralığı, XML ve
+logtest denetiminden geçer, nöbet hükümleri ve ATT&CK eşlemesi uygulanır; cevaplanmayan tur 7 gün sonra kapanır.
+
 ## Ortam kapsamı ve limitler
 
 ### `MCP_ENVS`

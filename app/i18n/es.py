@@ -441,6 +441,17 @@ MESSAGES: dict[str, str] = {
     # ---- stage
     'stage.collecting': 'recolectando datos',
     'stage.analysing': 'la IA está analizando',
+    'ext.button': 'Ronda de IA en otro asistente',
+    'ext.button_help': '¿Sin clave de API? Descargue el informe, déselo a Gemini, ChatGPT o Claude y pegue aquí la respuesta. En un cliente MCP use el prompt daily_review.',
+    'ext.preparing': 'recopilando…',
+    'ext.title': 'Esperando la respuesta de otro asistente',
+    'ext.help': 'Canal: {ch}. El informe se descargó (datos personales enmascarados). Déselo al asistente y pegue su respuesta — basta el bloque JSON — o elija el archivo guardado. Abierto hasta {exp}.',
+    'ext.mcp_hint': 'Iniciado desde un cliente MCP: el cliente termina la ronda con submit_review (ejecución {run}). También puede pegar aquí una respuesta.',
+    'ext.paste': 'Pegue aquí la respuesta del asistente',
+    'ext.file': 'Archivo de respuesta',
+    'ext.submit': 'Comprobar y guardar el informe',
+    'ext.checking': 'comprobando…',
+    'stage.external': 'esperando una respuesta externa',
     # ---- run
     'run.no_report': '_El modelo no envió un informe._',
     'run.ai_no_report': '**Falta el informe de la IA** — {err}. Las banderas de salud y la sección de datos a continuación están completas.',

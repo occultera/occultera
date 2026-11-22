@@ -78,7 +78,7 @@ aksi halde                    → WAZUH_* değişkenleriyle tek ortam modu
 
 | Değişken | Varsayılan | Anlam |
 |---|---|---|
-| `LLM_PROVIDER` | `anthropic` | `anthropic`, `openai` (OpenAI uyumlu her uç nokta) veya `mock`. |
+| `LLM_PROVIDER` | `anthropic` | `anthropic`, `openai` (OpenAI uyumlu her uç nokta) `mock` ya da `none` — API anahtarı yok: AI turu MCP istemcisinde ya da başka asistanda yapılır ([MCP](MCP-TR#api-anahtarı-olmadan-ai-turu)). |
 | `LLM_MODEL` | *(boş)* | Sağlayıcının model kimliği. |
 | `LLM_API_KEY` | *(boş)* | Kimlik doğrulaması olmayan yerel modelde gerekmez. |
 | `LLM_BASE_URL` | *(boş)* | OpenAI uyumlu taban URL: OpenAI, Gemini, DeepSeek, Azure, Ollama, vLLM, LM Studio… |

@@ -59,6 +59,8 @@ class DiagnosticsMixin:
 
         async def llm():
             cfg = self.llm_cfg(env)
+            if cfg.provider == "none":
+                return "none — AI round through an MCP client (daily_review) or another assistant (brief download)"
             r = await self.llm_for(env).complete("Reply with the single word OK.",
                                                  [{"role": "user", "content": "ping"}], [])
             return f"{cfg.provider} {cfg.model or ''} → {r.text[:40]!r}"

@@ -441,6 +441,17 @@ MESSAGES: dict[str, str] = {
     # ---- stage
     'stage.collecting': 'veri toplanıyor',
     'stage.analysing': 'yapay zekâ analiz ediyor',
+    'ext.button': 'AI turunu başka asistanda yap',
+    'ext.button_help': "API anahtarı yok mu? Brifingi indirin, Gemini, ChatGPT ya da Claude'a verin, cevabı buraya yapıştırın. MCP istemcisinde bunun yerine daily_review komutunu kullanın.",
+    'ext.preparing': 'veri toplanıyor…',
+    'ext.title': 'Başka asistandan cevap bekleniyor',
+    'ext.help': 'Kanal: {ch}. Brifing indirildi (kişisel veriler maskeli). Asistana verin, cevabını yapıştırın — JSON bloğu yeterli — ya da kaydettiğiniz dosyayı seçin. {exp} tarihine kadar açık.',
+    'ext.mcp_hint': 'MCP istemcisinden başlatıldı: istemci turu submit_review ile bitirir (koşu {run}). Cevabı buraya da yapıştırabilirsiniz.',
+    'ext.paste': 'Asistanın cevabını buraya yapıştırın',
+    'ext.file': 'Cevap dosyası',
+    'ext.submit': 'Kontrol et ve raporu kaydet',
+    'ext.checking': 'kontrol ediliyor…',
+    'stage.external': 'dış cevap bekleniyor',
     # ---- run
     'run.no_report': '_Model rapor teslim etmedi._',
     'run.ai_no_report': '**Yapay zekâ raporu eksik** — {err}. Aşağıdaki sağlık bayrakları ve veri bölümü eksiksiz.',

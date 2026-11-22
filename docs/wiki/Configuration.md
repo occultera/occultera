@@ -78,7 +78,7 @@ otherwise                → single-environment mode from WAZUH_* variables
 
 | Variable | Default | Meaning |
 |---|---|---|
-| `LLM_PROVIDER` | `anthropic` | `anthropic`, `openai` (any OpenAI-compatible endpoint) or `mock`. |
+| `LLM_PROVIDER` | `anthropic` | `anthropic`, `openai` (any OpenAI-compatible endpoint) `mock`, or `none` — no API key: the AI round runs in an MCP client or another assistant ([MCP](MCP#ai-round-without-an-api-key)). |
 | `LLM_MODEL` | *(empty)* | Model id from the provider. |
 | `LLM_API_KEY` | *(empty)* | Not needed for a local model without auth. |
 | `LLM_BASE_URL` | *(empty)* | OpenAI-compatible base URL: OpenAI, Gemini, DeepSeek, Azure, Ollama, vLLM, LM Studio… |

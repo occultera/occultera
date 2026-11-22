@@ -279,7 +279,7 @@ class Schedule(BaseModel):
 
 
 class LLMConfig(BaseModel):
-    provider: Literal["anthropic", "openai", "mock"] = "anthropic"
+    provider: Literal["anthropic", "openai", "mock", "none"] = "anthropic"
     model: str = ""
     base_url: str | None = None
     api_key: str = ""

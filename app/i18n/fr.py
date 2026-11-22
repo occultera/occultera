@@ -441,6 +441,17 @@ MESSAGES: dict[str, str] = {
     # ---- stage
     'stage.collecting': 'collecte des données',
     'stage.analysing': 'l’IA analyse',
+    'ext.button': 'Tournée IA dans un autre assistant',
+    'ext.button_help': 'Pas de clé d’API ? Téléchargez le dossier, donnez-le à Gemini, ChatGPT ou Claude, collez la réponse ici. Dans un client MCP, utilisez plutôt le prompt daily_review.',
+    'ext.preparing': 'collecte…',
+    'ext.title': 'En attente de la réponse d’un autre assistant',
+    'ext.help': 'Canal : {ch}. Le dossier a été téléchargé (données personnelles masquées). Donnez-le à l’assistant puis collez sa réponse — le bloc JSON suffit — ou choisissez le fichier enregistré. Ouvert jusqu’au {exp}.',
+    'ext.mcp_hint': 'Lancé depuis un client MCP : le client termine la tournée avec submit_review (exécution {run}). Vous pouvez aussi coller une réponse ici.',
+    'ext.paste': 'Collez ici la réponse de l’assistant',
+    'ext.file': 'Fichier de réponse',
+    'ext.submit': 'Vérifier et enregistrer le rapport',
+    'ext.checking': 'vérification…',
+    'stage.external': 'en attente d’une réponse externe',
     # ---- run
     'run.no_report': '_Le modèle n’a pas soumis de rapport._',
     'run.ai_no_report': '**Rapport IA manquant** — {err}. Les indicateurs de santé et la section de données ci-dessous sont complets.',

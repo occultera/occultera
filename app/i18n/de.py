@@ -441,6 +441,17 @@ MESSAGES: dict[str, str] = {
     # ---- stage
     'stage.collecting': 'sammelt Daten',
     'stage.analysing': 'die KI analysiert',
+    'ext.button': 'KI-Runde in einem anderen Assistenten',
+    'ext.button_help': 'Kein API-Schlüssel? Briefing herunterladen, Gemini, ChatGPT oder Claude geben, Antwort hier einfügen. In einem MCP-Client stattdessen den Prompt daily_review nutzen.',
+    'ext.preparing': 'sammle…',
+    'ext.title': 'Warte auf die Antwort eines anderen Assistenten',
+    'ext.help': 'Kanal: {ch}. Das Briefing wurde heruntergeladen (personenbezogene Daten maskiert). Geben Sie es dem Assistenten und fügen Sie die Antwort ein — der JSON-Block genügt — oder wählen Sie die gespeicherte Datei. Offen bis {exp}.',
+    'ext.mcp_hint': 'Aus einem MCP-Client gestartet: der Client beendet die Runde mit submit_review (Lauf {run}). Sie können die Antwort auch hier einfügen.',
+    'ext.paste': 'Antwort des Assistenten hier einfügen',
+    'ext.file': 'Antwortdatei',
+    'ext.submit': 'Prüfen und Bericht speichern',
+    'ext.checking': 'prüfe…',
+    'stage.external': 'wartet auf externe Antwort',
     # ---- run
     'run.no_report': '_Das Modell hat keinen Bericht übermittelt._',
     'run.ai_no_report': '**KI-Bericht fehlt** — {err}. Die Gesundheits-Flags und der Datenabschnitt unten sind vollständig.',

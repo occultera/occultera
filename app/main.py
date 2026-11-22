@@ -78,6 +78,10 @@ app.include_router(page_routes.router)
 app.include_router(api_routes.router)
 app.include_router(admin_routes.router)
 
+from .web.external_api import router as external_router  # noqa: E402
+
+app.include_router(external_router)
+
 from .mcp import router as mcp_router  # noqa: E402
 
 app.include_router(mcp_router)

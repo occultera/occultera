@@ -441,6 +441,17 @@ MESSAGES: dict[str, str] = {
     # ---- stage
     'stage.collecting': 'collecting data',
     'stage.analysing': 'AI is analysing',
+    'ext.button': 'AI round in another assistant',
+    'ext.button_help': 'No API key? Download the brief, give it to Gemini, ChatGPT or Claude, paste the answer back. In an MCP client use the daily_review prompt instead.',
+    'ext.preparing': 'collecting…',
+    'ext.title': 'Waiting for the answer from another assistant',
+    'ext.help': 'Channel: {ch}. The brief was downloaded (personal data masked). Give it to the assistant, then paste its answer — the JSON block is enough — or choose the saved file. Open until {exp}.',
+    'ext.mcp_hint': 'Started from an MCP client: the client finishes the round with submit_review (run {run}). You can also paste an answer here.',
+    'ext.paste': "Paste the assistant's answer here",
+    'ext.file': 'Answer file',
+    'ext.submit': 'Check and save the report',
+    'ext.checking': 'checking…',
+    'stage.external': 'waiting for an external answer',
     # ---- run
     'run.no_report': '_The model did not submit a report._',
     'run.ai_no_report': '**AI report missing** — {err}. The health flags and the data section below are complete.',
