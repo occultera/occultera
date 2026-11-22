@@ -7,6 +7,7 @@ from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from ..i18n import t
+from ..wazuh import indexer_health as IH
 from ..wazuh.schema import S
 from .util import _b, _int, _parse, iso
 
@@ -26,6 +27,15 @@ class HealthMixin:
                 {"node": a.get("node"), "percent": _int(a.get("disk.percent")),
                  "shards": _int(a.get("shards"))} for a in alloc if a.get("node")
             ]
+        ns = await self._safe("indexer_nodes", self.ix.node_stats())
+        if ns:
+            h["indexer_nodes"] = IH.nodes(ns, alloc)
+        if ch and (ch.get("unassigned_shards") or ch.get("initializing_shards")):
+            rows = await self._safe("indexer_shards", self.ix.shards())
+            if rows is not None:
+                h["indexer_shards"] = IH.shard_summary(rows)
+        if ch:
+            h["indexer"].update({k: ch.get(k) for k in ("initializing_shards", "number_of_data_nodes")})
         last = await self._safe("last_alert", self.ix.search(self.env.alerts_index, {
             "size": 1, "sort": [{S.TS: "desc"}], "_source": [S.TS, S.MANAGER, S.AGENT_NAME],
             "query": {"range": {S.TS: {"gte": "now-7d", "lte": "now+5m"}}},
@@ -100,6 +110,13 @@ class HealthMixin:
                 pc = _int(a.get("disk.percent"))
                 if a.get("node") and pc is not None and pc >= 90:
                     p[f"indexer_disk:{a['node']}"] = t(L, "flag.indexer_disk", node=a["node"], p=pc)
+        except Exception:  # noqa: BLE001
+            pass
+        try:
+            for n in IH.nodes(await self.ix.node_stats()):
+                if (n.get("heap_percent") or 0) >= IH.HEAP_CRIT:
+                    p[f"indexer_heap:{n['node']}"] = t(L, "flag.indexer_heap", node=n["node"], p=n["heap_percent"],
+                                                       g=n.get("heap_max_gb"))
         except Exception:  # noqa: BLE001
             pass
         try:

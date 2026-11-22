@@ -301,6 +301,8 @@
    "indexer": {
     "active_shards": 42,
     "active_shards_percent_as_number": 100.0,
+    "initializing_shards": null,
+    "number_of_data_nodes": null,
     "number_of_nodes": 1,
     "status": "green",
     "unassigned_shards": 0
@@ -309,6 +311,16 @@
     {
      "node": "wazuh-indexer-0",
      "percent": 63,
+     "shards": 42
+    }
+   ],
+   "indexer_nodes": [
+    {
+     "breaker_limit_gb": 3.8,
+     "breaker_tripped": 0,
+     "heap_max_gb": 4.0,
+     "heap_percent": 58,
+     "node": "wazuh-indexer-0",
      "shards": 42
     }
    ],

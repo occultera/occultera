@@ -236,6 +236,13 @@ class FakeIndexer:
     async def allocation(self):
         return [{"node": "wazuh-indexer-0", "disk.percent": "63", "shards": "42"}]
 
+    async def node_stats(self):
+        return {"nodes": {"n0": {"name": "wazuh-indexer-0", "jvm": {"mem": {"heap_used_percent": 58, "heap_max_in_bytes": 4 * 1024 ** 3}},
+                                 "breakers": {"parent": {"limit_size_in_bytes": 4080218930, "tripped": 0}}}}}
+
+    async def shards(self):
+        return []
+
     async def index_exists(self, index):
         return index in self.docs
 
