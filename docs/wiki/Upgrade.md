@@ -70,6 +70,12 @@ you took before the upgrade.
 
 ## Version notes
 
+### 0.17.0
+
+- **No configuration change is required.** Same indices, same variables, same reports; replace the image
+  (Kustomize `newTag` / `?ref=v0.17.0`, Helm chart 0.8.1). The release prepares Wazuh 5.x support inside; Wazuh 4.x
+  behaves exactly as in 0.16.0.
+
 ### 0.16.0
 
 - **No configuration change is required.** Same indices, same variables; replace the image (Kustomize `newTag` /

@@ -18,6 +18,7 @@ from .i18n import t
 from .notify import plain_message
 from .notify import send as notify_send
 from .store import now_iso
+from .wazuh.schema import S
 
 log = logging.getLogger("wdt")
 DAYS = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
@@ -37,9 +38,9 @@ class WeeklyMixin:
     async def _count(self, rt, ids: list[str], start: datetime, end: datetime, min_level: int | None = None) -> int:
         if not ids:
             return 0
-        f = [{"terms": {"rule.id": ids}}, {"range": {"timestamp": {"gte": iso(start), "lt": iso(end)}}}]
+        f = [{"terms": {S.RULE_ID: ids}}, {"range": {S.TS: {"gte": iso(start), "lt": iso(end)}}}]
         if min_level is not None:
-            f.append({"range": {"rule.level": {"gte": min_level}}})
+            f.append(S.level_gte(min_level))
         return await rt.ix.count(rt.env.alerts_index, {"bool": {"filter": f}})
 
     async def rule_effects(self, env_id: str) -> list[dict]:
@@ -90,9 +91,9 @@ class WeeklyMixin:
         lvl = rt.env.high_level
 
         async def cnt(a, b, level=None):
-            f = [{"range": {"timestamp": {"gte": iso(a), "lt": iso(b)}}}]
+            f = [{"range": {S.TS: {"gte": iso(a), "lt": iso(b)}}}]
             if level is not None:
-                f.append({"range": {"rule.level": {"gte": level}}})
+                f.append(S.level_gte(level))
             return await rt.ix.count(rt.env.alerts_index, {"bool": {"filter": f}})
 
         lines = []

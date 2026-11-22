@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 from .store import now_iso
+from .wazuh.schema import S
 
 
 class DiagnosticsMixin:
@@ -25,7 +26,7 @@ class DiagnosticsMixin:
             return f"{env.indexer.url} — cluster {h.get('cluster_name', '?')} status {h.get('status')}"
 
         async def alerts():
-            n = await rt.ix.count(env.alerts_index, {"range": {"timestamp": {"gte": "now-24h"}}})
+            n = await rt.ix.count(env.alerts_index, {"range": {S.TS: {"gte": "now-24h"}}})
             if n == 0:
                 raise RuntimeError(f"0 alerts in `{env.alerts_index}` — wrong index pattern or no read permission?")
             return f"{n:,} in `{env.alerts_index}`"

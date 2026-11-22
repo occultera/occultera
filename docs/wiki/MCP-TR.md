@@ -96,7 +96,7 @@ gerekmez. Herhangi bir MCP istemcisinden ilk bakış ve sunucuyu başlatıp ara�
 için kullanışlıdır.
 
 ```sh
-docker run -i --rm -e WDT_DEMO=true ghcr.io/occultera/occultera:0.16.0 python -m app.mcp_stdio
+docker run -i --rm -e WDT_DEMO=true ghcr.io/occultera/occultera:0.17.0 python -m app.mcp_stdio
 ```
 
 Ya da kendiniz build edin: `docker build -t occultera .` ve imaj adı olarak `occultera` kullanın.
@@ -108,7 +108,7 @@ Ya da kendiniz build edin: `docker build -t occultera .` ve imaj adı olarak `oc
   "mcpServers": {
     "wazuh-demo": {
       "command": "docker",
-      "args": ["run", "-i", "--rm", "-e", "WDT_DEMO=true", "ghcr.io/occultera/occultera:0.16.0", "python", "-m", "app.mcp_stdio"]
+      "args": ["run", "-i", "--rm", "-e", "WDT_DEMO=true", "ghcr.io/occultera/occultera:0.17.0", "python", "-m", "app.mcp_stdio"]
     }
   }
 }

@@ -72,7 +72,7 @@ it needs a model and your data.
 
 ### A new UI language
 
-UI strings are dictionaries in `app/i18n.py` and `app/i18n_v10.py`. Add a dictionary with exactly the same keys
+UI strings are dictionaries in `app/i18n/`, one module per language (`en.py`, `tr.py`, …). Add a dictionary with exactly the same keys
 (a test enforces this), register it in `CATALOG`, `LANG_NAMES` and `OUTPUT_LANGUAGE`, and add the code to
 `LANGUAGES` in `app/config.py`. The report language follows the environment's `language`.
 

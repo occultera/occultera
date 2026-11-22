@@ -12,7 +12,7 @@ from __future__ import annotations
 import re
 from datetime import UTC, datetime, timedelta
 
-TS = "timestamp"
+from .wazuh.schema import S, bind
 
 
 def _b(a: dict) -> list[dict]:
@@ -20,22 +20,23 @@ def _b(a: dict) -> list[dict]:
 
 
 def _rng(frm: datetime, to: datetime) -> dict:
-    return {"range": {TS: {"gte": frm.strftime("%Y-%m-%dT%H:%M:%S"), "lt": to.strftime("%Y-%m-%dT%H:%M:%S")}}}
+    return {"range": {S.TS: {"gte": frm.strftime("%Y-%m-%dT%H:%M:%S"), "lt": to.strftime("%Y-%m-%dT%H:%M:%S")}}}
 
 
 async def noise_map(env, ix, days: int = 7, top: int = 25, trend_days: int = 28) -> dict:
+    bind(env)
     now = datetime.now(UTC)
     frm, prev = now - timedelta(days=days), now - timedelta(days=2 * days)
     high = env.high_level
     r = await ix.search(env.alerts_index, {
         "size": 0, "track_total_hits": True, "query": {"bool": {"filter": [_rng(frm, now)]}},
-        "aggs": {"high": {"filter": {"range": {"rule.level": {"gte": high}}}},
-                 "r": {"terms": {"field": "rule.id", "size": top},
-                       "aggs": {"d": {"terms": {"field": "rule.description", "size": 1}},
-                                "l": {"max": {"field": "rule.level"}},
-                                "ag": {"terms": {"field": "agent.name", "size": 1}},
-                                "agn": {"cardinality": {"field": "agent.name"}},
-                                "loc": {"terms": {"field": "location", "size": 1}}}}}})
+        "aggs": {"high": {"filter": S.level_gte(high)},
+                 "r": {"terms": {"field": S.RULE_ID, "size": top},
+                       "aggs": {"d": {"terms": {"field": S.RULE_DESC, "size": 1}},
+                                "l": {"max": {"field": S.RULE_LEVEL}},
+                                "ag": {"terms": {"field": S.AGENT_NAME, "size": 1}},
+                                "agn": {"cardinality": {"field": S.AGENT_NAME}},
+                                "loc": {"terms": {"field": S.LOCATION, "size": 1}}}}}})
     tot = r["hits"]["total"]
     total = int(tot.get("value", 0) if isinstance(tot, dict) else tot)
     high_total = int(r["aggregations"]["high"]["doc_count"])
@@ -43,8 +44,8 @@ async def noise_map(env, ix, days: int = 7, top: int = 25, trend_days: int = 28)
     before: dict[str, int] = {}
     if ids:
         p = await ix.search(env.alerts_index, {
-            "size": 0, "query": {"bool": {"filter": [_rng(prev, frm), {"terms": {"rule.id": ids}}]}},
-            "aggs": {"r": {"terms": {"field": "rule.id", "size": len(ids)}}}})
+            "size": 0, "query": {"bool": {"filter": [_rng(prev, frm), {"terms": {S.RULE_ID: ids}}]}},
+            "aggs": {"r": {"terms": {"field": S.RULE_ID, "size": len(ids)}}}})
         before = {str(b["key"]): b["doc_count"] for b in _b(p["aggregations"]["r"])}
     rules = []
     for b in _b(r["aggregations"]["r"]):
@@ -64,8 +65,8 @@ async def noise_map(env, ix, days: int = 7, top: int = 25, trend_days: int = 28)
         rules.append(row)
     t = await ix.search(env.alerts_index, {
         "size": 0, "query": {"bool": {"filter": [_rng(now - timedelta(days=trend_days), now)]}},
-        "aggs": {"day": {"date_histogram": {"field": TS, "fixed_interval": "1d", "min_doc_count": 0},
-                         "aggs": {"high": {"filter": {"range": {"rule.level": {"gte": high}}}}}}}})
+        "aggs": {"day": {"date_histogram": {"field": S.TS, "fixed_interval": "1d", "min_doc_count": 0},
+                         "aggs": {"high": {"filter": S.level_gte(high)}}}}})
     series = [{"day": str(x.get("key_as_string", ""))[:10], "total": x["doc_count"], "high": x["high"]["doc_count"],
                "ratio": round(x["high"]["doc_count"] / x["doc_count"], 4) if x["doc_count"] else 0.0}
               for x in _b(t["aggregations"]["day"])]

@@ -12,7 +12,7 @@ fully supported; nothing on this page changes a running installation.
 |---|---|---|---|
 | Alerts | `wazuh-alerts-4.x-*` | events in `wazuh-events-v5-*`, detections in `wazuh-findings-v5-*`, state in `wazuh-states-*` | collection, the watch and the MCP tools read new indices |
 | Field names | `rule.level`, `rule.description`, `agent.name`, `data.srcip` | Wazuh Common Schema: `wazuh.rule.level`, `wazuh.rule.title`, `wazuh.agent.name`, `source.ip` | every query goes through a field map |
-| Severity | a number, 0–15 | informational, low, medium, high, critical | thresholds and charts use categories |
+| Severity | a number, 0–16 | informational, low, medium, high, critical | thresholds and charts use categories |
 | Detection | XML rules on the manager | Sigma-compatible detectors in the indexer | rule drafts become Sigma drafts |
 | Custom XML rules | yes | not migrated automatically | see the migration tool below |
 | Rule test | `wazuh-logtest`, API `/logtest` | moved to the dashboard and API | two-way logtest is 4.x only for now |
@@ -34,7 +34,7 @@ fully supported; nothing on this page changes a running installation.
    | 4–6 | low |
    | 7–9 | medium |
    | 10–12 | high |
-   | 13–15 | critical |
+   | 13–16 | critical |
 
 3. **Sigma drafts on 5.x.** On 4.x the AI drafts XML rules you validate, test and deploy (see
    [Rule lifecycle](Rule-Lifecycle)). On 5.x it drafts Sigma rules; deployment through the Wazuh content API

@@ -28,7 +28,7 @@ demo engine does not support, extend it and add a test.
 
 ## Translations
 
-UI strings live in `app/i18n.py`. Add a new dictionary with exactly the same keys (a test enforces this), add
+UI strings live in `app/i18n/`, one module per language. Add a new dictionary with exactly the same keys (a test enforces this), add
 it to `CATALOG`, `LANG_NAMES` and `OUTPUT_LANGUAGE`, and add the code to `LANGUAGES` in `app/config.py`.
 
 ## Pull requests

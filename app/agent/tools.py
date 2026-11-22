@@ -23,80 +23,35 @@ from typing import Any, Literal
 from defusedxml import ElementTree as SafeET
 from defusedxml.common import DefusedXmlException
 
-from ..collector import TS, _b, _parse, iso
+from ..collector import _b, _parse, iso
 from ..config import Environment
 from ..errors import public_error
-from ..query_guard import QueryError, check_interval, field, histogram_buckets, query_string, size, time_range
+from ..query_guard import QueryError, check_interval, field, histogram_buckets, size, time_range
 from ..rules import ip_element_issues
 from ..sources import SourcePolicyError
 from ..store import KNOWLEDGE_KINDS, Repo
 from ..wazuh.api import WazuhAPI
 from ..wazuh.indexer import Indexer
+from ..wazuh.schema import S, bind
+from .events import _compact_event, _filters, event_fields  # noqa: F401
+from .sourcetools import SourceTools
+from .specs import (  # noqa: F401 - re-exported for app.mcp, app.reporting, app.web.ui
+    FILTER_PROPS,
+    FINDING,
+    LABELS,
+    SEVERITIES,
+    SPECS,
+    TIME_PROPS,
+    _obj,
+)
 
 MAX_RESULT_CHARS = 14000
 log = logging.getLogger("wdt")
 
 ToolMode = Literal["triage", "tools", "mcp"]
 
-TIME_PROPS = {
-    "from": {"type": "string", "description": "Start: ISO-8601 or OpenSearch date math (now-24h). Default now-24h"},
-    "to": {"type": "string", "description": "End: ISO-8601 or now. Default now"},
-}
-FILTER_PROPS = {
-    "query": {"type": "string", "description": "Optional Lucene query_string, e.g. data.srcip:192.0.2.10 AND rule.groups:sshd"},
-    "rule_ids": {"type": "array", "items": {"type": "string"}, "description": "Rule ID filter"},
-    "agent": {"type": "string", "description": "Agent name (agent.name) filter"},
-    "min_level": {"type": "integer", "description": "Minimum rule.level"},
-    **TIME_PROPS,
-}
 
-EVENT_FIELDS = [TS, "agent.name", "agent.id", "rule.id", "rule.level", "rule.description", "rule.groups",
-                "full_log", "location", "decoder.name", "data.srcip", "data.srcuser", "data.dstuser",
-                "data.url", "data.id", "data.protocol", "syscheck.path", "syscheck.event",
-                "data.verb", "data.user.username", "data.objectRef", "data.responseStatus.code",
-                "data.vulnerability.cve", "data.vulnerability.severity", "data.vulnerability.package.name"]
-
-
-def _filters(a: dict, limits=None) -> list[dict]:
-    """Build the filter clauses; the time window, field names and query text pass the guard rails."""
-    max_hours = int(getattr(limits, "max_range_hours", 24 * 14))
-    frm, to = time_range(a.get("from") or "now-24h", a.get("to") or "now", max_hours)
-    extra = getattr(limits, "extra_fields", None)
-    f: list[dict] = [{"range": {TS: {"gte": iso(frm), "lte": iso(to)}}}]
-    q = query_string(a.get("query"), extra)
-    if q:
-        f.append({"query_string": {"query": q, "analyze_wildcard": True, "default_operator": "AND",
-                                   "allow_leading_wildcard": False, "max_determinized_states": 2000}})
-    if a.get("rule_ids"):
-        f.append({"terms": {"rule.id": [str(x) for x in a["rule_ids"]][:50]}})
-    if a.get("agent"):
-        f.append({"term": {field("agent.name", extra): str(a["agent"])}})
-    if a.get("min_level") is not None:
-        f.append({"range": {"rule.level": {"gte": int(a["min_level"])}}})
-    return f
-
-
-def _compact_event(src: dict) -> dict:
-    out: dict[str, Any] = {}
-
-    def put(path, val):
-        if val in (None, "", [], {}):
-            return
-        if isinstance(val, str) and len(val) > 500:
-            val = val[:500] + "…"
-        out[path] = val
-
-    for f in EVENT_FIELDS:
-        cur: Any = src
-        for p in f.split("."):
-            cur = cur.get(p) if isinstance(cur, dict) else None
-        if isinstance(cur, dict):
-            cur = json.dumps(cur, ensure_ascii=False)[:300]
-        put(f, cur)
-    return out
-
-
-class ToolBox:
+class ToolBox(SourceTools):
     def __init__(self, env: Environment, ix: Indexer, api: WazuhAPI | None, repo: Repo,
                  mode: ToolMode = "tools", run_id: str | None = None, sources: dict | None = None):
         self.env = env
@@ -141,10 +96,10 @@ class ToolBox:
 
     # ------------------------------------------------------------- schemas
     def specs(self) -> list[dict]:
-        S = SPECS
-        return [S[n] for n in self._handlers if n in S]
+        return [SPECS[n] for n in self._handlers if n in SPECS]
 
     async def call(self, name: str, args: dict) -> str:
+        bind(self.env)
         h = self._handlers.get(name)
         if not h:
             return json.dumps({"error": f"unknown tool: {name}"})
@@ -174,8 +129,8 @@ class ToolBox:
     async def search_alerts(self, a):
         size_n = size(a.get("size", 10), min(25, int(getattr(self.limits, "max_size", 25))), "size")
         r = await self.ix.search(self.env.alerts_index, {
-            "size": size_n, "sort": [{TS: "asc" if a.get("oldest_first") else "desc"}],
-            "query": {"bool": {"filter": _filters(a, self.limits)}}, "_source": EVENT_FIELDS})
+            "size": size_n, "sort": [{S.TS: "asc" if a.get("oldest_first") else "desc"}],
+            "query": {"bool": {"filter": _filters(a, self.limits)}}, "_source": event_fields()})
         return {"total": r["hits"]["total"]["value"],
                 "events": [_compact_event(h["_source"]) for h in r["hits"]["hits"]]}
 
@@ -188,8 +143,8 @@ class ToolBox:
         if sub:
             agg["aggs"] = {"sub": {"terms": {"field": sub, "size": 5}}}
         agg.setdefault("aggs", {})
-        agg["aggs"]["first"] = {"min": {"field": TS}}
-        agg["aggs"]["last"] = {"max": {"field": TS}}
+        agg["aggs"]["first"] = {"min": {"field": S.TS}}
+        agg["aggs"]["last"] = {"max": {"field": S.TS}}
         body = {"size": 0, "query": {"bool": {"filter": _filters(a, self.limits)}}, "aggs": {"x": agg}}
         histogram_buckets(body, self._span(a), self.limits)   # final check on the aggregation tree
         r = await self.ix.search(self.env.alerts_index, body)
@@ -207,28 +162,28 @@ class ToolBox:
         interval = check_interval(str(a.get("interval", "1h")), str(getattr(self.limits, "min_interval", "1m")),
                                   self._span(a), int(getattr(self.limits, "max_buckets", 200)))
         r = await self.ix.search(self.env.alerts_index, {"size": 0, "query": {"bool": {"filter": _filters(a, self.limits)}},
-            "aggs": {"h": {"date_histogram": {"field": TS, "fixed_interval": interval, "min_doc_count": 1}}}})
+            "aggs": {"h": {"date_histogram": {"field": S.TS, "fixed_interval": interval, "min_doc_count": 1}}}})
         b = [{"t": x["key_as_string"], "n": x["doc_count"]} for x in _b(r["aggregations"]["h"])]
         return {"total": r["hits"]["total"]["value"], "interval": interval, "buckets": b[-200:],
                 "note": "Non-empty buckets only. Look at the distribution, not the average: everything may sit in one short window."}
 
     async def ip_profile(self, a):
         ip = a["ip"].strip()
-        q = {"prefix": {"data.srcip": ip}} if ip.endswith((".", ":")) else {"term": {"data.srcip": ip}}
+        q = {"prefix": {S.SRCIP: ip}} if ip.endswith((".", ":")) else {"term": {S.SRCIP: ip}}
         f = _filters({k: a.get(k) for k in ("from", "to")}, self.limits) + [q]
         iv = str(a.get("interval", "30m"))
         check_interval(iv, str(getattr(self.limits, "min_interval", "1m")), self._span(a),
                        int(getattr(self.limits, "max_buckets", 200)))
-        r = await self.ix.search(self.env.alerts_index, {"size": 3, "sort": [{TS: "desc"}], "_source": EVENT_FIELDS,
+        r = await self.ix.search(self.env.alerts_index, {"size": 3, "sort": [{S.TS: "desc"}], "_source": event_fields(),
             "query": {"bool": {"filter": f}}, "aggs": {
-                "rules": {"terms": {"field": "rule.id", "size": 10}, "aggs": {"d": {"terms": {"field": "rule.description", "size": 1}}}},
-                "codes": {"terms": {"field": "data.id", "size": 10}},
-                "urls": {"cardinality": {"field": "data.url"}},
-                "top_urls": {"terms": {"field": "data.url", "size": 10}},
-                "agents": {"terms": {"field": "agent.name", "size": 10}},
-                "users": {"terms": {"field": "data.srcuser", "size": 10}},
-                "ips": {"terms": {"field": "data.srcip", "size": 10}},
-                "h": {"date_histogram": {"field": TS, "fixed_interval": iv, "min_doc_count": 1}},
+                "rules": {"terms": {"field": S.RULE_ID, "size": 10}, "aggs": {"d": {"terms": {"field": S.RULE_DESC, "size": 1}}}},
+                "codes": {"terms": {"field": S.EVENT_ID, "size": 10}},
+                "urls": {"cardinality": {"field": S.URL}},
+                "top_urls": {"terms": {"field": S.URL, "size": 10}},
+                "agents": {"terms": {"field": S.AGENT_NAME, "size": 10}},
+                "users": {"terms": {"field": S.SRCUSER, "size": 10}},
+                "ips": {"terms": {"field": S.SRCIP, "size": 10}},
+                "h": {"date_histogram": {"field": S.TS, "fixed_interval": iv, "min_doc_count": 1}},
             }})
         ag = r["aggregations"]
         return {
@@ -248,16 +203,16 @@ class ToolBox:
     async def correlate_around(self, a):
         ts = _parse(a["timestamp"])
         m = max(1, min(int(a.get("minutes", 30)), 360))
-        f = [{"range": {TS: {"gte": iso(ts - timedelta(minutes=m)), "lte": iso(ts + timedelta(minutes=m))}}}]
+        f = [{"range": {S.TS: {"gte": iso(ts - timedelta(minutes=m)), "lte": iso(ts + timedelta(minutes=m))}}}]
         if a.get("agent"):
-            f.append({"term": {"agent.name": a["agent"]}})
-        f.append({"range": {"rule.level": {"gte": int(a.get("min_level", 3))}}})
-        r = await self.ix.search(self.env.alerts_index, {"size": 20, "sort": [{TS: "asc"}], "_source": EVENT_FIELDS,
+            f.append({"term": {S.AGENT_NAME: a["agent"]}})
+        f.append(S.level_gte(int(a.get("min_level", 3))))
+        r = await self.ix.search(self.env.alerts_index, {"size": 20, "sort": [{S.TS: "asc"}], "_source": event_fields(),
             "query": {"bool": {"filter": f}},
-            "aggs": {"r": {"terms": {"field": "rule.id", "size": 25},
-                           "aggs": {"d": {"terms": {"field": "rule.description", "size": 1}},
-                                    "l": {"max": {"field": "rule.level"}},
-                                    "a": {"terms": {"field": "agent.name", "size": 3}}}}}})
+            "aggs": {"r": {"terms": {"field": S.RULE_ID, "size": 25},
+                           "aggs": {"d": {"terms": {"field": S.RULE_DESC, "size": 1}},
+                                    "l": {"max": {"field": S.RULE_LEVEL}},
+                                    "a": {"terms": {"field": S.AGENT_NAME, "size": 3}}}}}})
         return {"window": f"±{m} min", "total": r["hits"]["total"]["value"],
                 "by_rule": [{"id": b["key"], "n": b["doc_count"], "level": int(b["l"]["value"] or 0),
                              "desc": (_b(b["d"]) or [{"key": ""}])[0]["key"],
@@ -267,15 +222,15 @@ class ToolBox:
     async def vulnerabilities(self, a):
         f = []
         if a.get("agent"):
-            f.append({"term": {"agent.name": a["agent"]}})
+            f.append({"term": {S.AGENT_NAME: a["agent"]}})
         if a.get("severity"):
-            f.append({"term": {"vulnerability.severity": a["severity"]}})
+            f.append({"term": {S.VULN_SEV: a["severity"]}})
         r = await self.ix.search(self.env.vuln_index, {"size": 0, "query": {"bool": {"filter": f}}, "aggs": {
-            "sev": {"terms": {"field": "vulnerability.severity", "size": 10}},
-            "cve": {"terms": {"field": "vulnerability.id", "size": int(min(a.get("size", 15), 40))},
-                    "aggs": {"p": {"terms": {"field": "package.name", "size": 3}},
-                             "a": {"cardinality": {"field": "agent.id"}}}},
-            "pkg": {"terms": {"field": "package.name", "size": 15}}}})
+            "sev": {"terms": {"field": S.VULN_SEV, "size": 10}},
+            "cve": {"terms": {"field": S.VULN_ID, "size": int(min(a.get("size", 15), 40))},
+                    "aggs": {"p": {"terms": {"field": S.PKG_NAME, "size": 3}},
+                             "a": {"cardinality": {"field": S.AGENT_ID}}}},
+            "pkg": {"terms": {"field": S.PKG_NAME, "size": 15}}}})
         ag = r["aggregations"]
         return {"total": r["hits"]["total"]["value"],
                 "severity": {b["key"]: b["doc_count"] for b in _b(ag["sev"])},
@@ -288,8 +243,8 @@ class ToolBox:
         q = str(a["agent"])
         items = await self.api.agents(search=q, limit=5)
         cnt = await self.ix.search(self.env.alerts_index, {"size": 0, "query": {"bool": {"filter": [
-            {"range": {TS: {"gte": "now-24h"}}}, {"term": {"agent.name": items[0]["name"]}}]}} if items else {"match_none": {}},
-            "aggs": {"r": {"terms": {"field": "rule.id", "size": 10}}}})
+            {"range": {S.TS: {"gte": "now-24h"}}}, {"term": {S.AGENT_NAME: items[0]["name"]}}]}} if items else {"match_none": {}},
+            "aggs": {"r": {"terms": {"field": S.RULE_ID, "size": 10}}}})
         return {"agents": items, "alerts_24h": cnt["hits"]["total"]["value"],
                 "top_rules_24h": {b["key"]: b["doc_count"] for b in _b(cnt.get("aggregations", {}).get("r", {}))}}
 
@@ -429,52 +384,6 @@ class ToolBox:
                 "note": "No effect until the user approves it in the UI."}
 
     # ------------------------------------------------------------- extra sources (read-only)
-    def _prom(self, a):
-        from ..services import clusters_of
-        cs = clusters_of(self.sources)
-        name = str(a.get("cluster") or "")
-        if not name or len(cs) == 1:
-            return self.sources["prometheus"]
-        if name not in cs:
-            raise ValueError(f"unknown cluster {name!r}; one of {sorted(cs)}")
-        return cs[name]
-
-    async def prom_query(self, a):
-        return await self._prom(a).query(a["expr"], a.get("time"))
-
-    async def prom_alerts(self, a):
-        from ..clusteralerts import collect, for_ai
-        from ..services import clusters_of
-        cs = clusters_of(self.sources)
-        name = str(a.get("cluster") or "")
-        if name:
-            if name not in cs:
-                raise ValueError(f"unknown cluster {name!r}; one of {sorted(cs)}")
-            cs = {name: cs[name]}
-        res = await collect(cs)
-        return {n: ({"counts": r["counts"], "alerts": for_ai(r["groups"])} if "groups" in r else r)
-                for n, r in res.items()}
-
-    async def prom_range(self, a):
-        return await self._prom(a).query_range(a["expr"], a.get("from"), a.get("to"), a.get("step"))
-
-    async def loki_query(self, a):
-        return await self.sources["loki"].query(a["query"], a.get("from"), a.get("to"), int(a.get("limit") or 100),
-                                                "forward" if a.get("oldest_first") else "backward")
-
-    async def loki_labels(self, a):
-        return await self.sources["loki"].labels(a.get("name"))
-
-    async def k8s_get(self, a):
-        return await self.sources["kubernetes"].get(a["kind"], a.get("namespace"), a.get("name"),
-                                                    a.get("label_selector"), a.get("field_selector"),
-                                                    int(a.get("limit") or 200))
-
-    async def k8s_logs(self, a):
-        return await self.sources["kubernetes"].logs(a["namespace"], a["pod"], a.get("container"),
-                                                     int(a.get("tail") or 200), bool(a.get("previous")),
-                                                     a.get("since_seconds"))
-
     async def list_reports(self, a):
         runs = await self.repo.list_runs(int(min(a.get("size", 10), 30)))
         return [{"run_id": r["run_id"], "started_at": r.get("started_at"), "status": r.get("status"),
@@ -511,170 +420,3 @@ class ToolBox:
             return {"error": "`summary_md` (non-empty) and `findings` (array) are required. Submit again."}
         self.submitted = a
         return {"ok": True}
-
-
-# --------------------------------------------------------------------------- schemas
-def _obj(props: dict, required: list[str] | None = None) -> dict:
-    return {"type": "object", "properties": props, "required": required or []}
-
-
-LABELS = ["real_incident", "investigate", "detection_gap", "false_positive", "baseline_increase",
-          "measurement", "expected", "correction"]
-SEVERITIES = ["critical", "high", "medium", "low", "info"]
-
-FINDING = _obj({
-    "label": {"type": "string", "enum": LABELS,
-              "description": "real_incident=confirmed or very likely incident; investigate=evidence insufficient; "
-                             "detection_gap=something that should alert but does not; false_positive=noise, "
-                             "level-lowering candidate; baseline_increase=known noise with abnormal volume; "
-                             "measurement=result of a watched rule/metric; expected=explained/verified; "
-                             "correction=corrects an earlier assessment"},
-    "severity": {"type": "string", "enum": SEVERITIES},
-    "title": {"type": "string", "description": "One-line title"},
-    "detail": {"type": "string", "description": "Evidence and reasoning (markdown, short)"},
-    "evidence": {"type": "array", "items": {"type": "string"}, "description": "Concrete numbers / times / IPs"},
-    "rule_ids": {"type": "array", "items": {"type": "string"}},
-    "agents": {"type": "array", "items": {"type": "string"}},
-    "mitre": {"type": "array", "items": {"type": "string"},
-              "description": "MITRE ATT&CK technique ids the evidence supports, e.g. T1110.001 (optional)"},
-    "recommendation": {"type": "string", "description": "Recommended manual action or next step"},
-    "rule_draft_xml": {"type": "string", "description": "Optional Wazuh rule draft (XML). Also propose it as a rule_draft so the user can approve it."},
-    "manual_checks": {"type": "array", "description":
-        "Checks only a human can do on hosts you cannot reach (log greps, config/service state, who logged in). "
-        "Exact READ-ONLY commands, one host each. Omit when the indexer data is enough.",
-        "items": _obj({"host": {"type": "string", "description": "agent/host name"},
-                       "purpose": {"type": "string", "description": "what the output will tell us"},
-                       "command": {"type": "string", "description": "read-only shell command (sudo allowed)"}},
-                      ["host", "command"])},
-}, ["label", "severity", "title", "detail"])
-
-SPECS: dict[str, dict] = {
-    "search_alerts": {"name": "search_alerts", "description":
-        "Search the alerts index; returns compact events (max 25). Use it to look at raw samples.",
-        "parameters": _obj({**FILTER_PROPS, "size": {"type": "integer"},
-                            "oldest_first": {"type": "boolean"}})},
-    "aggregate_alerts": {"name": "aggregate_alerts", "description":
-        "Count filtered alerts by a field (terms). Fields: rule.id, agent.name, data.srcip, data.url, "
-        "data.id (HTTP status), rule.groups, data.srcuser, data.dstuser, syscheck.path, location, decoder.name, "
-        "data.user.username, data.verb, data.objectRef.resource ... Optional sub_field for a second split.",
-        "parameters": _obj({**FILTER_PROPS, "field": {"type": "string"}, "sub_field": {"type": "string"},
-                            "size": {"type": "integer"}}, ["field"])},
-    "rule_timeline": {"name": "rule_timeline", "description":
-        "Time distribution (date_histogram) of matching alerts. Use it BEFORE interpreting a rule's volume.",
-        "parameters": _obj({**FILTER_PROPS, "interval": {"type": "string", "description": "10m, 1h, 1d"}})},
-    "ip_profile": {"name": "ip_profile", "description":
-        "Profile of one IP or a prefix ('203.0.113.' / '2001:db8:0:'): rules, HTTP codes, distinct paths, "
-        "users, timeline, samples.",
-        "parameters": _obj({"ip": {"type": "string"}, "interval": {"type": "string"}, **TIME_PROPS}, ["ip"])},
-    "correlate_around": {"name": "correlate_around", "description":
-        "Other alerts within ±N minutes (default 30) of a timestamp, optionally on the same agent.",
-        "parameters": _obj({"timestamp": {"type": "string"}, "agent": {"type": "string"},
-                            "minutes": {"type": "integer"}, "min_level": {"type": "integer"}}, ["timestamp"])},
-    "vulnerabilities": {"name": "vulnerabilities", "description":
-        "Vulnerability state index summary (severity, top CVEs, packages); optional agent/severity filter.",
-        "parameters": _obj({"agent": {"type": "string"}, "severity": {"type": "string"}, "size": {"type": "integer"}})},
-    "agent_info": {"name": "agent_info", "description":
-        "Agent details from the Wazuh API (status, version, OS, last keepalive) plus a 24 h alert summary.",
-        "parameters": _obj({"agent": {"type": "string", "description": "agent name or id"}}, ["agent"])},
-    "rule_info": {"name": "rule_info", "description": "Rule definitions (level, description, file, groups, conditions).",
-        "parameters": _obj({"rule_ids": {"type": "array", "items": {"type": "string"}}}, ["rule_ids"])},
-    "logtest": {"name": "logtest", "description":
-        "Run a log line through the manager's CURRENT ruleset (wazuh-logtest API) and see which decoder/rule/level "
-        "matches. Cannot test a new draft rule (it is not loaded).",
-        "parameters": _obj({"event": {"type": "string"}, "log_format": {"type": "string"},
-                            "location": {"type": "string"}}, ["event"])},
-    "validate_rule_xml": {"name": "validate_rule_xml", "description":
-        "Check a rule draft for XML syntax, OS_Regex pitfalls, rule ID collisions and whether the new rule IDs are "
-        "inside the environment's allowed range (returned as allowed_id_range; list_environments shows it too). "
-        "On a range error it returns suggested_id. Never applies it.",
-        "parameters": _obj({"xml": {"type": "string"}}, ["xml"])},
-    "simulate_rule": {"name": "simulate_rule", "description":
-        "Replay a child-rule draft (if_sid) against the last N days of real alerts: estimated alerts/day it would "
-        "take over, how many were at or above the high level, affected agents/IPs/locations, matched and "
-        "unmatched examples. Use it before proposing a rule_draft and put the numbers in the proposal body.",
-        "parameters": _obj({"xml": {"type": "string"}, "days": {"type": "integer", "description": "1-30, default 14"}},
-                           ["xml"])},
-    "propose_knowledge": {"name": "propose_knowledge", "description":
-        "Add a PROPOSAL to the knowledge base (baseline, decision, open item, lesson, rule draft). It has no "
-        "effect until the user approves it. Only for durable, reusable knowledge. For kind=rule_draft put the full "
-        "<group> XML in `xml` and two-way test events in `tests`; new rule IDs MUST be inside the environment's "
-        "rule_id_range (list_environments / validate_rule_xml), otherwise the draft is refused with a suggested_id.",
-        "parameters": _obj({"kind": {"type": "string", "enum": [k for k in KNOWLEDGE_KINDS if k != "answer"]},
-                            "title": {"type": "string"}, "body": {"type": "string"},
-                            "rule_ids": {"type": "array", "items": {"type": "string"}},
-                            "xml": {"type": "string", "description": "rule_draft only: complete <group>...</group> XML"},
-                            "tests": {"type": "array", "description": "rule_draft only: logtest events", "items": _obj({
-                                "event": {"type": "string"}, "log_format": {"type": "string"},
-                                "location": {"type": "string", "description": "original location (log file path)"},
-                                "expect": {"type": "string", "enum": ["match", "no_match"]}}, ["event", "expect"])}},
-                           ["kind", "title"])},
-    "prom_query": {"name": "prom_query", "description":
-        "Prometheus instant query (PromQL), e.g. node disk usage, pod restarts, up{job=...}. Read-only.",
-        "parameters": _obj({"expr": {"type": "string"}, "time": {"type": "string", "description": "ISO-8601 or now-1h"},
-                            "cluster": {"type": "string", "description": "cluster name when the environment has "
-                                        "several (list_environments → clusters); empty = the first"}},
-                           ["expr"])},
-    "prom_range": {"name": "prom_range", "description":
-        "Prometheus range query: min/max/last and up to 60 sampled points per series (max 20 series).",
-        "parameters": _obj({"expr": {"type": "string"}, "from": {"type": "string"}, "to": {"type": "string"},
-                            "step": {"type": "string", "description": "e.g. 60s, 5m"},
-                            "cluster": {"type": "string", "description": "cluster name; empty = the first"}}, ["expr"])},
-    "prom_alerts": {"name": "prom_alerts", "description":
-        "Alerts the cluster's own Prometheus is firing right now (KubePodCrashLooping, TargetDown, disk filling up, "
-        "certificates …), grouped by alert name and severity with namespaces, targets, start time and summary. "
-        "Correlate them with Wazuh alerts of the same hosts and time.",
-        "parameters": _obj({"cluster": {"type": "string", "description": "one cluster; empty = all clusters"}})},
-    "loki_query": {"name": "loki_query", "description":
-        "Loki LogQL query over a time range: log lines (newest first, max 500) or a metric query "
-        "(count_over_time …). Always use a label selector, e.g. {namespace=\"wazuh\"} |= \"error\".",
-        "parameters": _obj({"query": {"type": "string"}, "from": {"type": "string", "description": "ISO-8601 or now-2h"},
-                            "to": {"type": "string"}, "limit": {"type": "integer"},
-                            "oldest_first": {"type": "boolean"}}, ["query"])},
-    "loki_labels": {"name": "loki_labels", "description": "Loki label names, or the values of one label (name).",
-        "parameters": _obj({"name": {"type": "string"}})},
-    "k8s_get": {"name": "k8s_get", "description":
-        "Read-only Kubernetes listing: pods (phase, restarts, last termination reason), nodes (Ready, pressure, "
-        "kernel), events (newest first), deployments/statefulsets/daemonsets/replicasets, jobs/cronjobs, "
-        "services, ingresses, pvcs, namespaces. Secrets and configmaps are never available.",
-        "parameters": _obj({"kind": {"type": "string"}, "namespace": {"type": "string"}, "name": {"type": "string"},
-                            "label_selector": {"type": "string"}, "field_selector": {"type": "string"},
-                            "limit": {"type": "integer"}}, ["kind"])},
-    "k8s_logs": {"name": "k8s_logs", "description":
-        "Last lines of a pod's log (tail ≤ 1000; previous=true for the crashed container).",
-        "parameters": _obj({"namespace": {"type": "string"}, "pod": {"type": "string"}, "container": {"type": "string"},
-                            "tail": {"type": "integer"}, "previous": {"type": "boolean"},
-                            "since_seconds": {"type": "integer"}}, ["namespace", "pod"])},
-    "list_reports": {"name": "list_reports", "description": "List of recent daily triage reports.",
-        "parameters": _obj({"size": {"type": "integer"}})},
-    "get_report": {"name": "get_report", "description": "A full report (the last successful one if run_id is omitted).",
-        "parameters": _obj({"run_id": {"type": "string"}})},
-    "knowledge": {"name": "knowledge", "description": "Knowledge base entries (baseline, decisions, open items...).",
-        "parameters": _obj({"kinds": {"type": "array", "items": {"type": "string"}},
-                            "status": {"type": "array", "items": {"type": "string"}}})},
-    "submit_report": {"name": "submit_report", "description":
-        "Submit the daily diagnostic report. The LAST step of the run. Keep it compact so it fits the output "
-        "limit: at most 10 findings, each `detail` a few sentences.",
-        "parameters": _obj({
-            "summary_md": {"type": "string", "description": "2-6 sentence executive summary (markdown): volume, is there real risk, what awaits approval."},
-            "health_assessment": {"type": "string", "description": "One paragraph on infrastructure health (SIEM flow, agents, disk)."},
-            "findings": {"type": "array", "items": FINDING},
-            "questions": {"type": "array", "description": "Questions for the user (e.g. 'Was this SSH login yours?'). Answers become context for the next run.",
-                          "items": _obj({"question": {"type": "string"}, "why": {"type": "string"}}, ["question"])},
-            "open_items": {"type": "array", "items": {"type": "string"}, "description": "Still open / to measure next run"},
-            "closed_items": {"type": "array", "items": {"type": "string"}, "description": "Open items from the knowledge base that this run shows as closed (use their titles)"},
-            "event_verdicts": {"type": "array", "description":
-                "One entry per watch event listed in the request (only when that section is present).",
-                "items": _obj({
-                    "event_id": {"type": "string"},
-                    "verdict": {"type": "string", "enum": ["real_incident", "investigate", "expected", "noise"]},
-                    "reason": {"type": "string", "description": "One or two sentences with the evidence"},
-                    "suggestion": _obj({
-                        "mute": {"type": "boolean", "description": "true = stop announcing this exact event key"},
-                        "param": {"type": "string", "enum": ["critical_level", "group_min_level", "brute_failures",
-                                                             "spike_factor", "spike_min", "spike_min_level", "agent_minutes",
-                                                             "egress_factor", "egress_min_mb"]},
-                        "value": {"type": "number"},
-                        "why": {"type": "string"}}),
-                }, ["event_id", "verdict"])},
-        }, ["summary_md", "findings"])},
-}

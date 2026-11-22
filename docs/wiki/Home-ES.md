@@ -2,7 +2,7 @@
 
 [English](Home) · [Türkçe](Home-TR) · **Español** · [Français](Home-FR)
 
-**Un compañero de guardia para Wazuh.** Vigila sus alertas día y noche y le avisa en minutos cuando ocurre algo
+**Servidor MCP y triaje de alertas con IA para Wazuh 4.x, de código abierto** (soporte de Wazuh 5.x en desarrollo), con los datos personales enmascarados antes de la IA (RGPD). Un compañero de guardia: Vigila sus alertas día y noche y le avisa en minutos cuando ocurre algo
 urgente — sin preguntar a una IA. Una o dos veces al día, una ronda de IA revisa todo lo que vio la vigilancia,
 lo explica y propone qué ajustar. Usted decide; nada cambia en Wazuh sin su aprobación.
 
@@ -20,7 +20,7 @@ lo explica y propone qué ajustar. Usted decide; nada cambia en Wazuh sin su apr
 
 ![Panel de guardia](images/dashboard.png)
 
-**Versión:** 0.16.0 · **Licencia:** AGPL-3.0-only · **Python:** 3.11–3.15 · **Wazuh:** 4.x · 5.x llega con la 1.0 ([Wazuh 5](Wazuh-5))
+**Versión:** 0.17.0 · **Licencia:** AGPL-3.0-only · **Python:** 3.11–3.15 · **Wazuh:** 4.x · 5.x llega con la 1.0 ([Wazuh 5](Wazuh-5))
 
 ## Qué es y qué no es
 

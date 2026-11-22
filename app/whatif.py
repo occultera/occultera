@@ -23,19 +23,20 @@ from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from .rules import parse
+from .wazuh.schema import V4 as S4
 
 TS = "timestamp"
-SOURCE = ["full_log", "data", "agent.name", "location", "rule.id", "rule.level", "rule.groups",
-          "decoder.name", "decoder.parent", "predecoder.hostname", "predecoder.program_name", TS]
+SOURCE = ["full_log", "data", S4.AGENT_NAME, "location", S4.RULE_ID, S4.RULE_LEVEL, S4.RULE_GROUPS,
+          S4.DECODER, S4.DECODER_PARENT, S4.HOSTNAME, S4.PROGRAM, TS]
 
 # condition tag → where the value lives in an alert document
 FIELD_OF = {
-    "srcip": ["data.srcip"], "dstip": ["data.dstip"], "user": ["data.srcuser", "data.dstuser", "data.user"],
-    "srcuser": ["data.srcuser"], "dstuser": ["data.dstuser"], "url": ["data.url"], "id": ["data.id"],
-    "status": ["data.status"], "action": ["data.action"], "protocol": ["data.protocol"],
-    "srcport": ["data.srcport"], "dstport": ["data.dstport"], "extra_data": ["data.extra_data"],
-    "system_name": ["data.system_name"], "data": ["data.data"], "hostname": ["predecoder.hostname"],
-    "program_name": ["predecoder.program_name"], "location": ["location"],
+    "srcip": [S4.SRCIP], "dstip": [S4.DSTIP], "user": [S4.SRCUSER, S4.DSTUSER, S4.USER],
+    "srcuser": [S4.SRCUSER], "dstuser": [S4.DSTUSER], "url": [S4.URL], "id": [S4.EVENT_ID],
+    "status": [S4.STATUS], "action": [S4.ACTION], "protocol": [S4.PROTOCOL],
+    "srcport": [S4.SRCPORT], "dstport": [S4.DSTPORT], "extra_data": [S4.EXTRA_DATA],
+    "system_name": [S4.SYSTEM_NAME], "data": [S4.DATA_DATA], "hostname": [S4.HOSTNAME],
+    "program_name": [S4.PROGRAM], "location": ["location"],
 }
 UNSUPPORTED = {"list", "time", "weekday", "same_source_ip", "same_srcip", "same_dstip", "same_user", "same_id",
                "same_location", "same_field", "different_srcip", "different_field", "not_same_source_ip",
@@ -139,11 +140,11 @@ def _matcher(tag: str, attrs: dict, text: str):
         paths = FIELD_OF[tag]
         return textual(lambda d: " ".join(_flat(_get(d, p)) for p in paths))
     if tag == "decoded_as":
-        return lambda d: (text in (_get(d, "decoder.name"), _get(d, "decoder.parent"))) != neg
+        return lambda d: (text in (_get(d, S4.DECODER), _get(d, S4.DECODER_PARENT))) != neg
     if tag == "if_group":
-        return lambda d: (text in (_get(d, "rule.groups") or [])) != neg
+        return lambda d: (text in (_get(d, S4.RULE_GROUPS) or [])) != neg
     if tag == "if_level":
-        return lambda d: int(_get(d, "rule.level") or 0) >= int(text or 0)
+        return lambda d: int(_get(d, S4.RULE_LEVEL) or 0) >= int(text or 0)
     return None
 
 
@@ -204,10 +205,10 @@ async def simulate(env, ix, xml: str, days: int = 14, sample: int = 2000) -> dic
             res["note"] = "no if_sid parent — only child rules can be replayed"
             out.append(res)
             continue
-        q = {"bool": {"filter": [rng, {"terms": {"rule.id": parents}}]}}
+        q = {"bool": {"filter": [rng, {"terms": {S4.RULE_ID: parents}}]}}
         agg = await ix.search(env.alerts_index, {
             "size": 0, "track_total_hits": True, "query": q,
-            "aggs": {"lvl": {"terms": {"field": "rule.level", "size": 20}},
+            "aggs": {"lvl": {"terms": {"field": S4.RULE_LEVEL, "size": 20}},
                      "day": {"date_histogram": {"field": TS, "fixed_interval": "1d", "min_doc_count": 0}}}})
         total = int((agg["hits"]["total"] or {}).get("value", 0)) if isinstance(agg["hits"]["total"], dict) \
             else int(agg["hits"]["total"])
@@ -226,7 +227,7 @@ async def simulate(env, ix, xml: str, days: int = 14, sample: int = 2000) -> dic
         share = len(matched) / len(docs) if docs else 0.0
         est = round(total * share)
         high = env.high_level
-        hi_matched = [d for d in matched if int(_get(d, "rule.level") or 0) >= high]
+        hi_matched = [d for d in matched if int(_get(d, S4.RULE_LEVEL) or 0) >= high]
         new_level = int(r["level"]) if (r["level"] or "").isdigit() else None
         res.update(
             sampled=len(docs), matched_sample=len(matched), share=round(share, 4), estimated=est,
@@ -236,8 +237,8 @@ async def simulate(env, ix, xml: str, days: int = 14, sample: int = 2000) -> dic
             high_before=round(total * len(hi_matched) / len(docs)) if docs else 0,
             high_after=(round(total * len(hi_matched) / len(docs)) if new_level is not None and new_level >= high
                         else 0) if docs else 0,
-            top_agents=Counter(_flat(_get(d, "agent.name")) for d in matched).most_common(5),
-            top_srcips=Counter(_flat(_get(d, "data.srcip")) for d in matched if _get(d, "data.srcip")).most_common(5),
+            top_agents=Counter(_flat(_get(d, S4.AGENT_NAME)) for d in matched).most_common(5),
+            top_srcips=Counter(_flat(_get(d, S4.SRCIP)) for d in matched if _get(d, S4.SRCIP)).most_common(5),
             top_locations=Counter(_flat(_get(d, "location")) for d in matched).most_common(3),
             examples=[_flat(_get(d, "full_log"))[:240] for d in matched[:3]],
             unmatched_examples=[_flat(_get(d, "full_log"))[:240] for d, h in zip(docs, hit, strict=True) if not h][:2],

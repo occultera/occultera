@@ -12,6 +12,7 @@ from .collector import _parse, iso
 from .config import Environment
 from .store import now_iso
 from .wazuh.api import WazuhAPI, WazuhAPIError
+from .wazuh.schema import S
 
 if TYPE_CHECKING:
     from .services import EnvRuntime
@@ -216,11 +217,11 @@ class RuleDeployMixin:
             if not ids:
                 continue
             r = await rt.ix.search(rt.env.alerts_index, {
-                "size": 0, "query": {"bool": {"filter": [{"terms": {"rule.id": ids}},
-                                                         {"range": {"timestamp": {"gte": since}}}]}},
-                "aggs": {"r": {"terms": {"field": "rule.id", "size": len(ids)},
-                               "aggs": {"f": {"min": {"field": "timestamp"}}, "l": {"max": {"field": "timestamp"}},
-                                        "a": {"terms": {"field": "agent.name", "size": 3}}}}}})
+                "size": 0, "query": {"bool": {"filter": [{"terms": {S.RULE_ID: ids}},
+                                                         {"range": {S.TS: {"gte": since}}}]}},
+                "aggs": {"r": {"terms": {"field": S.RULE_ID, "size": len(ids)},
+                               "aggs": {"f": {"min": {"field": S.TS}}, "l": {"max": {"field": S.TS}},
+                                        "a": {"terms": {"field": S.AGENT_NAME, "size": 3}}}}}})
             seen = {b["key"]: {"n": b["doc_count"], "first": b["f"].get("value_as_string"),
                                "last": b["l"].get("value_as_string"), "agents": [a["key"] for a in b["a"]["buckets"]]}
                     for b in r["aggregations"]["r"]["buckets"]}

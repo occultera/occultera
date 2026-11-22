@@ -11,6 +11,7 @@ from datetime import UTC, datetime
 
 from .collector import _b, _parse, iso
 from .i18n import t
+from .wazuh.schema import S
 
 
 def month_range(month: str | None) -> tuple[datetime, datetime, str]:
@@ -41,16 +42,16 @@ async def build(runtime, env_id: str, month: str | None = None) -> dict:
     # --- alert volume (index) ---------------------------------------------------------------
     try:
         r = await rt.ix.search(env.alerts_index, {
-            "size": 0, "query": {"range": {"timestamp": {"gte": iso(start), "lt": iso(end)}}},
-            "aggs": {"lv": {"terms": {"field": "rule.level", "size": 20, "order": {"_key": "desc"}}},
-                     "day": {"date_histogram": {"field": "timestamp", "fixed_interval": "1d", "min_doc_count": 0,
+            "size": 0, "query": {"range": {S.TS: {"gte": iso(start), "lt": iso(end)}}},
+            "aggs": {"lv": {"terms": {"field": S.RULE_LEVEL, "size": 20, "order": {"_key": "desc"}}},
+                     "day": {"date_histogram": {"field": S.TS, "fixed_interval": "1d", "min_doc_count": 0,
                                                 "extended_bounds": {"min": iso(start), "max": iso(end)}},
-                             "aggs": {"hi": {"filter": {"range": {"rule.level": {"gte": env.high_level}}}}}},
-                     "hi": {"filter": {"range": {"rule.level": {"gte": env.high_level}}},
-                            "aggs": {"r": {"terms": {"field": "rule.id", "size": 15},
-                                           "aggs": {"d": {"terms": {"field": "rule.description", "size": 1}},
-                                                    "l": {"max": {"field": "rule.level"}}}}}},
-                     "ag": {"cardinality": {"field": "agent.name"}}}})
+                             "aggs": {"hi": {"filter": S.level_gte(env.high_level)}}},
+                     "hi": {"filter": S.level_gte(env.high_level),
+                            "aggs": {"r": {"terms": {"field": S.RULE_ID, "size": 15},
+                                           "aggs": {"d": {"terms": {"field": S.RULE_DESC, "size": 1}},
+                                                    "l": {"max": {"field": S.RULE_LEVEL}}}}}},
+                     "ag": {"cardinality": {"field": S.AGENT_NAME}}}})
         a = r["aggregations"]
         levels = {str(b["key"]): b["doc_count"] for b in _b(a["lv"])}
         high = sum(v for k, v in levels.items() if int(k) >= env.high_level)

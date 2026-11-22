@@ -9,8 +9,8 @@ import time
 from datetime import UTC, datetime, timedelta
 
 from . import mitre
+from .wazuh.schema import S, bind
 
-TS = "timestamp"
 PERIODS = {"24h": (24, "1h"), "7d": (168, "6h"), "30d": (720, "1d")}
 CRITICAL = 12          # Wazuh's own "critical" band starts at 12; level 15 is the maximum
 _CACHE: dict[tuple, tuple[float, dict]] = {}
@@ -22,7 +22,7 @@ def _b(a: dict | None) -> list[dict]:
 
 
 def _rng(frm: datetime, to: datetime) -> dict:
-    return {"range": {TS: {"gte": frm.strftime("%Y-%m-%dT%H:%M:%S"), "lt": to.strftime("%Y-%m-%dT%H:%M:%S")}}}
+    return {"range": {S.TS: {"gte": frm.strftime("%Y-%m-%dT%H:%M:%S"), "lt": to.strftime("%Y-%m-%dT%H:%M:%S")}}}
 
 
 def bands(levels: dict[int, int], high: int) -> list[dict]:
@@ -36,6 +36,7 @@ def bands(levels: dict[int, int], high: int) -> list[dict]:
 
 
 async def overview(env, ix, period: str = "24h", now: datetime | None = None, use_cache: bool = True) -> dict:
+    bind(env)
     hours, interval = PERIODS.get(period, PERIODS["24h"])
     key = (env.id, period)
     if use_cache and now is None and key in _CACHE and time.monotonic() - _CACHE[key][0] < TTL:
@@ -46,36 +47,36 @@ async def overview(env, ix, period: str = "24h", now: datetime | None = None, us
     r = await ix.search(env.alerts_index, {
         "size": 0, "track_total_hits": True, "query": {"bool": {"filter": [_rng(frm, now)]}},
         "aggs": {
-            "hist": {"date_histogram": {"field": TS, "fixed_interval": interval, "min_doc_count": 0,
+            "hist": {"date_histogram": {"field": S.TS, "fixed_interval": interval, "min_doc_count": 0,
                                         "extended_bounds": {"min": frm.strftime("%Y-%m-%dT%H:%M:%S"),
                                                             "max": now.strftime("%Y-%m-%dT%H:%M:%S")}},
-                     "aggs": {"high": {"filter": {"range": {"rule.level": {"gte": hl}}}},
-                              "crit": {"filter": {"range": {"rule.level": {"gte": CRITICAL}}}}}},
-            "lv": {"terms": {"field": "rule.level", "size": 16}},
-            "rules": {"terms": {"field": "rule.id", "size": 8},
-                      "aggs": {"d": {"terms": {"field": "rule.description", "size": 1}},
-                               "l": {"max": {"field": "rule.level"}}}},
-            "hrules": {"filter": {"range": {"rule.level": {"gte": hl}}},
-                       "aggs": {"r": {"terms": {"field": "rule.id", "size": 8},
-                                      "aggs": {"d": {"terms": {"field": "rule.description", "size": 1}},
-                                               "l": {"max": {"field": "rule.level"}}}}}},
-            "agents": {"terms": {"field": "agent.name", "size": 8},
-                       "aggs": {"high": {"filter": {"range": {"rule.level": {"gte": hl}}}}}},
-            "src": {"terms": {"field": "data.srcip", "size": 8},
-                    "aggs": {"high": {"filter": {"range": {"rule.level": {"gte": hl}}}}}},
-            "nagents": {"cardinality": {"field": "agent.name"}},
-            "tac": {"terms": {"field": "rule.mitre.tactic", "size": 40},
-                    "aggs": {"high": {"filter": {"range": {"rule.level": {"gte": hl}}}},
-                             "tech": {"cardinality": {"field": "rule.mitre.id"}}}},
+                     "aggs": {"high": {"filter": S.level_gte(hl)},
+                              "crit": {"filter": S.level_gte(CRITICAL)}}},
+            "lv": {"terms": {"field": S.RULE_LEVEL, "size": 16}},
+            "rules": {"terms": {"field": S.RULE_ID, "size": 8},
+                      "aggs": {"d": {"terms": {"field": S.RULE_DESC, "size": 1}},
+                               "l": {"max": {"field": S.RULE_LEVEL}}}},
+            "hrules": {"filter": S.level_gte(hl),
+                       "aggs": {"r": {"terms": {"field": S.RULE_ID, "size": 8},
+                                      "aggs": {"d": {"terms": {"field": S.RULE_DESC, "size": 1}},
+                                               "l": {"max": {"field": S.RULE_LEVEL}}}}}},
+            "agents": {"terms": {"field": S.AGENT_NAME, "size": 8},
+                       "aggs": {"high": {"filter": S.level_gte(hl)}}},
+            "src": {"terms": {"field": S.SRCIP, "size": 8},
+                    "aggs": {"high": {"filter": S.level_gte(hl)}}},
+            "nagents": {"cardinality": {"field": S.AGENT_NAME}},
+            "tac": {"terms": {"field": S.MITRE_TACTIC, "size": 40},
+                    "aggs": {"high": {"filter": S.level_gte(hl)},
+                             "tech": {"cardinality": {"field": S.MITRE_ID}}}},
         }})
     a = r.get("aggregations") or {}
     tot = r["hits"]["total"]
     total = int(tot.get("value", 0) if isinstance(tot, dict) else tot)
     p = await ix.search(env.alerts_index, {
         "size": 0, "track_total_hits": True, "query": {"bool": {"filter": [_rng(prev, frm)]}},
-        "aggs": {"high": {"filter": {"range": {"rule.level": {"gte": hl}}}},
-                 "crit": {"filter": {"range": {"rule.level": {"gte": CRITICAL}}}},
-                 "tac": {"terms": {"field": "rule.mitre.tactic", "size": 40}}}})
+        "aggs": {"high": {"filter": S.level_gte(hl)},
+                 "crit": {"filter": S.level_gte(CRITICAL)},
+                 "tac": {"terms": {"field": S.MITRE_TACTIC, "size": 40}}}})
     ptot = p["hits"]["total"]
     prev_total = int(ptot.get("value", 0) if isinstance(ptot, dict) else ptot)
     pa = p.get("aggregations") or {}

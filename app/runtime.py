@@ -46,6 +46,7 @@ from .store import IndexStore, MemoryStore
 from .watch import WatchMixin
 from .wazuh.api import WazuhAPI
 from .wazuh.indexer import Indexer
+from .wazuh.schema import bind as bind_schema
 from .weekly import WeeklyMixin
 
 log = logging.getLogger("wdt")
@@ -112,4 +113,6 @@ class Runtime(KnowledgeIOMixin, RunMixin, ReviewMixin, RuleDeployMixin, Incident
     def get(self, env_id: str) -> EnvRuntime:
         if env_id not in self.envs:
             raise KeyError(env_id)
-        return self.envs[env_id]
+        rt = self.envs[env_id]
+        bind_schema(rt.env)  # every entry point that resolves an environment also binds its Wazuh schema
+        return rt

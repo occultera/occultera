@@ -27,10 +27,10 @@ helm repo add occultera https://occultera.github.io/occultera
 helm repo update
 helm install occultera occultera/occultera \
   --namespace occultera --create-namespace \
-  --version 0.8.0 -f my-values.yaml
+  --version 0.8.1 -f my-values.yaml
 ```
 
-Chart 0.8.0 deploys application 0.16.0. The values that matter in production:
+Chart 0.8.1 deploys application 0.17.0. The values that matter in production:
 
 | Value | Set it to |
 |---|---|

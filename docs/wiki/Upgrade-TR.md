@@ -72,6 +72,12 @@ etkisizdir. Eski sürüm yeni veriyle düzgün çalışmazsa yükseltmeden önce
 
 ## Sürüm notları
 
+### 0.17.0
+
+- **Yapılandırma değişikliği gerekmez.** Aynı indeksler, aynı değişkenler, aynı raporlar; imajı değiştirin
+  (Kustomize `newTag` / `?ref=v0.17.0`, Helm chart 0.8.1). Sürüm, Wazuh 5.x desteğinin iç hazırlığıdır; Wazuh 4.x'te
+  davranış 0.16.0 ile birebir aynıdır.
+
 ### 0.16.0
 
 - **Yapılandırma değişikliği gerekmiyor.** İndeksler ve değişkenler aynı; yalnız imajı değiştirin (Kustomize
