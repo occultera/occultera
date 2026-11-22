@@ -91,6 +91,29 @@ def parse_answer(text: str) -> dict:
     raise ValueError("no report object found: paste the model's answer with its ```json block")
 
 
+PREFETCH_RULES = 6
+
+
+async def prefetch(rt, collected: dict, frm: datetime, to: datetime, high_level: int) -> str:
+    """For the file channel the assistant has no tools: pre-fetch what the built-in AI usually asks for first —
+    the time distribution and three sample events of the busiest high-level rules."""
+    rules = sorted((r for r in collected.get("top_rules") or [] if int(r.get("level") or 0) >= high_level),
+                   key=lambda r: (-int(r.get("level") or 0), -int(r.get("count") or 0)))[:PREFETCH_RULES]
+    if not rules:
+        return ""
+    tb = ToolBox(rt.env, rt.ix, rt.api, rt.repo, mode="triage", sources=rt.sources)
+    hours = max(1, (to - frm).total_seconds() / 3600)
+    interval = "1h" if hours <= 48 else "6h"
+    out = ["", "# Drill-down, pre-fetched (you have no tools: this is what you would have asked for first)", ""]
+    for r in rules:
+        args = {"rule_ids": [str(r["id"])], "from": iso(frm), "to": iso(to)}
+        tl = await tb.call("rule_timeline", {**args, "interval": interval})
+        ev = await tb.call("search_alerts", {**args, "size": 3})
+        out += [f"## Rule {r['id']} (level {r.get('level')}, {r.get('count')} alerts): {r.get('desc', '')}",
+                "Timeline:", "```json", tl[:4000], "```", "Sample events:", "```json", ev[:6000], "```", ""]
+    return "\n".join(out)
+
+
 class ExternalMixin:
     async def external_start(self, env_id: str, channel: str, actor: str = "", hours: int | None = None) -> dict:
         """Collect like a built-in round and park the run until the answer comes back. Returns the masked brief."""
@@ -121,6 +144,11 @@ class ExternalMixin:
             if rt.current_run == run_id:
                 rt.current_run = None
         text = brief(prep["sysmsg"], prep["usr"], channel, env_id, run_id)
+        if channel == "file":
+            try:
+                text += await prefetch(rt, run.get("collected") or {}, prep["frm"], started, rt.env.high_level)
+            except Exception as e:  # noqa: BLE001 - the brief is still useful without the drill-down
+                log.warning("external round %s: drill-down failed: %s", run_id, e)
         st = await self.env_settings(rt)
         m = masker_for(rt.env, st.mask)
         log.info("external round %s started (%s) by %s", run_id, channel, actor or "-")

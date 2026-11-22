@@ -36,7 +36,8 @@ All notable changes to this project are documented here. The format follows
   by an MCP client — the `daily_review` prompt, `start_review` and `submit_review` — or by any chat assistant: the
   environment page downloads a masked brief and the report page takes the pasted answer back. Pseudonyms resolve
   inside the installation, rule drafts go through `propose_knowledge`, watch verdicts and ATT&CK mapping apply as in a
-  built-in round. Internally `run_triage` is split into `_prepare_round` / `_finish_round`, shared by both paths.
+  built-in round; the brief for a chat assistant carries the timeline and sample events of the busiest high-level
+  rules, since it has no tools. Internally `run_triage` is split into `_prepare_round` / `_finish_round`, shared by both paths.
 - **Wazuh version in the connection test.** A new `wazuh` row shows the Wazuh version the environment talks to (from
   the server API, or from the index patterns without it). A Wazuh 5.x server fails the row with a pointer to the
   wiki page *Wazuh 5*; support is planned for 1.0. `wazuh_version` (`WAZUH_VERSION`) is `auto` or `4`.

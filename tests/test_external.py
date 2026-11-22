@@ -33,6 +33,7 @@ async def test_file_channel_round_trip(rt):
     await er.repo.add_knowledge("request", "look at db01 ssh")
     r = await rt.external_start("demo", "file", actor="tester")
     assert "no tools" in r["brief"] and "Report object" in r["brief"] and "submit_review" not in r["brief"]
+    assert "Drill-down, pre-fetched" in r["brief"] and "Sample events:" in r["brief"]
     run = await er.repo.get_run(r["run_id"])
     assert run["status"] == "awaiting" and run["external"]["channel"] == "file" and run["collected"]
     assert rt.get("demo").current_run is None                     # the environment is free while we wait
