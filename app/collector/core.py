@@ -10,6 +10,7 @@ from typing import Any
 
 from ..config import Environment
 from ..i18n import t
+from ..wazuh import indexer_health as IH
 from ..wazuh.api import WazuhAPI
 from ..wazuh.indexer import Indexer
 from ..wazuh.schema import S, bind
@@ -231,6 +232,11 @@ class Collector(HealthMixin, ExtrasMixin):
             p = disk.get("percent")
             if p is not None and p >= self.env.disk_warn_percent:
                 add("critical" if p >= 90 else "warn", "indexer_disk", node=disk["node"], p=p)
+        for x in IH.findings(ix, h.get("indexer_nodes") or [], h.get("indexer_shards")):
+            add(x.pop("severity"), x.pop("code"), **x)
+        if any("circuit_breaking_exception" in e or "out of heap memory" in e for e in self.errors) and not any(
+                x["code"] in ("indexer_heap", "indexer_breaker") for x in f):
+            add("critical", "indexer_breaker_now")
         if h.get("daemons_not_running"):
             add("critical", "daemons", d=", ".join(h["daemons_not_running"]))
         bad = [a for a in h.get("agents_not_active") or []
