@@ -87,6 +87,8 @@ instead of silencing.
 - **Multi-environment, multi-language** (English, Turkish, Spanish, German), Docker Compose or Kubernetes.
 
 Every feature is described in the [wiki](https://github.com/occultera/occultera/wiki).
+The application interface is available in English, Turkish, Spanish and German. The wiki home pages are
+available in English, Turkish, Spanish and French; the wiki is not fully translated into German.
 
 ## Quick start
 

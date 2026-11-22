@@ -20,6 +20,20 @@ Wazuh 4.x tam olarak desteklenmeye devam ediyor; bu sayfadaki hiçbir şey çal�
 | Manager yolları | `/var/ossec`, `ossec.conf` | `/var/wazuh-manager`, `wazuh-manager.conf` | promotion betikleri |
 | Indexer | OpenSearch 2.x | OpenSearch 3.x | sorgular ikisinde de test edilir |
 
+## Durum (22 Kasım 2026)
+
+| Parça | Durum | Nerede |
+|---|---|---|
+| Occultera ile Wazuh arasında şema katmanı (4.x sorguları değişmedi, altın rapor) | ✅ yayında | 0.17.0 |
+| Bağlantı testinde Wazuh sürüm algılama | 🚧 hazır, yayında değil | 1.0 dalı |
+| Tek sorgu dili: AI ve MCP istemcileri 4.x alan adlarını kullanır, sürüme göre çevrilir | 🚧 hazır, yayında değil | 1.0 dalı |
+| Kural geçiş aracı, 4.x XML → Sigma (önizleme, alan adları 5.0 sürüm adaylarından) | 🚧 önizleme | 1.0 dalı |
+| 5.x şeması: findings / events / states, kategorik önem, kural UUID'leri | ⬜ planlandı | 5.0 lab'ı gerekiyor |
+| 5.x'te araç sonuçlarının 4.x adlarına çevrilmesi | ⬜ planlandı | 5.x şemasıyla |
+| 5.x'te Sigma kural taslakları | ⬜ planlandı | |
+| demo5.occultera.dev ve 4.x / 5.x smoke-test matrisi | ⬜ planlandı | |
+| **Wazuh 5.x desteği** | ⬜ **Occultera 1.0**, Wazuh 5.0 genel kullanıma çıktıktan sonra | |
+
 ## Plan
 
 1. **Sürüm adaptörü** (geliştiriliyor). Wazuh'a bakan kod, 4.x ve 5.x uygulaması olan tek bir arayüzün arkasına

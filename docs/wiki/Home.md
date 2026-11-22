@@ -1,6 +1,6 @@
 # Occultera — Wiki
 
-**English** · [Türkçe](Home-TR) · [Español](Home-ES) · [Français](Home-FR)
+**English** · [Türkçe](Home-TR) · [Español](Home-ES) · [Français](Home-FR) · [Deutsch](Home-DE)
 
 **Open-source MCP server and AI alert triage for Wazuh 4.x** (Wazuh 5.x support in development), with personal data masked before the AI (GDPR / KVKK). An on-call companion: It watches your alerts around the clock and tells you within minutes when
 something urgent happens — without asking an AI. Once or twice a day an AI round reviews everything the watch

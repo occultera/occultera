@@ -20,6 +20,20 @@ fully supported; nothing on this page changes a running installation.
 | Manager paths | `/var/ossec`, `ossec.conf` | `/var/wazuh-manager`, `wazuh-manager.conf` | promotion scripts |
 | Indexer | OpenSearch 2.x | OpenSearch 3.x | queries are tested on both |
 
+## Status (22 November 2026)
+
+| Part | Status | Where |
+|---|---|---|
+| Schema layer between Occultera and Wazuh (4.x queries unchanged, golden report) | ✅ released | 0.17.0 |
+| Wazuh version detection in the connection test | 🚧 done, not released | 1.0 branch |
+| One query vocabulary: the AI and MCP clients use 4.x field names, translated per version | 🚧 done, not released | 1.0 branch |
+| Rule migration tool, 4.x XML → Sigma (preview, field names from the 5.0 release candidates) | 🚧 preview | 1.0 branch |
+| 5.x schema: findings / events / states, categorical severity, rule UUIDs | ⬜ planned | needs a 5.0 lab |
+| Tool results normalised to 4.x names on 5.x | ⬜ planned | with the 5.x schema |
+| Sigma rule drafts on 5.x | ⬜ planned | |
+| demo5.occultera.dev and a 4.x / 5.x smoke-test matrix | ⬜ planned | |
+| **Wazuh 5.x support** | ⬜ **Occultera 1.0**, after Wazuh 5.0 is generally available | |
+
 ## The plan
 
 1. **Version adapter** (in progress). The Wazuh-facing code moves behind one interface with a 4.x and a 5.x

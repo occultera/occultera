@@ -1,7 +1,7 @@
 **Occultera 0.17.0**
 *Find the signal in the dark.*
 
-[English](Home) · [Türkçe](Home-TR) · [Español](Home-ES) · [Français](Home-FR)
+[English](Home) · [Türkçe](Home-TR) · [Español](Home-ES) · [Français](Home-FR) · [Deutsch](Home-DE)
 
 **Start**
 - [Home](Home)

@@ -49,16 +49,19 @@ Where the project is going, roughly ordered by impact. This is a living document
 ## Wazuh 5
 
 Details: [Wazuh 5](https://github.com/occultera/occultera/wiki/Wazuh-5). Wazuh 4.x stays fully supported.
+The current published release is 0.17.0. Items marked as 1.0 preview are present on the
+`feat/1.0-wazuh-adapter` development branch and are not part of the 0.17.0 release.
 
 | Status | Item | Why |
 |---|---|---|
-| 🚧 | **Version adapter**: one interface, 4.x and 5.x implementations, version detection; modules split to ≤ 450 lines | Wazuh 5.0 changes indices, field names, severities and the rule engine. |
-| ⬜ | Severity mapping (4.x level ↔ 5.x severity), configurable | Wazuh publishes none. |
-| ⬜ | **Rule migration tool**: custom 4.x XML rules → Sigma, a review list, field mapping, a match check on sample events | custom XML rules are not migrated by Wazuh. |
-| ⬜ | Sigma drafts on 5.x next to XML drafts on 4.x | detection moves to Sigma-compatible detectors. |
-| ⬜ | Demo for 5.x (demo5.occultera.dev) and a 4.x/5.x smoke-test matrix against real Wazuh | proof on both versions. |
-| ⬜ | Error reports and anonymous usage data (on by default, can be switched off; no alert or log content) | to see which Wazuh versions are in use and fix crashes. |
-| ⬜ | **Wazuh 5.x support — Occultera 1.0**, after Wazuh 5.0 is generally available | |
+| 🚧 | **Version adapter (1.0 preview)**: the 4.x schema layer and version detection are implemented; the Wazuh 5 schema/field mappings, live validation and stable release remain | Wazuh 5 changes indices, field names, severities and the rule engine. |
+| 🚧 | **Rule migration preview**: custom 4.x XML rules → Sigma, with a review list, field mapping and sample-event match check; run with `python -m app.migrate` | Custom XML rules are not migrated by Wazuh; every generated rule needs review. |
+| 🚧 | **Annex A evidence summary (1.0 preview)** in the monthly audit report | Ten selected controls with evidence/gap status and references; this is supporting evidence, not certification. |
+| 🚧 | **Error reports and anonymous usage data (1.0 preview)**; configurable with `TELEMETRY=off` or `TELEMETRY=errors`, no alert or log content | Helps identify crashes and supported Wazuh versions. |
+| 🚧 | **AI review without an API key** and **Indexer health advice** are implemented on the preview branch | Use an MCP client or a chat model with a masked brief; health checks report actionable Indexer signals. |
+| ⬜ | Public Wazuh 5 demo and a 4.x/5.x smoke-test matrix against real Wazuh | Verify behavior against real supported deployments. |
+| ⬜ | **Wazuh 5.x production support — Occultera 1.0**, after Wazuh 5.0 is generally available | |
+| ⬜ | Sigma rule drafts on Wazuh 5.x | Detection workflows must match the 5.x rule engine. |
 
 ## Earlier releases
 

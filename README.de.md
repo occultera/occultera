@@ -78,8 +78,9 @@ heißt nicht, dass die Regel funktioniert“, Stufe senken statt stummschalten.
 - **Mehrere Umgebungen, mehrere Sprachen** (Englisch, Türkisch, Spanisch, Deutsch); Docker Compose oder
   Kubernetes.
 
-Jede Funktion ist im [Wiki](https://github.com/occultera/occultera/wiki) beschrieben (Englisch und
-Türkisch).
+Jede Funktion ist im [Wiki](https://github.com/occultera/occultera/wiki) beschrieben (Startseiten auf Englisch,
+Türkisch, Spanisch und Französisch; ausführliche Dokumentation überwiegend auf Englisch und Türkisch).
+Die Anwendungsoberfläche ist auch auf Spanisch und Deutsch verfügbar; das Wiki ist nicht vollständig ins Deutsche übersetzt.
 
 ## Schnellstart
 
