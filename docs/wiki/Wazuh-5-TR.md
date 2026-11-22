@@ -12,7 +12,7 @@ Wazuh 4.x tam olarak desteklenmeye devam ediyor; bu sayfadaki hiçbir şey çal�
 |---|---|---|---|
 | Alarmlar | `wazuh-alerts-4.x-*` | olaylar `wazuh-events-v5-*`, tespitler `wazuh-findings-v5-*`, durum `wazuh-states-*` | toplama, nöbet ve MCP araçları yeni indeksleri okur |
 | Alan adları | `rule.level`, `rule.description`, `agent.name`, `data.srcip` | Wazuh Common Schema: `wazuh.rule.level`, `wazuh.rule.title`, `wazuh.agent.name`, `source.ip` | her sorgu bir alan eşlemesinden geçer |
-| Önem | sayı, 0–15 | informational, low, medium, high, critical | eşikler ve grafikler kategori kullanır |
+| Önem | sayı, 0–16 | informational, low, medium, high, critical | eşikler ve grafikler kategori kullanır |
 | Algılama | Manager'da XML kurallar | Indexer'da Sigma uyumlu detector'lar | kural taslakları Sigma taslağı olur |
 | Özel XML kurallar | var | otomatik taşınmıyor | aşağıdaki geçiş aracına bakın |
 | Kural testi | `wazuh-logtest`, API `/logtest` | dashboard'a ve API'ye taşındı | iki yönlü logtest şimdilik yalnız 4.x'te |
@@ -34,7 +34,7 @@ Wazuh 4.x tam olarak desteklenmeye devam ediyor; bu sayfadaki hiçbir şey çal�
    | 4–6 | low |
    | 7–9 | medium |
    | 10–12 | high |
-   | 13–15 | critical |
+   | 13–16 | critical |
 
 3. **5.x'te Sigma taslakları.** 4.x'te yapay zekâ, doğrulayıp test ettiğiniz ve uyguladığınız XML kurallar yazar
    ([Kural yaşam döngüsü](Rule-Lifecycle-TR)). 5.x'te Sigma kuralı yazar; Wazuh içerik API'si oturunca onun
