@@ -82,3 +82,13 @@ async def test_mcp_channel(rt, monkeypatch):
 async def test_provider_none_keeps_the_deterministic_report(rt):
     with pytest.raises(LLMError, match="LLM_PROVIDER=none"):
         await make_llm(LLMConfig(provider="none")).complete("s", [], [])
+
+
+async def test_pseudonyms_in_the_answer_resolve_to_real_values(rt):
+    from app.privacy import masker_for
+    er = rt.get("demo")
+    tok = masker_for(er.env).mask("ayse.kaya@example.com")
+    assert tok.startswith("<email:")
+    r = await rt.external_start("demo", "file")
+    done = await rt.external_submit("demo", r["run_id"], _answer(f"for {tok}"))
+    assert "ayse.kaya@example.com" in done["findings"][0]["detail"] and tok not in done["findings"][0]["detail"]
