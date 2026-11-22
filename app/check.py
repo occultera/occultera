@@ -2,8 +2,8 @@
 # Copyright (C) 2026 Rüstem Duru
 """Connection test from the command line.
 
-    docker compose run --rm triage python -m app.check            # all environments
-    docker compose run --rm triage python -m app.check prod --no-llm
+    docker compose run --rm occultera python -m app.check            # all environments
+    docker compose run --rm occultera python -m app.check prod --no-llm
 """
 from __future__ import annotations
 

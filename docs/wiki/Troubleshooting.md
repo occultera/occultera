@@ -1,8 +1,8 @@
 # Troubleshooting
 
 **For:** operators. Search this page for the message you see. Each entry gives the check, the likely cause and
-the fix. The commands are for Docker Compose; on Kubernetes replace `docker compose exec triage` with
-`kubectl -n occultera exec deploy/occultera --` and `docker compose logs triage` with
+the fix. The commands are for Docker Compose; on Kubernetes replace `docker compose exec occultera` with
+`kubectl -n occultera exec deploy/occultera --` and `docker compose logs occultera` with
 `kubectl -n occultera logs deploy/occultera`.
 
 ## First three checks
@@ -10,7 +10,7 @@ the fix. The commands are for Docker Compose; on Kubernetes replace `docker comp
 ```sh
 docker compose ps                                  # running and healthy?
 docker compose logs --tail 100 triage              # the startup lines name what is wrong
-docker compose exec triage python -m app.check     # Indexer, API, sources, model
+docker compose exec occultera python -m app.check     # Indexer, API, sources, model
 ```
 
 `python -m app.check <env>` tests one environment, `--no-llm` skips the model. **Test connections** on the
@@ -24,7 +24,7 @@ response header); searching the log for it gives the whole request.
 | `refusing to start in production` | a production safety check failed; the message names the variable | set a real `APP_PASSWORD`, `APP_SECRET`, `COOKIE_SECURE=true`, or fix TLS verification |
 | `no configuration: … does not exist and WAZUH_INDEXER_URL is not set` | neither a YAML file nor the single-environment variables | demo: `cp .env.demo .env`. Real: set `WAZUH_INDEXER_URL` or create `config/environments.yaml` |
 | The demo exits although `WDT_DEMO=true` is in `.env` | the variable appears twice; the last line wins | use `.env.demo` unchanged |
-| `ERR_EMPTY_RESPONSE` on 127.0.0.1:8080 | the container is restarting | read `docker compose logs triage` |
+| `ERR_EMPTY_RESPONSE` on 127.0.0.1:8080 | the container is restarting | read `docker compose logs occultera` |
 | A value contains `#` and following text | a comment on a value line in `.env` | put comments on their own line |
 | `ZoneInfoNotFoundError` | `TZ` is not an IANA name | for example `TZ=Europe/Istanbul` |
 

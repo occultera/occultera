@@ -24,7 +24,7 @@ metadata:
 spec:
   routes:
     - kind: Rule
-      match: Host(`triage.example.com`)
+      match: Host(`occultera.example.com`)
       middlewares:
         - name: authentik
       services:
@@ -32,7 +32,7 @@ spec:
           port: 8080
     # Authentik's sign-in / callback endpoints on the same host
     - kind: Rule
-      match: Host(`triage.example.com`) && PathPrefix(`/outpost.goauthentik.io/`)
+      match: Host(`occultera.example.com`) && PathPrefix(`/outpost.goauthentik.io/`)
       priority: 1000
       services:
         - name: authentik-server
@@ -40,10 +40,10 @@ spec:
           port: 80
     # MCP endpoint (docs/mcp.md): checks its own bearer token (MCP_TOKEN); remove if you do not use it
     - kind: Rule
-      match: Host(`triage.example.com`) && Path(`/mcp`)
+      match: Host(`occultera.example.com`) && Path(`/mcp`)
       priority: 900
       services:
         - name: occultera
           port: 8080
   tls:
-    secretName: triage-tls     # e.g. a copy of your wildcard certificate, or a cert-manager Certificate
+    secretName: occultera-tls     # e.g. a copy of your wildcard certificate, or a cert-manager Certificate

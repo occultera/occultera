@@ -271,7 +271,7 @@ See [Backup](Backup).
 ```sh
 # after editing .env / environments.yaml
 docker compose up -d
-docker compose exec triage python -m app.check
+docker compose exec occultera python -m app.check
 ```
 
 Configuration is read at startup; editing `.env` while the container runs changes nothing. Changing
@@ -281,8 +281,8 @@ rotate `APP_SECRET` for that.
 ## Validate before you restart
 
 ```sh
-docker compose exec triage python -m app.check          # indexer, alerts, vulnerabilities, storage, API, extra sources, model (--no-llm skips it)
-docker compose exec triage python -c "from app.config import load_settings; s=load_settings(); print([e.id for e in s.environments])"
+docker compose exec occultera python -m app.check          # indexer, alerts, vulnerabilities, storage, API, extra sources, model (--no-llm skips it)
+docker compose exec occultera python -c "from app.config import load_settings; s=load_settings(); print([e.id for e in s.environments])"
 # notifications are tested separately: Reports page → "Test notifications" (POST /api/e/<env>/notify-test)
 ```
 

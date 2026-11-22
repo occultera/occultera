@@ -270,7 +270,7 @@ Bkz. [Yedekleme](Backup-TR).
 ```sh
 # .env / environments.yaml düzenledikten sonra
 docker compose up -d
-docker compose exec triage python -m app.check
+docker compose exec occultera python -m app.check
 ```
 
 Yapılandırma açılışta okunur; konteyner çalışırken `.env` düzenlemek bir şey değiştirmez. `APP_SECRET`
@@ -280,8 +280,8 @@ için `APP_SECRET` döndürün.
 ## Yeniden başlatmadan önce doğrulayın
 
 ```sh
-docker compose exec triage python -m app.check          # indexer, alarmlar, zafiyetler, depolama, API, ek kaynaklar, model (--no-llm atlar)
-docker compose exec triage python -c "from app.config import load_settings; s=load_settings(); print([e.id for e in s.environments])"
+docker compose exec occultera python -m app.check          # indexer, alarmlar, zafiyetler, depolama, API, ek kaynaklar, model (--no-llm atlar)
+docker compose exec occultera python -c "from app.config import load_settings; s=load_settings(); print([e.id for e in s.environments])"
 # bildirimler ayrıca test edilir: Raporlar sayfası → "Bildirim testi" (POST /api/e/<env>/notify-test)
 ```
 

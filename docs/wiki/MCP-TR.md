@@ -46,7 +46,7 @@ Uç nokta **varsayılan olarak kapalıdır**. `MCP_TOKEN` yoksa `404` döner.
 4. Test:
 
    ```sh
-   curl -s https://triage.example.com/mcp \
+   curl -s https://occultera.example.com/mcp \
      -H "Authorization: Bearer $MCP_TOKEN" \
      -H 'Content-Type: application/json' \
      -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | head -c 400
@@ -76,7 +76,7 @@ chmod 600 ~/.wdt-mcp-token
       "command": "python3",
       "args": [
         "/path/to/occultera/tools/mcp_bridge.py",
-        "https://triage.example.com/mcp",
+        "https://occultera.example.com/mcp",
         "--token-file", "/home/you/.wdt-mcp-token"
       ]
     }
@@ -125,20 +125,20 @@ URL'yi `Authorization: Bearer <token>` ve `Content-Type: application/json` ile k
 
 ```sh
 # 1. el sıkışma
-curl -s https://triage.example.com/mcp \
+curl -s https://occultera.example.com/mcp \
   -H "Authorization: Bearer $MCP_TOKEN" -H 'Content-Type: application/json' \
   -d '{"jsonrpc":"2.0","id":1,"method":"initialize",
        "params":{"protocolVersion":"2025-06-18","capabilities":{},
                  "clientInfo":{"name":"curl","version":"1"}}}'
 
 # 2. bu token'ın kullanabileceği ortamları görün
-curl -s https://triage.example.com/mcp \
+curl -s https://occultera.example.com/mcp \
   -H "Authorization: Bearer $MCP_TOKEN" -H 'Content-Type: application/json' \
   -d '{"jsonrpc":"2.0","id":2,"method":"tools/call",
        "params":{"name":"list_environments","arguments":{}}}'
 
 # 3. sorgu çalıştırın
-curl -s https://triage.example.com/mcp \
+curl -s https://occultera.example.com/mcp \
   -H "Authorization: Bearer $MCP_TOKEN" -H 'Content-Type: application/json' \
   -d '{"jsonrpc":"2.0","id":3,"method":"tools/call",
        "params":{"name":"search_alerts",

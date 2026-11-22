@@ -1,8 +1,8 @@
 # Sorun giderme
 
 **Kimin için:** operatörler. Gördüğünüz iletiyi bu sayfada arayın. Her satır denetimi, olası nedeni ve çözümü
-verir. Komutlar Docker Compose içindir; Kubernetes'te `docker compose exec triage` yerine
-`kubectl -n occultera exec deploy/occultera --`, `docker compose logs triage` yerine
+verir. Komutlar Docker Compose içindir; Kubernetes'te `docker compose exec occultera` yerine
+`kubectl -n occultera exec deploy/occultera --`, `docker compose logs occultera` yerine
 `kubectl -n occultera logs deploy/occultera` kullanın.
 
 ## İlk üç denetim
@@ -10,7 +10,7 @@ verir. Komutlar Docker Compose içindir; Kubernetes'te `docker compose exec tria
 ```sh
 docker compose ps                                  # çalışıyor ve sağlıklı mı?
 docker compose logs --tail 100 triage              # açılış satırları neyin yanlış olduğunu söyler
-docker compose exec triage python -m app.check     # Indexer, API, kaynaklar, model
+docker compose exec occultera python -m app.check     # Indexer, API, kaynaklar, model
 ```
 
 `python -m app.check <ortam>` tek ortamı test eder, `--no-llm` modeli atlar. Ortamın **Raporlar** sayfasındaki **Bağlantıları
@@ -24,7 +24,7 @@ test et** düğmesi aynı testi çalıştırır. Her log satırı ve her denetim
 | `refusing to start in production` | bir üretim güvenlik denetimi başarısız; ileti değişkenin adını verir | gerçek bir `APP_PASSWORD`, `APP_SECRET`, `COOKIE_SECURE=true` ayarlayın ya da TLS doğrulamasını düzeltin |
 | `no configuration: … does not exist and WAZUH_INDEXER_URL is not set` | ne YAML dosyası ne de tek ortam değişkenleri var | demo: `cp .env.demo .env`. Gerçek: `WAZUH_INDEXER_URL` ayarlayın ya da `config/environments.yaml` oluşturun |
 | `.env` içinde `WDT_DEMO=true` olduğu hâlde demo kapanıyor | değişken iki kez geçiyor; son satır geçerli | `.env.demo` dosyasını değiştirmeden kullanın |
-| 127.0.0.1:8080 adresinde `ERR_EMPTY_RESPONSE` | konteyner yeniden başlıyor | `docker compose logs triage` çıktısını okuyun |
+| 127.0.0.1:8080 adresinde `ERR_EMPTY_RESPONSE` | konteyner yeniden başlıyor | `docker compose logs occultera` çıktısını okuyun |
 | Bir değer `#` ve ardındaki metni içeriyor | `.env` içinde değer satırına yorum yazılmış | yorumları ayrı satıra alın |
 | `ZoneInfoNotFoundError` | `TZ` bir IANA adı değil | örneğin `TZ=Europe/Istanbul` |
 

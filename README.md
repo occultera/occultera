@@ -112,7 +112,7 @@ suggestions.
    openssl rand -hex 32            # APP_SECRET
    vi .env                         # APP_PASSWORD, LLM_*, WAZUH_INDEXER_*, WAZUH_API_*, WAZUH_CA_FILE
    docker compose up -d
-   docker compose exec triage python -m app.check
+   docker compose exec occultera python -m app.check
    ```
 
 3. Press **Run check now** and check the first report.

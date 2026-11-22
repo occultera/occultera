@@ -105,8 +105,8 @@ Gizli (confidential) istemci oluşturun:
 - Client ID: `wazuh-triage`
 - Client authentication: **açık**
 - Standard flow: **açık**
-- Geçerli yönlendirme URI'si: `https://triage.example.com/oauth2/callback`
-- Web origins: `https://triage.example.com`
+- Geçerli yönlendirme URI'si: `https://occultera.example.com/oauth2/callback`
+- Web origins: `https://occultera.example.com`
 
 Uygulamanın yöneticiyi görüntüleyiciden ayırabilmesi için bir **grup claim'i** ekleyin: *Client scopes →
 wazuh-triage-dedicated → Add mapper → By configuration → Group Membership*, token claim adı `groups`,
@@ -120,7 +120,7 @@ wazuh-triage-dedicated → Add mapper → By configuration → Group Membership*
 - --oidc-issuer-url=https://keycloak.example.com/realms/REALM
 - --client-id=wazuh-triage
 - --client-secret=$(OAUTH2_PROXY_CLIENT_SECRET)
-- --redirect-url=https://triage.example.com/oauth2/callback
+- --redirect-url=https://occultera.example.com/oauth2/callback
 - --cookie-secret=$(OAUTH2_PROXY_COOKIE_SECRET)   # 32 rastgele bayt, base64
 - --cookie-secure=true
 - --email-domain=*
@@ -186,7 +186,7 @@ Authentik'in **gömülü outpost**'u forward-auth sunucusu olarak çalışabilir
 
 ### 1. Authentik
 
-1. Dış adresi `https://triage.example.com` olan bir **Proxy provider** (forward auth / tek uygulama) oluşturun.
+1. Dış adresi `https://occultera.example.com` olan bir **Proxy provider** (forward auth / tek uygulama) oluşturun.
 2. Bu provider'a bağlı bir **Application** oluşturun. Arayüzü kullanacak bütün gruplara (yöneticiler ve
    görüntüleyiciler) bağlayın ve adlarını `SSO_ADMIN_GROUPS` / `SSO_VIEWER_GROUPS` içine yazın.
 3. Uygulamayı, Traefik ile aynı namespace'teki gömülü outpost'a (veya ayrı bir outpost'a) atayın.
@@ -218,7 +218,7 @@ metadata:
 spec:
   routes:
     - kind: Rule
-      match: Host(`triage.example.com`)
+      match: Host(`occultera.example.com`)
       middlewares:
         - name: authentik
       services:
@@ -226,7 +226,7 @@ spec:
           port: 8080
     # Authentik'in kendi giriş / callback uçları
     - kind: Rule
-      match: Host(`triage.example.com`) && PathPrefix(`/outpost.goauthentik.io/`)
+      match: Host(`occultera.example.com`) && PathPrefix(`/outpost.goauthentik.io/`)
       priority: 1000
       services:
         - name: authentik-server
@@ -234,13 +234,13 @@ spec:
           port: 80
     # MCP'nin kendi bearer token'ı var; Authentik middleware yok
     - kind: Rule
-      match: Host(`triage.example.com`) && Path(`/mcp`)
+      match: Host(`occultera.example.com`) && Path(`/mcp`)
       priority: 900
       services:
         - name: occultera
           port: 8080
   tls:
-    secretName: triage-tls
+    secretName: occultera-tls
 ```
 
 Overlay'de etkinleştirin:
@@ -264,7 +264,7 @@ Namespace'ler arası servis referansları için Traefik'in
 
 ```sh
 # 1. Kimlik doğrulanmamış istek IdP'ye yönlenmeli
-curl -sI https://triage.example.com/ | head -n 3
+curl -sI https://occultera.example.com/ | head -n 3
 
 # 2. Tarayıcıdan giriş yapın, uygulamayı açın ve bir koşu başlatın.
 

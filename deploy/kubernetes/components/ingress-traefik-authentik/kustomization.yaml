@@ -3,7 +3,7 @@
 # is switched off (AUTH_DISABLED=true); the SSO user (X-authentik-username) is recorded for rule deployments.
 # Use together with the networkpolicy component so that only Traefik can reach the pod.
 # Authentik: Applications → Create with provider → Proxy Provider → "Forward auth (single application)",
-# external host https://triage.example.com, bind a group; then add the application to the embedded outpost.
+# external host https://occultera.example.com, bind a group; then add the application to the embedded outpost.
 apiVersion: kustomize.config.k8s.io/v1alpha1
 kind: Component
 resources:
@@ -14,6 +14,6 @@ configMapGenerator:
     literals:
       - AUTH_DISABLED=true
       - COOKIE_SECURE=true
-      - NOTIFY_UI_URL=https://triage.example.com
+      - NOTIFY_UI_URL=https://occultera.example.com
       - SSO_ADMIN_GROUPS=wazuh-admins            # Authentik group(s) whose members are administrators
       - SSO_VIEWER_GROUPS=wazuh-viewers          # read-only; users in neither group are refused

@@ -28,7 +28,7 @@ docker compose up -d --build
 **Beklenen:** `docker compose ps` çıktısında `occultera` çalışıyor, yaklaşık yarım dakika sonra da
 "healthy" görünür. `curl -fsS http://127.0.0.1:8080/healthz` HTTP 200 döner.
 
-**Olmadıysa:** nedeni `docker compose logs triage` gösterir. En sık görülen neden, `.env.example` kopyasına
+**Olmadıysa:** nedeni `docker compose logs occultera` gösterir. En sık görülen neden, `.env.example` kopyasına
 `WDT_DEMO=true` satırının başka bir `WDT_DEMO=` satırının üstüne eklenmesidir; son satır geçerli olur.
 `.env.demo` dosyasını değiştirmeden kullanın.
 
@@ -99,7 +99,7 @@ Tek ortam için en küçük `.env` [Kurulum](Installation-TR) sayfasında (A2 b�
 
 ```sh
 docker compose up -d
-docker compose exec triage python -m app.check
+docker compose exec occultera python -m app.check
 ```
 
 `python -m app.check` koşu başlatmadan Indexer'ı (alarmlar, zafiyetler, uygulamanın kendi indeksleri), Wazuh

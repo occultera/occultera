@@ -32,7 +32,7 @@ Pin versions. With `:latest` you cannot say what you are running or go back to i
 # Docker Compose: set the image tag in docker-compose.yml, then
 docker compose pull
 docker compose up -d
-docker compose exec triage python -m app.check
+docker compose exec occultera python -m app.check
 ```
 
 ```sh
@@ -72,6 +72,10 @@ you took before the upgrade.
 
 ### 0.17.0
 
+- **The container and the Compose service are now `occultera`** (were `triage`). Compose: run
+  `docker compose up -d --remove-orphans` once so the old `triage` service is removed. Kubernetes with Kustomize:
+  `kubectl apply -k` replaces the container. With `kubectl set image` use `occultera=ghcr.io/occultera/occultera:0.17.0`
+  only after the manifest is applied; until then the container is still called `triage`.
 - **No configuration change is required.** Same indices, same variables, same reports; replace the image
   (Kustomize `newTag` / `?ref=v0.17.0`, Helm chart 0.8.1). The release prepares Wazuh 5.x support inside; Wazuh 4.x
   behaves exactly as in 0.16.0.

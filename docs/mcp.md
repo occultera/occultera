@@ -37,7 +37,7 @@ library only) forwards stdio to `/mcp`. Put the token in a file readable only by
   "mcpServers": {
     "wazuh-prod": {
       "command": "python3",
-      "args": ["/path/to/occultera/tools/mcp_bridge.py", "https://wazuh-triage.example.com/mcp",
+      "args": ["/path/to/occultera/tools/mcp_bridge.py", "https://wazuh-occultera.example.com/mcp",
                "--token-file", "/path/to/mcp.token"]
     }
   }

@@ -125,7 +125,7 @@ Grup başlığı adları, vekil yapılandırması ve hiçbir listede olmayan kul
   bağlıdır: her satırda `prev` ve `hash` bulunur, böylece değiştirilen veya silinen satır tespit edilir.
 
   ```sh
-  docker compose exec triage python -c "from app import auditlog; print(auditlog.verify())"
+  docker compose exec occultera python -c "from app import auditlog; print(auditlog.verify())"
   # {'ok': True, 'lines': 42, 'broken': None, 'file': 'logs/audit.jsonl'}
   ```
 
