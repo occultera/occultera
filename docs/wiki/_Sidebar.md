@@ -9,6 +9,7 @@
 - [Scenarios](Scenarios)
 - [FAQ and glossary](FAQ)
 - [Name and logo](Name-and-Logo)
+- [Roadmap](Roadmap)
 
 **Install and configure**
 - [Installation](Installation)
@@ -50,6 +51,7 @@
 - [Örnek senaryolar](Scenarios-TR)
 - [SSS ve sözlük](FAQ-TR)
 - [Ad ve logo](Name-and-Logo-TR)
+- [Yol haritası](Roadmap-TR)
 
 **Kurulum ve yapılandırma**
 - [Kurulum](Installation-TR)

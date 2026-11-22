@@ -1,64 +1,50 @@
 # Roadmap
 
-Where the project is going, roughly ordered by impact. This is a living document — ideas and PRs welcome
-(see [CONTRIBUTING.md](CONTRIBUTING.md)). Status legend: ✅ shipped · 🚧 in progress · ⬜ planned.
+> Also on the website: https://occultera.dev/roadmap/ (5 languages) and in the wiki. Source of truth: `src/roadmap_data.py` in the occultera.dev repository.
 
-## Reach & distribution
+What Occultera does today, what is being built and what comes next. Wazuh 4.x stays fully supported; Wazuh 5.x support arrives with 1.0, after Wazuh 5.0 is generally available.
 
-| Status | Item | Why |
-|---|---|---|
-| ✅ | **Helm chart** + a one-line install (published to a Helm repo, kind-tested in CI, Artifact Hub-ready) | most Wazuh users deploy with `wazuh-kubernetes`/Helm; a chart is the single biggest adoption lever. |
-| ✅ | Docker Compose + Kubernetes (kustomize) | single container, read-only FS, non-root, no PVC. |
-| ⬜ | Signed container images (cosign) + SLSA provenance (SBOM ✅ per build) | a requirement in enterprise evaluations. |
-| ✅ | Multi-language UI (en, tr, es, de) | more languages = more users; the catalogue is tiny (`app/i18n.py`). |
-| ⬜ | Interactive demo (one-click temporary deploy) | let people try it without a Wazuh of their own. |
+Current release: **0.17.0** · Updated 2026-11-22
 
-## Integrations
+## ✅ Shipped
 
-| Status | Item | Why |
-|---|---|---|
-| ✅ | e-mail, Telegram, Microsoft Teams, Slack, Discord, generic webhook, ntfy | cover every team's channel. |
-| ✅ | MCP server (`/mcp`) | Claude Desktop / any MCP client can investigate with live data. |
-| ✅ | LLM providers: Anthropic, OpenAI, Azure OpenAI, Gemini, DeepSeek, Ollama/vLLM/LM Studio/LiteLLM | bring your own key, or run fully offline. |
-| ✅ | Ticketing: **Jira**, Zammad (ServiceNow, GitLab/GitHub issues planned) | the incident-record draft already has a clean provider hook. |
-| ⬜ | PagerDuty / Opsgenie | for on-call escalation of `real_incident` findings. |
+| Item | What it gives you |
+|---|---|
+| **MCP server for Wazuh** | Claude Desktop, Cursor, VS Code or any MCP client investigates with read-only tools and live data. |
+| **AI alert triage with your own model** | Claude, OpenAI, Gemini, DeepSeek or a local model (Ollama, vLLM): one report with evidence, questions and rule drafts. |
+| **GDPR / KVKK masking** | Detected personal data is pseudonymised before the AI and every MCP client; secrets are removed. |
+| **Urgent-alert watch without an AI call** | Critical alerts, login after failures, spikes, silent agents, unusual outbound transfer — within minutes. |
+| **Rule drafts you can trust** | Replayed on two weeks of real alerts, logtest in both directions, deployment with rollback, live verification. |
+| **Cluster pulse** | Prometheus and Thanos, several Kubernetes and OpenShift clusters per Wazuh, firing alerts explained by AI. |
+| **Monthly audit report and PDF** | Volume, decisions, rule changes, outages, agent coverage, vulnerability SLA — ISMS evidence. |
+| **Helm, Kustomize, Docker Compose; signed images** | One container, no extra database, read-only file system; release images signed with cosign, SBOM per build. |
+| **Internal groundwork for Wazuh 5 (0.17)** | A schema layer between Occultera and Wazuh; 4.x queries unchanged, checked against a golden report. |
 
-## Product
+## 🚧 In progress — next release
 
-| Status | Item | Why |
-|---|---|---|
-| ✅ | Deterministic collection → LLM triage → structured report → recommendation inbox → knowledge base. | the core loop. |
-| ✅ | Rule drafts with validation, rollback and two-way logtest (opt-in deployment). | the differentiator. |
-| ✅ | Live verification of deployed/promoted rules on real events. | "logtest passed" is not proof; real events are. |
-| ✅ | Monthly audit report (ISMS evidence) + agent coverage + vulnerability SLA + mail saturation + anomalies. | regulatory story. |
-| ✅ | **PDF export** of the monthly audit report (reportlab, Unicode-safe) | regulated customers want a printable artefact. |
-| ⬜ | **Decoder drafts** next to rule drafts (validate + logtest + rollback). | onboarding new log sources. |
-| ✅ | **Read-only viewer role** (`VIEWER_PASSWORD`) with a permission matrix and per-role environment allow-lists. | team deployments need role separation. |
-| ⬜ | Embedded SVG time-series charts in reports. | readability + "wow" factor without a JS build step. |
-| ⬜ | False-positive feedback loop polish: auto-baseline suggestions after N days unchanged. | turns decisions into automation. |
+| Item | What it gives you |
+|---|---|
+| **AI round without an API key** | Run the daily review in an MCP client (daily_review prompt) or paste a masked brief into Gemini, ChatGPT or Claude and upload the answer. |
+| **Indexer health with advice** | Heap, circuit breaker (“Data too large”), shards per GB of heap, unassigned shards — with what to do. |
+| **Wazuh version detection** | The connection test shows the Wazuh version; a 5.x server is recognised and explained. |
 
-## Trust & security
+## ⬜ Next (0.18)
 
-| Status | Item | Why |
-|---|---|---|
-| ✅ | Read-only by default; separate least-privilege deploy user; prompt-injection-aware agent; strict CSP. | see [SECURITY.md](SECURITY.md). |
-| ✅ | defusedxml (no DTD/entities), bounded regexes, signed session cookie, login throttling. | |
-| ✅ | **CodeQL + dependency audit in CI** (fails on a known vulnerability), CycloneDX SBOM artifact, hash-chained audit trail, `/metrics`, production startup checks. | signals enterprise readiness. |
-| ⬜ | Published eval results (`python -m app.eval`) per model in the README. | nobody else shows their numbers this openly. |
+| Item | What it gives you |
+|---|---|
+| **Error reports and anonymous usage data** | On by default, switch off in Settings; structured data only, never alert or log content; open-source collector. |
+| **Public demos for Wazuh 4.x and 5.x** | demo.occultera.dev on 4.x data and demo5.occultera.dev as a 5.x preview. |
 
-## Wazuh 5
+## ⬜ Towards 1.0
 
-Details: [Wazuh 5](https://github.com/occultera/occultera/wiki/Wazuh-5). Wazuh 4.x stays fully supported.
+| Item | What it gives you |
+|---|---|
+| **Rule migration tool: custom 4.x XML → Sigma** | Converts simple rules, lists what needs a person, maps fields, checks matches on sample events. Usable on its own. |
+| **Wazuh 5.x support — Occultera 1.0** | Findings, events and states through the version adapter; severity mapping; Sigma drafts on 5.x. After Wazuh 5.0 is generally available. |
+| **ISO 27001 Annex A mapping in the audit report** | Each section of the monthly report linked to the controls it evidences. |
+| **Decoder drafts; PagerDuty and Opsgenie** | New log sources next to rule drafts; on-call escalation of real incidents. |
 
-| Status | Item | Why |
-|---|---|---|
-| 🚧 | **Version adapter**: one interface, 4.x and 5.x implementations, version detection; modules split to ≤ 450 lines | Wazuh 5.0 changes indices, field names, severities and the rule engine. |
-| ⬜ | Severity mapping (4.x level ↔ 5.x severity), configurable | Wazuh publishes none. |
-| ⬜ | **Rule migration tool**: custom 4.x XML rules → Sigma, a review list, field mapping, a match check on sample events | custom XML rules are not migrated by Wazuh. |
-| ⬜ | Sigma drafts on 5.x next to XML drafts on 4.x | detection moves to Sigma-compatible detectors. |
-| ⬜ | Demo for 5.x (demo5.occultera.dev) and a 4.x/5.x smoke-test matrix against real Wazuh | proof on both versions. |
-| ⬜ | Error reports and anonymous usage data (on by default, can be switched off; no alert or log content) | to see which Wazuh versions are in use and fix crashes. |
-| ⬜ | **Wazuh 5.x support — Occultera 1.0**, after Wazuh 5.0 is generally available | |
+Missing something? Open an issue or write to hello@occultera.dev · https://github.com/occultera/occultera/issues · https://occultera.dev/roadmap/
 
 ## Earlier releases
 
