@@ -323,5 +323,17 @@ def audit_pdf(d: dict, lang: str = "en") -> bytes:
         for it in open_items:
             story.append(Paragraph("•  " + _esc(it.get("title", "")), S["body"]))
 
+    controls = d.get("controls") or []
+    if controls:
+        _section(story, t(L, "au.controls"), S)
+        mark = {"evidence": "✓", "gap": "!", "no_data": "–", "excluded": "×"}
+        rows = [[f"{c['id']}", _esc(c["title"]) + (f" ({_esc(c['ref'])})" if c.get("ref") else ""),
+                 f"{mark.get(c['status'], '')} {t(L, 'au.c.' + c['status'])}", _esc(t(L, c["key"], **c["params"]))]
+                for c in controls]
+        story.append(_table(["Annex A", "", t(L, "au.c.status"), t(L, "au.c.reason")], rows, S,
+                            widths=[CONTENT_W * 0.10, CONTENT_W * 0.30, CONTENT_W * 0.16, CONTENT_W * 0.44]))
+        story.append(Spacer(1, 4))
+        story.append(Paragraph(_esc(t(L, "au.c.disclaimer")) + f" · SHA-256 {d.get('sha256', '')}", S["muted"]))
+
     doc.build(story, canvasmaker=partial(_NumberedCanvas, label=f"{env} · {month}"))
     return buf.getvalue()

@@ -147,6 +147,14 @@ async def build(runtime, env_id: str, month: str | None = None) -> dict:
     out["mail_saturated_runs"] = sat
     out["title"] = t(lang, "au.title", env=env.name, m=label)
     out["days_in_month"] = calendar.monthrange(start.year, start.month)[1]
+    if env.compliance.enabled:           # ISO 27001 Annex A evidence summary (app/controls.py)
+        from . import auditlog
+        from .controls import digest, evaluate, section_controls
+        out["sha256"] = digest(out)
+        out["controls"] = evaluate(out, env.compliance)
+        out["section_controls"] = section_controls(out["controls"])
+        auditlog.record("audit.generated", env=env.id, target=label, result="ok",
+                        detail={"month": label, "sha256": out["sha256"]})
     return out
 
 
@@ -211,4 +219,10 @@ def markdown(d: dict, lang: str) -> str:
         o.append("")
     if d["open_items"]:
         o += [f"## {t(L, 'kind.open_item')}", ""] + [f"- {x['title']}" for x in d["open_items"]] + [""]
+    if d.get("controls"):
+        o += [f"## {t(L, 'au.controls')}", "", f"| Annex A | {t(L, 'au.c.status')} | {t(L, 'au.c.reason')} |",
+              "|---|---|---|"]
+        o += [f"| {c['id']} {c['title']}{' (' + c['ref'] + ')' if c.get('ref') else ''} | {t(L, 'au.c.' + c['status'])} | "
+              f"{t(L, c['key'], **c['params'])} |" for c in d["controls"]]
+        o += ["", f"_{t(L, 'au.c.disclaimer')}_ · SHA-256 `{d.get('sha256', '')}`", ""]
     return "\n".join(o)

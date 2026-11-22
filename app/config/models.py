@@ -94,6 +94,16 @@ class MailCfg(BaseModel):
     max_per_hour: int = 12        # email_maxperhour (Wazuh default 12)
 
 
+class ComplianceCfg(BaseModel):
+    """ISO 27001 Annex A evidence summary in the monthly audit report (app/controls.py). Supporting evidence only."""
+    enabled: bool = True
+    framework: str = "iso27001:2022"
+    max_outage_minutes: int = 60          # A.8.15: longest tolerated total SIEM outage in a month
+    min_run_ratio: float = 0.8            # A.8.16: finished rounds per day of the month
+    exclude: dict[str, str] = Field(default_factory=dict)      # control -> reason (Statement of Applicability)
+    isms_refs: dict[str, str] = Field(default_factory=dict)    # control -> your ISMS document reference
+
+
 class VulnSlaCfg(BaseModel):
     """Days an active vulnerability may stay open, per severity (0 = not tracked)."""
     critical: int = 15

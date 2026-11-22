@@ -233,6 +233,22 @@ bir indeks kaybolduğunda kritik bayrak kaldırır. Ayrıntı: [Yedekleme](Backu
 değişiklikleri, canlılık kesintileri, kapsama ve zafiyet SLA'sı. Rapor Markdown (`/api/e/<ortam>/audit.md`),
 PDF (`audit.pdf`) ve MCP (`audit_report`, `month: YYYY-MM`) olarak alınabilir.
 
+### ISO 27001 Annex A kanıtı *(1.0)*
+
+Rapor, bir SIEM incelemesinin gerçekten kanıt ürettiği on kontrol için (A.5.9, A.5.25–A.5.28, A.8.8, A.8.9, A.8.15,
+A.8.16, A.8.32) bir **Annex A kanıtı** tablosuyla biter: *kanıt var*, *boşluk*, *veri yok* ya da *kapsam dışı*, her
+birinin arkasındaki sayıyla ("30 günde 19 tamamlanmış tur, en az 24 bekleniyordu"). Model yok, puan yok —
+destekleyici izleme kanıtıdır, uygunluk beyanı değildir. Raporun SHA-256 parmak izi basılır ve denetim kaydına
+(`audit.generated`) yazılır. Ortam başına:
+
+```yaml
+compliance:
+  max_outage_minutes: 60      # A.8.15
+  min_run_ratio: 0.8          # A.8.16: gün başına tamamlanmış tur
+  exclude: {A.5.9: "Envanter CMDB'de tutuluyor (SoA)"}
+  isms_refs: {A.8.16: "ISMS-23 §4", A.5.25: "ISMS-18"}
+```
+
 ## Bilgi tabanı içe / dışa aktarma
 
 - Arayüz: bilgi sayfası → **İçe / dışa aktar**. Şablonu indirin (**TXT**, **Excel CSV** ya da YAML), Not Defteri

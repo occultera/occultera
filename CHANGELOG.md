@@ -14,6 +14,10 @@ All notable changes to this project are documented here. The format follows
   has a label for screen readers.
 
 ### Added
+- **ISO 27001 Annex A evidence in the monthly audit report** (`app/controls.py`): ten controls marked evidence,
+  gap, no data or excluded, each with its number; Statement-of-Applicability exclusions and ISMS references per
+  environment (`compliance:`); SHA-256 fingerprint in the report, the PDF and the audit trail. Deterministic, not a
+  conformity statement.
 - **Rule migration tool (preview): custom 4.x XML → Sigma** — `python -m app.migrate local_rules.xml --events
   alerts.jsonl`. Converts field, match/regex (OS_Match/OS_Regex translated), IP, decoder, group, level and ATT&CK
   conditions; inlines parents from the same file; writes Sigma correlation drafts for `frequency` rules; lists what
