@@ -643,7 +643,7 @@ async def test_pending_reminder_and_noise_map(settings):
         sent.append(json.loads(req.content))
         return httpx.Response(200, json={"ok": True})
     s2 = settings.model_copy(deep=True)
-    s2.notify = N.NotifyCfg(ui_url="https://triage.example", teams=N.TeamsCfg(webhook_url="https://example.invalid/hook"))
+    s2.notify = N.NotifyCfg(ui_url="https://occultera.example", teams=N.TeamsCfg(webhook_url="https://example.invalid/hook"))
     rt = Runtime(s2, demo=True)
     er = rt.get("demo")
     old = {"run_id": "p-1", "env": "demo", "status": "done", "started_at": "2026-10-01T07:50:00.000Z",
@@ -660,7 +660,7 @@ async def test_pending_reminder_and_noise_map(settings):
     assert res["waiting"] == 1
     card = sent[0]["attachments"][0]["content"]
     urls = [a["url"] for a in card["actions"]]
-    assert urls[0] == "https://triage.example/e/demo/inbox" and "/inbox?key=" in urls[1]
+    assert urls[0] == "https://occultera.example/e/demo/inbox" and "/inbox?key=" in urls[1]
     s2.notify.on_pending = False
     assert await rt.pending_reminder("demo", transport=httpx.MockTransport(h)) == {}
 

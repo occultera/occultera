@@ -1,5 +1,5 @@
 services:
-  triage:
+  occultera:
     image: ghcr.io/occultera/occultera:latest
     build: .
     container_name: occultera

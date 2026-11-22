@@ -11,7 +11,7 @@ Ayarlar `.env`'de (tek ortam) ya da `config/environments.yaml`'ın `llm:` bloğu
 verilebilir. Değişken listesi için [providers.md](providers.md) başındaki tabloya bakın
 (`LLM_TEMPERATURE`, `LLM_TOKEN_PARAM`, `LLM_REASONING_EFFORT`, `LLM_EXTRA_BODY`, `LLM_MAX_TOOL_STEPS`).
 
-Değişiklikten sonra `docker compose exec triage python -m app.check` çalıştırın; son satır modeli dener.
+Değişiklikten sonra `docker compose exec occultera python -m app.check` çalıştırın; son satır modeli dener.
 
 ## Claude (Anthropic)
 

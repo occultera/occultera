@@ -127,7 +127,7 @@ Group header names, proxy configuration and the default role for users in no lis
   hash-chained: every line carries `prev` and `hash`, so an edited or deleted line is detectable.
 
   ```sh
-  docker compose exec triage python -c "from app import auditlog; print(auditlog.verify())"
+  docker compose exec occultera python -c "from app import auditlog; print(auditlog.verify())"
   # {'ok': True, 'lines': 42, 'broken': None, 'file': 'logs/audit.jsonl'}
   ```
 

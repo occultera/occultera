@@ -28,7 +28,7 @@ docker compose up -d --build
 **Expected:** `docker compose ps` lists `occultera` as running, and after about half a minute as
 healthy. `curl -fsS http://127.0.0.1:8080/healthz` answers with HTTP 200.
 
-**If not:** `docker compose logs triage` shows the reason. The usual one is a `.env` copied from `.env.example`
+**If not:** `docker compose logs occultera` shows the reason. The usual one is a `.env` copied from `.env.example`
 with `WDT_DEMO=true` added above another `WDT_DEMO=` line; the last line wins. Use `.env.demo` as it is.
 
 ## Step 2 — Sign in
@@ -97,7 +97,7 @@ The minimal `.env` for one environment is in [Installation](Installation) (secti
 
 ```sh
 docker compose up -d
-docker compose exec triage python -m app.check
+docker compose exec occultera python -m app.check
 ```
 
 `python -m app.check` tests the Indexer (alerts, vulnerabilities, the application's own indices), the Wazuh API,

@@ -47,7 +47,7 @@ synthetic data; no Wazuh connection is attempted. `WDT_DEMO=true` must never be 
 ### A2. A real Wazuh (single environment)
 
 `docker-compose.yml` publishes the port on `127.0.0.1` only, mounts `./config` read-only and keeps the audit
-trail in the named volume `audit` (`docker compose cp triage:/app/logs/audit.jsonl .` copies it out). Start from the example file:
+trail in the named volume `audit` (`docker compose cp occultera:/app/logs/audit.jsonl .` copies it out). Start from the example file:
 
 ```sh
 cp .env.example .env
@@ -94,7 +94,7 @@ Then:
 
 ```sh
 docker compose up -d
-docker compose exec triage python -m app.check
+docker compose exec occultera python -m app.check
 ```
 
 `python -m app.check [env…] [--no-llm]` (or **Test connections** on the environment's **Reports** page) verifies the Indexer
@@ -227,7 +227,7 @@ Put any TLS-terminating proxy in front; the app listens on `0.0.0.0:8080` inside
 published on loopback by compose.
 
 ```caddy
-triage.example.com {
+occultera.example.com {
     reverse_proxy 127.0.0.1:8080
 }
 ```
@@ -235,7 +235,7 @@ triage.example.com {
 ```nginx
 server {
     listen 443 ssl;
-    server_name triage.example.com;
+    server_name occultera.example.com;
     # ssl_certificate ...;
     location / {
         proxy_pass http://127.0.0.1:8080;
@@ -275,7 +275,7 @@ Then:
 1. Open the environment's **Reports** page (sidebar) and press **Test connections**.
 2. Press **Run check now** (or wait for the schedule) and confirm a report appears.
 3. Approve or reject one finding; open **Knowledge base** and confirm the decision is stored.
-4. Check the audit trail (`docker compose exec triage tail logs/audit.jsonl`) for the decision.
+4. Check the audit trail (`docker compose exec occultera tail logs/audit.jsonl`) for the decision.
 5. Open **Settings → Storage safety**: the prefix should be OK; with ISM read permission the table shows
    whether a retention policy would delete the application's indices.
 
@@ -296,7 +296,7 @@ The application is stateless: reports and the knowledge base are documents in th
 # Docker Compose (with a pinned tag)
 docker compose pull
 docker compose up -d
-docker compose exec triage python -m app.check
+docker compose exec occultera python -m app.check
 
 # Helm
 helm upgrade occultera occultera/occultera \
@@ -327,7 +327,7 @@ The most common installation problems are below; the full list by area is on the
 |---|---|
 | Container exits with `refusing to start in production` | The message names the variable. Set a real `APP_PASSWORD`, `APP_SECRET`, `COOKIE_SECURE=true`, or fix TLS verification. |
 | `FileNotFoundError: no configuration: … does not exist and WAZUH_INDEXER_URL is not set` | Neither a YAML file nor `WAZUH_INDEXER_URL`. For the demo: `cp .env.demo .env` — a `WDT_DEMO=true` added above another `WDT_DEMO=` line in `.env` is overridden (the last line wins). |
-| `ERR_EMPTY_RESPONSE` on 127.0.0.1:8080 | The container is restarting: `docker compose logs triage` shows why (usually the line above). |
+| `ERR_EMPTY_RESPONSE` on 127.0.0.1:8080 | The container is restarting: `docker compose logs occultera` shows why (usually the line above). |
 | `401` "did not come through the authenticating proxy" | SSO mode (`AUTH_DISABLED=true`) without a user header. Forward `X-Forwarded-User` / `X-authentik-username` from the proxy, or check `TRUSTED_PROXIES` / `PROXY_SECRET`. |
 | `403` "cross-origin request refused" on a button | The browser's `Origin` is not the host the app sees. Set `WDT_TRUSTED_ORIGINS=https://your.public.host`. |
 | `503` "audit trail is not writable" | Production mode refuses writes without an audit trail. Make `AUDIT_LOG_FILE` writable (the `audit` volume), or `AUDIT_STRICT=false`. |

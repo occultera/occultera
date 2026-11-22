@@ -156,12 +156,12 @@ ingress:
   className: nginx
   annotations: {}
   hosts:
-    - host: triage.example.com
+    - host: occultera.example.com
       paths:
         - { path: "/", pathType: Prefix }
   tls: []
-  #  - hosts: [triage.example.com]
-  #    secretName: triage-tls
+  #  - hosts: [occultera.example.com]
+  #    secretName: occultera-tls
 
 # Optional NetworkPolicy (recommended behind SSO). Mirrors the kustomize
 # `networkpolicy` component; edit the egress to match your Wazuh / SMTP layout.

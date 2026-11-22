@@ -102,7 +102,7 @@ kimlik ve sonuç tutar; parola, belirteç ya da ham log satırı tutmaz.
 **Ortaya çıkardığı:** bir dosya içinde değiştirilen, araya eklenen ya da silinen kayıt.
 
 ```sh
-docker compose exec triage python -c "from app import auditlog; print(auditlog.verify('logs/audit.jsonl'))"
+docker compose exec occultera python -c "from app import auditlog; print(auditlog.verify('logs/audit.jsonl'))"
 ```
 
 **Tek başına engellemediği ve ortaya çıkarmadığı:**

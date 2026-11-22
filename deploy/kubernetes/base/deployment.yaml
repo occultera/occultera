@@ -22,7 +22,7 @@ spec:
         seccompProfile:
           type: RuntimeDefault
       containers:
-        - name: triage
+        - name: occultera
           image: ghcr.io/occultera/occultera:0.17.0
           imagePullPolicy: IfNotPresent
           ports:

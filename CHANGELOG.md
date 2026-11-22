@@ -19,6 +19,11 @@ Groundwork for Wazuh 5.x. Nothing changes for users on Wazuh 4.x: every query an
   UI texts are one module per language in `app/i18n/` instead of a base file plus nine release-named add-ons.
   Every name stays importable from its old place.
 
+### Changed (names)
+- **The container and the Compose service are called `occultera`** (were `triage`): `docker compose exec occultera …`,
+  `kubectl … -c occultera`. The system user in the image is `occultera` (same UID 10001). Index names (`daily-triage-*`)
+  and the Wazuh account `daily-triage` are unchanged.
+
 ### Fixed
 - **Each environment queries with its own field names.** Audit reports, the weekly summary, rule verification and
   deployment and background jobs bind the schema of the environment they work on (`Runtime.get`), so several

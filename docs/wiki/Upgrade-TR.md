@@ -34,7 +34,7 @@ Sürümleri sabitleyin. `:latest` ile ne çalıştırdığınızı söyleyemez, 
 # Docker Compose: docker-compose.yml içinde imaj etiketini ayarlayın, sonra
 docker compose pull
 docker compose up -d
-docker compose exec triage python -m app.check
+docker compose exec occultera python -m app.check
 ```
 
 ```sh
@@ -74,6 +74,9 @@ etkisizdir. Eski sürüm yeni veriyle düzgün çalışmazsa yükseltmeden önce
 
 ### 0.17.0
 
+- **Container ve Compose servisinin adı artık `occultera`** (önce `triage`). Compose: eski `triage` servisinin
+  kaldırılması için bir kez `docker compose up -d --remove-orphans` çalıştırın. Kubernetes + Kustomize: `kubectl apply -k`
+  container'ı değiştirir. `kubectl set image` kullanıyorsanız manifest uygulanana kadar container adı hâlâ `triage`dır.
 - **Yapılandırma değişikliği gerekmez.** Aynı indeksler, aynı değişkenler, aynı raporlar; imajı değiştirin
   (Kustomize `newTag` / `?ref=v0.17.0`, Helm chart 0.8.1). Sürüm, Wazuh 5.x desteğinin iç hazırlığıdır; Wazuh 4.x'te
   davranış 0.16.0 ile birebir aynıdır.

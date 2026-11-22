@@ -4,7 +4,7 @@ kind: Ingress
 metadata:
   name: occultera
   annotations:
-    # cert-manager issues the certificate (remove if you provide triage-tls yourself, e.g. a wildcard secret):
+    # cert-manager issues the certificate (remove if you provide occultera-tls yourself, e.g. a wildcard secret):
     cert-manager.io/cluster-issuer: letsencrypt-prod
     # Optional: only from your office/VPN ranges
     # nginx.ingress.kubernetes.io/whitelist-source-range: "192.0.2.0/24,198.51.100.0/24"
@@ -15,10 +15,10 @@ metadata:
 spec:
   ingressClassName: nginx
   tls:
-    - hosts: [triage.example.com]
-      secretName: triage-tls
+    - hosts: [occultera.example.com]
+      secretName: occultera-tls
   rules:
-    - host: triage.example.com
+    - host: occultera.example.com
       http:
         paths:
           - path: /

@@ -47,7 +47,7 @@ ile boş açılır. Demo
 ### A2. Gerçek Wazuh (tek ortam)
 
 `docker-compose.yml` portu yalnızca `127.0.0.1` üzerinde yayınlar, `./config` dizinini salt okunur bağlar ve
-denetim kaydını `audit` adlı volume'da tutar (`docker compose cp triage:/app/logs/audit.jsonl .` ile dışarı alınır). Örnek dosyadan başlayın:
+denetim kaydını `audit` adlı volume'da tutar (`docker compose cp occultera:/app/logs/audit.jsonl .` ile dışarı alınır). Örnek dosyadan başlayın:
 
 ```sh
 cp .env.example .env
@@ -94,7 +94,7 @@ Sonra:
 
 ```sh
 docker compose up -d
-docker compose exec triage python -m app.check
+docker compose exec occultera python -m app.check
 ```
 
 `python -m app.check [ortam…] [--no-llm]` (veya ortamın **Raporlar** sayfasındaki **Test connections**) Indexer'ı (alarm,
@@ -228,7 +228,7 @@ kullanın). Python 3.11–3.15 desteklenir; `tzdata` saat dilimi veritabanını 
 loopback'e yayınlar.
 
 ```caddy
-triage.example.com {
+occultera.example.com {
     reverse_proxy 127.0.0.1:8080
 }
 ```
@@ -236,7 +236,7 @@ triage.example.com {
 ```nginx
 server {
     listen 443 ssl;
-    server_name triage.example.com;
+    server_name occultera.example.com;
     # ssl_certificate ...;
     location / {
         proxy_pass http://127.0.0.1:8080;
@@ -277,7 +277,7 @@ Ardından:
 1. Kenar çubuğundan ortamın **Raporlar** sayfasını açıp **Test connections** düğmesine basın.
 2. **Run check now** ile (veya zamanlamayı bekleyerek) bir raporun oluştuğunu doğrulayın.
 3. Bir bulguyu onaylayın veya reddedin; **Knowledge base** sayfasında kararın saklandığını görün.
-4. Denetim kaydında kararı kontrol edin (`docker compose exec triage tail logs/audit.jsonl`).
+4. Denetim kaydında kararı kontrol edin (`docker compose exec occultera tail logs/audit.jsonl`).
 5. **Ayarlar → Depolama güvenliği** bölümünü açın: önek OK olmalı; ISM okuma yetkisi varsa tablo, bir silme
    politikasının uygulamanın indekslerini silip silmeyeceğini gösterir.
 
@@ -299,7 +299,7 @@ geçişi yoktur.
 # Docker Compose (sabitlenmiş etiketle)
 docker compose pull
 docker compose up -d
-docker compose exec triage python -m app.check
+docker compose exec occultera python -m app.check
 
 # Helm
 helm upgrade occultera occultera/occultera \
@@ -331,7 +331,7 @@ sayfasındadır.
 |---|---|
 | Konteyner `refusing to start in production` ile çıkıyor | Mesaj değişkeni söyler. Gerçek `APP_PASSWORD`, `APP_SECRET`, `COOKIE_SECURE=true` ayarlayın veya TLS doğrulamasını düzeltin. |
 | `FileNotFoundError: no configuration: … does not exist and WAZUH_INDEXER_URL is not set` | Ne YAML dosyası ne de `WAZUH_INDEXER_URL` var. Demo için: `cp .env.demo .env` — `.env` içinde başka bir `WDT_DEMO=` satırının üstüne eklenen `WDT_DEMO=true` ezilir (son satır geçerlidir). |
-| 127.0.0.1:8080'de `ERR_EMPTY_RESPONSE` | Konteyner yeniden başlıyor: nedenini `docker compose logs triage` gösterir (genellikle üstteki satır). |
+| 127.0.0.1:8080'de `ERR_EMPTY_RESPONSE` | Konteyner yeniden başlıyor: nedenini `docker compose logs occultera` gösterir (genellikle üstteki satır). |
 | `401` "did not come through the authenticating proxy" | Kullanıcı başlığı olmadan SSO modu (`AUTH_DISABLED=true`). Proxy'den `X-Forwarded-User` / `X-authentik-username` iletin ya da `TRUSTED_PROXIES` / `PROXY_SECRET` ayarını kontrol edin. |
 | Bir düğmede `403` "cross-origin request refused" | Tarayıcının `Origin` değeri uygulamanın gördüğü host değil. `WDT_TRUSTED_ORIGINS=https://dis.adresiniz` ayarlayın. |
 | `503` "audit trail is not writable" | Üretim modu denetim kaydı olmadan yazma işlemini reddeder. `AUDIT_LOG_FILE` yolunu yazılabilir yapın (`audit` volume'u) ya da `AUDIT_STRICT=false`. |

@@ -29,12 +29,12 @@ kubectl -n occultera port-forward svc/occultera 8080:8080   # http://127.0.0.1:8
 ## Components
 
 Enable them in your overlay's `kustomization.yaml` (`components:`). They contain example host names
-(`triage.example.com`), namespaces and addresses — copy the component directory next to your overlay and edit it:
+(`occultera.example.com`), namespaces and addresses — copy the component directory next to your overlay and edit it:
 
 | Component | Adds | Also sets |
 |---|---|---|
 | `networkpolicy` | NetworkPolicy: ingress only from the controller namespace; egress DNS, Wazuh 9200/55000, 443, 587/465 | — |
-| `ingress-nginx` | Ingress (class `nginx`, TLS secret `triage-tls`, `cert-manager.io/cluster-issuer`) | `COOKIE_SECURE=true`, `FORWARDED_ALLOW_IPS` |
+| `ingress-nginx` | Ingress (class `nginx`, TLS secret `occultera-tls`, `cert-manager.io/cluster-issuer`) | `COOKIE_SECURE=true`, `FORWARDED_ALLOW_IPS` |
 | `ingress-traefik-authentik` | Traefik `Middleware` (forwardAuth) + `IngressRoute`, Authentik outpost route, `/mcp` route | `AUTH_DISABLED=true`, `COOKIE_SECURE=true`, `NOTIFY_UI_URL` |
 | `rbac-readonly` | ServiceAccount, ClusterRole (`get`/`list` pods, pods/log, nodes, events, workloads, jobs, services, ingresses, PVCs — no secrets) | mounts the token into the pod |
 

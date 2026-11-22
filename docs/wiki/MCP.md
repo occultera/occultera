@@ -46,7 +46,7 @@ The endpoint is **off by default**. Without `MCP_TOKEN` it answers `404`.
 4. Test:
 
    ```sh
-   curl -s https://triage.example.com/mcp \
+   curl -s https://occultera.example.com/mcp \
      -H "Authorization: Bearer $MCP_TOKEN" \
      -H 'Content-Type: application/json' \
      -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | head -c 400
@@ -76,7 +76,7 @@ chmod 600 ~/.wdt-mcp-token
       "command": "python3",
       "args": [
         "/path/to/occultera/tools/mcp_bridge.py",
-        "https://triage.example.com/mcp",
+        "https://occultera.example.com/mcp",
         "--token-file", "/home/you/.wdt-mcp-token"
       ]
     }
@@ -125,20 +125,20 @@ Use the URL with `Authorization: Bearer <token>` and `Content-Type: application/
 
 ```sh
 # 1. handshake
-curl -s https://triage.example.com/mcp \
+curl -s https://occultera.example.com/mcp \
   -H "Authorization: Bearer $MCP_TOKEN" -H 'Content-Type: application/json' \
   -d '{"jsonrpc":"2.0","id":1,"method":"initialize",
        "params":{"protocolVersion":"2025-06-18","capabilities":{},
                  "clientInfo":{"name":"curl","version":"1"}}}'
 
 # 2. see the environments this token may use
-curl -s https://triage.example.com/mcp \
+curl -s https://occultera.example.com/mcp \
   -H "Authorization: Bearer $MCP_TOKEN" -H 'Content-Type: application/json' \
   -d '{"jsonrpc":"2.0","id":2,"method":"tools/call",
        "params":{"name":"list_environments","arguments":{}}}'
 
 # 3. run a query
-curl -s https://triage.example.com/mcp \
+curl -s https://occultera.example.com/mcp \
   -H "Authorization: Bearer $MCP_TOKEN" -H 'Content-Type: application/json' \
   -d '{"jsonrpc":"2.0","id":3,"method":"tools/call",
        "params":{"name":"search_alerts",

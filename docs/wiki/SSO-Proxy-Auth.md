@@ -104,8 +104,8 @@ Create a confidential client:
 - Client ID: `wazuh-triage`
 - Client authentication: **on**
 - Standard flow: **on**
-- Valid redirect URI: `https://triage.example.com/oauth2/callback`
-- Web origins: `https://triage.example.com`
+- Valid redirect URI: `https://occultera.example.com/oauth2/callback`
+- Web origins: `https://occultera.example.com`
 
 Add a **group claim**, so the application can tell administrators from viewers: *Client scopes →
 wazuh-triage-dedicated → Add mapper → By configuration → Group Membership*, token claim name `groups`,
@@ -119,7 +119,7 @@ wazuh-triage-dedicated → Add mapper → By configuration → Group Membership*
 - --oidc-issuer-url=https://keycloak.example.com/realms/REALM
 - --client-id=wazuh-triage
 - --client-secret=$(OAUTH2_PROXY_CLIENT_SECRET)
-- --redirect-url=https://triage.example.com/oauth2/callback
+- --redirect-url=https://occultera.example.com/oauth2/callback
 - --cookie-secret=$(OAUTH2_PROXY_COOKIE_SECRET)   # 32 random bytes, base64
 - --cookie-secure=true
 - --email-domain=*
@@ -188,7 +188,7 @@ Authentik's **embedded outpost** can act as a forward-auth server. The repositor
 ### 1. Authentik
 
 1. Create a **Proxy provider** (forward auth / single application) with external host
-   `https://triage.example.com`.
+   `https://occultera.example.com`.
 2. Create an **application** bound to that provider. Bind it to every group that may use the triage UI —
    administrators and viewers — and put their names into `SSO_ADMIN_GROUPS` / `SSO_VIEWER_GROUPS`.
 3. Assign the application to the embedded outpost (or a dedicated outpost) in the same namespace as your
@@ -221,7 +221,7 @@ metadata:
 spec:
   routes:
     - kind: Rule
-      match: Host(`triage.example.com`)
+      match: Host(`occultera.example.com`)
       middlewares:
         - name: authentik
       services:
@@ -229,7 +229,7 @@ spec:
           port: 8080
     # Authentik's own sign-in / callback endpoints
     - kind: Rule
-      match: Host(`triage.example.com`) && PathPrefix(`/outpost.goauthentik.io/`)
+      match: Host(`occultera.example.com`) && PathPrefix(`/outpost.goauthentik.io/`)
       priority: 1000
       services:
         - name: authentik-server
@@ -237,13 +237,13 @@ spec:
           port: 80
     # MCP has its own bearer token; no Authentik middleware here
     - kind: Rule
-      match: Host(`triage.example.com`) && Path(`/mcp`)
+      match: Host(`occultera.example.com`) && Path(`/mcp`)
       priority: 900
       services:
         - name: occultera
           port: 8080
   tls:
-    secretName: triage-tls
+    secretName: occultera-tls
 ```
 
 Enable it in your overlay:
@@ -267,7 +267,7 @@ namespace.
 
 ```sh
 # 1. Unauthenticated request is redirected to the IdP
-curl -sI https://triage.example.com/ | head -n 3
+curl -sI https://occultera.example.com/ | head -n 3
 
 # 2. Sign in through the browser, open the app and start a run.
 

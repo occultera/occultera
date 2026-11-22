@@ -100,7 +100,7 @@ outcomes; no passwords, tokens or raw log lines.
 **Detects:** a record that was modified, inserted or removed inside a file.
 
 ```sh
-docker compose exec triage python -c "from app import auditlog; print(auditlog.verify('logs/audit.jsonl'))"
+docker compose exec occultera python -c "from app import auditlog; print(auditlog.verify('logs/audit.jsonl'))"
 ```
 
 **Does not prevent or detect by itself:**

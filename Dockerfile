@@ -2,7 +2,7 @@
 FROM python:3.15-slim
 
 LABEL org.opencontainers.image.title="occultera" \
-      org.opencontainers.image.description="AI-assisted daily triage for Wazuh SIEM" \
+      org.opencontainers.image.description="Occultera — MCP server and AI alert triage for Wazuh" \
       org.opencontainers.image.licenses="AGPL-3.0-only" \
       org.opencontainers.image.source="https://github.com/occultera/occultera" \
       org.opencontainers.image.url="https://occultera.dev" \
@@ -16,7 +16,7 @@ WORKDIR /app
 # requirements.lock: every package pinned with its hashes (tools/update-lock.sh regenerates it from requirements.txt)
 COPY requirements.lock .
 RUN pip install --require-hashes --no-deps -r requirements.lock && \
-    useradd --system --uid 10001 --home /app triage
+    useradd --system --uid 10001 --home /app occultera
 
 COPY LICENSE NOTICE ./
 COPY app ./app
