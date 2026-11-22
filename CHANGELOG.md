@@ -5,10 +5,9 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
-### Added
-- **Wazuh version in the connection test.** A new `wazuh` row shows the Wazuh version the environment talks to (from
-  the server API, or from the index patterns without it). A Wazuh 5.x server fails the row with a pointer to the
-  wiki page *Wazuh 5*; support is planned for 1.0. `wazuh_version` (`WAZUH_VERSION`) is `auto` or `4`.
+## [0.17.0] — 2026-11-22
+
+Groundwork for Wazuh 5.x. Nothing changes for users on Wazuh 4.x: every query and report is the same as in 0.16.0.
 
 ### Changed
 - **Internal: a schema layer for the Wazuh 5 work.** Field paths and the level predicate come from
@@ -19,6 +18,12 @@ All notable changes to this project are documented here. The format follows
   event filters and source tools left `app/agent/tools.py`, the demo query engine is `app/demo_engine.py`, and the
   UI texts are one module per language in `app/i18n/` instead of a base file plus nine release-named add-ons.
   Every name stays importable from its old place.
+
+### Fixed
+- **Each environment queries with its own field names.** Audit reports, the weekly summary, rule verification and
+  deployment and background jobs bind the schema of the environment they work on (`Runtime.get`), so several
+  environments in one installation never mix fields.
+- Wiki *Wazuh 5*: 4.x levels run 0–16; the default critical band is 13–16.
 
 ## [0.16.0] — 2026-11-21
 

@@ -141,7 +141,7 @@ tabanında bulun. Sonraki koşu bunları okur.
 - AI turları arasında acil uyarılar: [Nöbet](Watch-TR).
 - Birden fazla Wazuh: [Kurulum](Installation-TR) (A3) ve [Yapılandırma](Configuration-TR).
 
-*0.16.0 için geçerlidir · demo adımları 2–4 0.16.0 üzerinde çalıştırıldı (1. adım 0.15.0 üzerinde), 5–8 0.16.0 koduna göre kontrol edildi · 2026-11-21*
+*0.17.0 için geçerlidir · demo adımları 2–4 0.17.0 kodu üzerinde çalıştırıldı (1. adım 0.15.0 üzerinde), 5–8 0.17.0 koduna göre kontrol edildi · 2026-11-22*
 
 ---
 

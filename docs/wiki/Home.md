@@ -2,7 +2,7 @@
 
 **English** · [Türkçe](Home-TR) · [Español](Home-ES) · [Français](Home-FR)
 
-**An on-call companion for Wazuh.** It watches your alerts around the clock and tells you within minutes when
+**Open-source MCP server and AI alert triage for Wazuh 4.x** (Wazuh 5.x support in development), with personal data masked before the AI (GDPR / KVKK). An on-call companion: It watches your alerts around the clock and tells you within minutes when
 something urgent happens — without asking an AI. Once or twice a day an AI round reviews everything the watch
 saw, explains it and suggests what to tune. You decide; nothing changes in Wazuh without your approval.
 
@@ -20,7 +20,7 @@ saw, explains it and suggests what to tune. You decide; nothing changes in Wazuh
 
 ![Watch board](images/dashboard.png)
 
-**Current release:** 0.16.0 · **Licence:** AGPL-3.0-only · **Python:** 3.11–3.15 · **Wazuh:** 4.x · 5.x coming in 1.0 ([Wazuh 5](Wazuh-5))
+**Current release:** 0.17.0 · **Licence:** AGPL-3.0-only · **Python:** 3.11–3.15 · **Wazuh:** 4.x · 5.x coming in 1.0 ([Wazuh 5](Wazuh-5))
 
 ## What it is, and what it is not
 

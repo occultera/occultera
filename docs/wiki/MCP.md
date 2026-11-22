@@ -96,7 +96,7 @@ no token. Useful for a first look from any MCP client and for MCP directories th
 tools.
 
 ```sh
-docker run -i --rm -e WDT_DEMO=true ghcr.io/occultera/occultera:0.16.0 python -m app.mcp_stdio
+docker run -i --rm -e WDT_DEMO=true ghcr.io/occultera/occultera:0.17.0 python -m app.mcp_stdio
 ```
 
 Or build it yourself: `docker build -t occultera .` and use `occultera` as the image name.
@@ -108,7 +108,7 @@ Client configuration (Claude Desktop, Cursor, VS Code … — any client that st
   "mcpServers": {
     "wazuh-demo": {
       "command": "docker",
-      "args": ["run", "-i", "--rm", "-e", "WDT_DEMO=true", "ghcr.io/occultera/occultera:0.16.0", "python", "-m", "app.mcp_stdio"]
+      "args": ["run", "-i", "--rm", "-e", "WDT_DEMO=true", "ghcr.io/occultera/occultera:0.17.0", "python", "-m", "app.mcp_stdio"]
     }
   }
 }
