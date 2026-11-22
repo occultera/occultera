@@ -441,6 +441,7 @@ MESSAGES: dict[str, str] = {
     # ---- stage
     'stage.collecting': 'collecting data',
     'stage.analysing': 'AI is analysing',
+    'kb.remove': 'Remove',
     'tel.title': 'Error reports and usage data',
     'tel.desc': 'Occultera sends crash reports (exception type, module:function frames, versions) and once a week which versions and features are in use. Never alert or log content, IP addresses, host or user names, model names or keys.',
     'tel.how': 'Switch it off with TELEMETRY=off, or keep crash reports only with TELEMETRY=errors. The public demo never sends anything. Blocked egress is fine: sending fails silently.',

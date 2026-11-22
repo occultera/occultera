@@ -441,6 +441,7 @@ MESSAGES: dict[str, str] = {
     # ---- stage
     'stage.collecting': 'collecte des données',
     'stage.analysing': 'l’IA analyse',
+    'kb.remove': 'Retirer',
     'tel.title': 'Rapports d’erreurs et données d’usage',
     'tel.desc': 'Occultera envoie des rapports de plantage (type d’exception, cadres module:fonction, versions) et une fois par semaine les versions et fonctions utilisées. Jamais de contenu d’alerte ou de log, d’adresse IP, de nom d’hôte ou d’utilisateur, de nom de modèle ni de clé.',
     'tel.how': 'Désactivez avec TELEMETRY=off, ou gardez seulement les plantages avec TELEMETRY=errors. La démo publique n’envoie jamais rien. Si la sortie est bloquée, l’envoi échoue sans bruit.',

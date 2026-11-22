@@ -5,6 +5,14 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+- **Every module is under 450 lines.** Rule deployment moved to `app/rules_apply.py`, log scanning to
+  `app/privacy_scan.py`, export and maintenance routes to `app/web/reports_api.py`; every name stays importable from
+  its old place. The size ceiling in `tests/test_layering.py` is empty.
+- **Interface:** visible keyboard focus on links and buttons, `prefers-reduced-motion` respected, emoji icons in
+  the settings, watch, report and knowledge pages replaced by inline SVG icons; the delete button of a masking rule
+  has a label for screen readers.
+
 ### Added
 - **Rule migration tool (preview): custom 4.x XML → Sigma** — `python -m app.migrate local_rules.xml --events
   alerts.jsonl`. Converts field, match/regex (OS_Match/OS_Regex translated), IP, decoder, group, level and ATT&CK

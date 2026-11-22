@@ -89,6 +89,10 @@ from .web.external_api import router as external_router  # noqa: E402
 
 app.include_router(external_router)
 
+from .web.reports_api import router as reports_router  # noqa: E402
+
+app.include_router(reports_router)
+
 from .mcp import router as mcp_router  # noqa: E402
 
 app.include_router(mcp_router)

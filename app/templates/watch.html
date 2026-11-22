@@ -34,7 +34,7 @@
       <td class="small"><span class="pill {{ {'notified': 'blue', 'held': 'purple', 'muted': 'gray', 'judged': 'green'}.get(e.status, 'gray') }}">{{ _('watch.status.' ~ e.status) }}</span>
         {% if e.why_silent %}<div class="muted">{{ _('watch.silent.' ~ e.why_silent) }}</div>{% endif %}</td>
       <td class="small">{% if e.verdict %}<span class="pill {{ {'real_incident': 'red', 'investigate': 'amber', 'expected': 'green', 'noise': 'gray'}[e.verdict] }}">{{ _('watch.verdict.' ~ e.verdict) }}</span>
-        <div class="muted">{{ e.reason }}</div>{% if e.suggestion %}<div>💡 {{ _('watch.sugg.' ~ e.suggestion.state) }}</div>{% endif %}
+        <div class="muted">{{ e.reason }}</div>{% if e.suggestion %}<div><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 00-3.5 10.9V16h7v-2.1A6 6 0 0012 3z"/></svg> {{ _('watch.sugg.' ~ e.suggestion.state) }}</div>{% endif %}
         {% else %}<span class="muted">{{ _('watch.waiting') }}</span>{% endif %}</td>
     </tr>
   {% else %}

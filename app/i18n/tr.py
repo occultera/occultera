@@ -441,6 +441,7 @@ MESSAGES: dict[str, str] = {
     # ---- stage
     'stage.collecting': 'veri toplanıyor',
     'stage.analysing': 'yapay zekâ analiz ediyor',
+    'kb.remove': 'Kaldır',
     'tel.title': 'Hata bildirimi ve kullanım verisi',
     'tel.desc': 'Occultera çökme raporu (istisna türü, modül:fonksiyon çerçeveleri, sürümler) ve haftada bir hangi sürüm ve özelliklerin kullanıldığını gönderir. Alarm ya da log içeriği, IP adresi, host ya da kullanıcı adı, model adı veya anahtar asla gitmez.',
     'tel.how': 'TELEMETRY=off ile kapatın ya da TELEMETRY=errors ile yalnız çökme raporlarını bırakın. Herkese açık demo hiçbir şey göndermez. Dışarı erişim kapalıysa gönderim sessizce başarısız olur.',

@@ -27,7 +27,7 @@ INDEX = re.compile(r'"wazuh-(?:alerts|states|archives|events|findings)[^"]*"')
 
 MAX_LINES = 450
 CEILING = {   # current size of the modules still to split; lower these as they shrink, never raise them
-    "web/api.py": 525, "privacy.py": 497, "rules.py": 465,
+    # every module is under the limit since 1.0 — keep it that way
 }
 
 
