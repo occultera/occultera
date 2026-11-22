@@ -60,8 +60,9 @@ Otomatik çevrilenler: alan eşleşmeleri, `match` / `regex`, gruplar, seviye �
 ### Önizlemeyi deneyin (1.0 dalı)
 
 ```sh
-docker run --rm -v "$PWD:/w" -w /w ghcr.io/occultera/occultera:1.0-preview \
-  python -m app.migrate /w/local_rules.xml --events /w/alerts.jsonl --out /w/migrate-out --json
+git clone -b feat/1.0-wazuh-adapter https://github.com/occultera/occultera.git && cd occultera
+python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+.venv/bin/python -m app.migrate /path/to/local_rules.xml --events /path/to/alerts.jsonl --out migrate-out --json
 ```
 
 `migrate-out/` içine çevrilebilen her kural için bir Sigma dosyası (`wazuh-<id>.yml`; `frequency` taşıyan kurallarda
