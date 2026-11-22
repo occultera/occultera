@@ -104,6 +104,40 @@ V4 = Schema(
 
 SCHEMAS = {4: V4}
 
+
+# ------------------------------------------------------------------ the query vocabulary (decision 22 Nov 2026)
+# The AI and MCP clients always name fields with their Wazuh 4.x names (`rule.level`, `agent.name`,
+# `data.srcip` …). The adapter translates them to the schema of the environment being queried, so prompts,
+# tool parameters, the knowledge base and saved queries stay the same on 4.x and 5.x.
+def _logical() -> dict[str, str]:
+    from dataclasses import fields as _fields
+    return {getattr(V4, f.name): f.name for f in _fields(Schema)
+            if f.name.isupper() and isinstance(getattr(V4, f.name), str)}
+
+
+LOGICAL: dict[str, str] = _logical()          # 4.x field name -> Schema attribute
+
+
+def to_physical(name: str, schema: Schema | None = None) -> str:
+    """A 4.x (logical) field name in the bound schema; unknown names (operator extra fields) pass unchanged."""
+    attr = LOGICAL.get(name)
+    if attr is None:
+        attr = next((a for k, a in LOGICAL.items() if name.startswith(k + ".")), None)
+        if attr is None:
+            return name
+        base = getattr(V4, attr)
+        return getattr(schema or _CUR.get(), attr) + name[len(base):]
+    return getattr(schema or _CUR.get(), attr)
+
+
+def to_logical(name: str, schema: Schema | None = None) -> str:
+    """The 4.x name for a field of the bound schema (so a physical name can be checked against the allow-list)."""
+    sc = schema or _CUR.get()
+    for k, attr in LOGICAL.items():
+        if getattr(sc, attr) == name:
+            return k
+    return name
+
 # 5.x severity → the 4.x-style level Occultera uses for thresholds (Wazuh publishes no mapping; this is ours).
 SEVERITY_LEVELS = {"informational": 3, "low": 6, "medium": 9, "high": 12, "critical": 15}
 LEVEL_BANDS = ((0, 3, "informational"), (4, 6, "low"), (7, 9, "medium"), (10, 12, "high"), (13, 16, "critical"))

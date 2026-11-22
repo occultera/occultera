@@ -28,6 +28,7 @@
 **Security and privacy**
 - [Security model](Security-Model)
 - [Privacy (GDPR)](Privacy)
+- [Error reports and usage data](Telemetry)
 - [Security checklist](Security-Checklist)
 
 **Operate**
@@ -68,6 +69,7 @@
 **Güvenlik ve gizlilik**
 - [Güvenlik modeli](Security-Model-TR)
 - [Gizlilik (KVKK)](Privacy-TR)
+- [Hata bildirimi ve kullanım verisi](Telemetry-TR)
 - [Güvenlik kontrol listesi](Security-Checklist-TR)
 
 **İşletim**

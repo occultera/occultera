@@ -6,6 +6,14 @@ All notable changes to this project are documented here. The format follows
 ## [Unreleased]
 
 ### Added
+- **Error reports and anonymous usage data** (`app/telemetry/`, wiki *Telemetry*). On by default, `TELEMETRY=off`
+  switches it off, `TELEMETRY=errors` keeps crash reports only; never sent by the public demo. Structured data only:
+  exception class, `module:function` frames, error category, versions, installation type and yes/no feature flags —
+  never a message, alert, log line, address, name, model or key; each event is checked against a fixed key list.
+  The About page shows exactly what is sent. Collector: a Cloudflare Worker (`occultera-telemetry`). GitHub issue
+  forms for crashes and Wazuh 5 compatibility. Manifests set `OCC_INSTALL`.
+- **One query vocabulary for every Wazuh version.** The AI and MCP clients keep naming fields with their 4.x names;
+  `query_guard.field()` and `query_string()` translate them to the environment's schema (`app/wazuh/schema.py`).
 - **AI round without an API key.** `LLM_PROVIDER=none` keeps scheduled rounds deterministic, and the analysis is done
   by an MCP client — the `daily_review` prompt, `start_review` and `submit_review` — or by any chat assistant: the
   environment page downloads a masked brief and the report page takes the pasted answer back. Pseudonyms resolve

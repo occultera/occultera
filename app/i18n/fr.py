@@ -441,6 +441,12 @@ MESSAGES: dict[str, str] = {
     # ---- stage
     'stage.collecting': 'collecte des données',
     'stage.analysing': 'l’IA analyse',
+    'tel.title': 'Rapports d’erreurs et données d’usage',
+    'tel.desc': 'Occultera envoie des rapports de plantage (type d’exception, cadres module:fonction, versions) et une fois par semaine les versions et fonctions utilisées. Jamais de contenu d’alerte ou de log, d’adresse IP, de nom d’hôte ou d’utilisateur, de nom de modèle ni de clé.',
+    'tel.how': 'Désactivez avec TELEMETRY=off, ou gardez seulement les plantages avec TELEMETRY=errors. La démo publique n’envoie jamais rien. Si la sortie est bloquée, l’envoi échoue sans bruit.',
+    'tel.preview': 'Exactement ce qui est envoyé (exemple)',
+    'tel.doc': 'Ce que nous collectons et pourquoi',
+    'tel.issue': 'Signaler un problème vous-même',
     'ext.button': 'Tournée IA dans un autre assistant',
     'ext.button_help': 'Pas de clé d’API ? Téléchargez le dossier, donnez-le à Gemini, ChatGPT ou Claude, collez la réponse ici. Dans un client MCP, utilisez plutôt le prompt daily_review.',
     'ext.preparing': 'collecte…',

@@ -1,0 +1,32 @@
+name: Crash or error message
+description: Occultera showed an error, a report failed or the application stopped
+labels: [crash]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Do not paste real alert data, IP addresses, host names, user names or credentials.**
+        Useful: the error *category* and the `ref=` code from the log line, the Occultera version (About page) and what you were doing.
+        Security issues: use private vulnerability reporting (see SECURITY.md).
+  - type: input
+    id: version
+    attributes: { label: Occultera version, placeholder: "0.17.0" }
+    validations: { required: true }
+  - type: input
+    id: wazuh
+    attributes: { label: Wazuh version, placeholder: "4.14.10" }
+  - type: dropdown
+    id: install
+    attributes:
+      label: Installation
+      options: [Helm, Kustomize, Docker Compose, other]
+  - type: textarea
+    id: what
+    attributes: { label: What happened, description: "Which page or action, and what you expected." }
+    validations: { required: true }
+  - type: textarea
+    id: log
+    attributes:
+      label: Log lines (masked)
+      description: "The ERROR line and its traceback. Replace host names, IPs and user names with placeholders."
+      render: text

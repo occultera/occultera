@@ -79,6 +79,10 @@ otherwise                → single-environment mode from WAZUH_* variables
 | Variable | Default | Meaning |
 |---|---|---|
 | `LLM_PROVIDER` | `anthropic` | `anthropic`, `openai` (any OpenAI-compatible endpoint) `mock`, or `none` — no API key: the AI round runs in an MCP client or another assistant ([MCP](MCP#ai-round-without-an-api-key)). |
+| `TELEMETRY` | `errors+usage` | `off`, `errors` or `errors+usage` — crash reports and a weekly usage ping, structured data only ([Telemetry](Telemetry)). |
+| `TELEMETRY_URL` | `https://telemetry.occultera.dev/v1/events` | your own collector. |
+| `TELEMETRY_ID` | derived from the salt | set a new value to reset the installation id. |
+| `OCC_INSTALL` | set by the manifests | `helm`, `kustomize` or `compose`; only reported in telemetry. |
 | `LLM_MODEL` | *(empty)* | Model id from the provider. |
 | `LLM_API_KEY` | *(empty)* | Not needed for a local model without auth. |
 | `LLM_BASE_URL` | *(empty)* | OpenAI-compatible base URL: OpenAI, Gemini, DeepSeek, Azure, Ollama, vLLM, LM Studio… |

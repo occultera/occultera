@@ -58,6 +58,16 @@
     · <a href="{{ SOURCE_URL }}/blob/main/tools/mcp_bridge.py" target="_blank" rel="noopener">mcp_bridge.py</a></p>
 </div>
 
+<div class="card" id="telemetry">
+  <h2>{{ _('tel.title') }}</h2>
+  <p>{% if tel_level == 'off' %}<span class="pill gray">{{ _('ab.off') }}</span>{% else %}<span class="pill green">{{ tel_level }}</span>{% endif %}
+    {{ _('tel.desc') }}</p>
+  <p class="small muted">{{ _('tel.how') }}</p>
+  <details><summary>{{ _('tel.preview') }}</summary><pre class="code">{{ tel_json }}</pre></details>
+  <p><a href="{{ links.telemetry }}" target="_blank" rel="noopener">{{ _('tel.doc') }} →</a>
+    · <a href="{{ SOURCE_URL }}/issues/new?template=crash.yml" target="_blank" rel="noopener">{{ _('tel.issue') }}</a></p>
+</div>
+
 <div class="card">
   <h2>{{ _('ab.docs') }}</h2>
   <ul class="links">

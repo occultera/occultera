@@ -122,15 +122,18 @@ def _allowed(f: str, extra: list[str] | None) -> bool:
 
 
 def field(name: str, extra: list[str] | None = None) -> str:
-    """Allow-list check for a filter/aggregation field."""
+    """Allow-list check for a filter/aggregation field, named with its Wazuh 4.x name; returns the field of the
+    environment's schema (identical on 4.x, translated on 5.x — app/wazuh/schema.py)."""
+    from .wazuh.schema import to_logical, to_physical
     f = str(name or "").strip()
     if not f or not re.fullmatch(r"[A-Za-z0-9_.@-]{1,120}", f):
         raise QueryError(f"invalid field name {name!r}")
+    f = to_logical(f)                       # a caller holding the physical name of this schema is fine too
     if not _allowed(f, extra):
         raise QueryError(f"field {f!r} is not allow-listed for queries; use e.g. rule.id, agent.name, "
                          f"data.srcip, data.url, rule.level (the operator can add fields with "
                          f"query.extra_fields)")
-    return f
+    return to_physical(f)
 
 
 def size(value, cap: int, what: str = "size") -> int:
@@ -191,7 +194,19 @@ def query_string(value: str | None, extra: list[str] | None = None) -> str | Non
             field(name, extra)
         except QueryError as e:
             raise QueryError(f"{e} (quote a value that contains a colon, e.g. data.srcip:\"2001:db8::1\")") from e
-    return q
+    return _translate_fields(q)
+
+
+def _translate_fields(q: str) -> str:
+    """Rename the fields named in a query string to the bound schema; quoted values are left untouched."""
+    from .wazuh.schema import to_physical
+    out, pos = [], 0
+    for m in _QUOTED.finditer(q):
+        out.append(_FIELD_REF.sub(lambda r: r.group(0).replace(r.group(1), to_physical(r.group(1)), 1), q[pos:m.start()]))
+        out.append(m.group(0))
+        pos = m.end()
+    out.append(_FIELD_REF.sub(lambda r: r.group(0).replace(r.group(1), to_physical(r.group(1)), 1), q[pos:]))
+    return "".join(out)
 
 
 def histogram_buckets(body: dict, span_hours: float, limits) -> None:

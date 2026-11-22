@@ -40,6 +40,8 @@ spec:
           env:
             - name: WDT_CONFIG
               value: /app/config/environments.yaml
+            - name: OCC_INSTALL        # telemetry: how Occultera was installed (no other meaning)
+              value: helm
           volumeMounts:
             - name: config
               mountPath: /app/config

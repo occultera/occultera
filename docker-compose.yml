@@ -5,6 +5,8 @@ services:
     container_name: occultera
     restart: unless-stopped
     env_file: .env
+    environment:
+      OCC_INSTALL: compose          # telemetry: how Occultera was installed
     ports:
       - "127.0.0.1:8080:8080"     # put a TLS reverse proxy in front to expose it
     volumes:

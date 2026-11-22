@@ -441,6 +441,12 @@ MESSAGES: dict[str, str] = {
     # ---- stage
     'stage.collecting': 'veri toplanıyor',
     'stage.analysing': 'yapay zekâ analiz ediyor',
+    'tel.title': 'Hata bildirimi ve kullanım verisi',
+    'tel.desc': 'Occultera çökme raporu (istisna türü, modül:fonksiyon çerçeveleri, sürümler) ve haftada bir hangi sürüm ve özelliklerin kullanıldığını gönderir. Alarm ya da log içeriği, IP adresi, host ya da kullanıcı adı, model adı veya anahtar asla gitmez.',
+    'tel.how': 'TELEMETRY=off ile kapatın ya da TELEMETRY=errors ile yalnız çökme raporlarını bırakın. Herkese açık demo hiçbir şey göndermez. Dışarı erişim kapalıysa gönderim sessizce başarısız olur.',
+    'tel.preview': 'Tam olarak ne gönderiliyor (örnek)',
+    'tel.doc': 'Neyi, neden topluyoruz',
+    'tel.issue': 'Sorunu kendiniz bildirin',
     'ext.button': 'AI turunu başka asistanda yap',
     'ext.button_help': "API anahtarı yok mu? Brifingi indirin, Gemini, ChatGPT ya da Claude'a verin, cevabı buraya yapıştırın. MCP istemcisinde bunun yerine daily_review komutunu kullanın.",
     'ext.preparing': 'veri toplanıyor…',

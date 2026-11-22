@@ -441,6 +441,12 @@ MESSAGES: dict[str, str] = {
     # ---- stage
     'stage.collecting': 'sammelt Daten',
     'stage.analysing': 'die KI analysiert',
+    'tel.title': 'Fehlerberichte und Nutzungsdaten',
+    'tel.desc': 'Occultera sendet Absturzberichte (Ausnahmetyp, Modul:Funktion-Frames, Versionen) und einmal pro Woche, welche Versionen und Funktionen genutzt werden. Nie Alarm- oder Log-Inhalte, IP-Adressen, Host- oder Benutzernamen, Modellnamen oder Schlüssel.',
+    'tel.how': 'Mit TELEMETRY=off abschalten oder mit TELEMETRY=errors nur Absturzberichte behalten. Die öffentliche Demo sendet nie etwas. Ist ausgehender Verkehr gesperrt, schlägt das Senden still fehl.',
+    'tel.preview': 'Genau das wird gesendet (Beispiel)',
+    'tel.doc': 'Was wir erfassen und warum',
+    'tel.issue': 'Problem selbst melden',
     'ext.button': 'KI-Runde in einem anderen Assistenten',
     'ext.button_help': 'Kein API-Schlüssel? Briefing herunterladen, Gemini, ChatGPT oder Claude geben, Antwort hier einfügen. In einem MCP-Client stattdessen den Prompt daily_review nutzen.',
     'ext.preparing': 'sammle…',
