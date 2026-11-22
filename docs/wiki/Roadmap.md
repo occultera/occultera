@@ -25,12 +25,12 @@ Current release: **0.17.0** · Updated 2026-11-22
 | **AI round without an API key** | Run the daily review in an MCP client (daily_review prompt) or paste a masked brief into Gemini, ChatGPT or Claude and upload the answer. |
 | **Indexer health with advice** | Heap, circuit breaker (“Data too large”), shards per GB of heap, unassigned shards — with what to do. |
 | **Wazuh version detection** | The connection test shows the Wazuh version; a 5.x server is recognised and explained. |
+| **Error reports and anonymous usage data** | On by default, switch off in Settings; structured data only, never alert or log content; open-source collector. |
 
 ## ⬜ Next (0.18)
 
 | Item | What it gives you |
 |---|---|
-| **Error reports and anonymous usage data** | On by default, switch off in Settings; structured data only, never alert or log content; open-source collector. |
 | **Public demos for Wazuh 4.x and 5.x** | demo.occultera.dev on 4.x data and demo5.occultera.dev as a 5.x preview. |
 
 ## ⬜ Towards 1.0

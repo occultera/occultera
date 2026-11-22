@@ -25,12 +25,12 @@ Güncel sürüm: **0.17.0** · Güncellendi 2026-11-22
 | **API anahtarı olmadan AI turu** | Günlük incelemeyi bir MCP istemcisinde (daily_review) yapın ya da maskeli brifingi Gemini, ChatGPT veya Claude'a verip cevabı yükleyin. |
 | **Önerili indexer sağlığı** | Heap, circuit breaker (“Data too large”), GB heap başına shard, atanmamış shard — ne yapılacağıyla birlikte. |
 | **Wazuh sürüm algılama** | Bağlantı testi Wazuh sürümünü gösterir; 5.x sunucu tanınır ve açıklanır. |
+| **Hata bildirimi ve anonim kullanım verisi** | Varsayılan açık, Ayarlar'dan kapatılır; yalnız yapısal veri, alarm ya da log içeriği asla; toplayıcı açık kaynak. |
 
 ## ⬜ Sırada (0.18)
 
 | Madde | Size ne kazandırır |
 |---|---|
-| **Hata bildirimi ve anonim kullanım verisi** | Varsayılan açık, Ayarlar'dan kapatılır; yalnız yapısal veri, alarm ya da log içeriği asla; toplayıcı açık kaynak. |
 | **Wazuh 4.x ve 5.x için herkese açık demolar** | 4.x verisiyle demo.occultera.dev, 5.x önizlemesi olarak demo5.occultera.dev. |
 
 ## ⬜ 1.0'a doğru
