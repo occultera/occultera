@@ -57,6 +57,20 @@ Otomatik çevrilenler: alan eşleşmeleri, `match` / `regex`, gruplar, seviye �
 İncelemeye ayrılanlar: `if_sid` / `if_matched_sid` zincirleri, `frequency` / `timeframe`, CDB listeleri,
 `overwrite="yes"` kuralları, regex lehçe farkları. Özel decoder'lar ilk sürümde çevrilmez, raporlanır.
 
+### Önizlemeyi deneyin (1.0 dalı)
+
+```sh
+docker run --rm -v "$PWD:/w" -w /w ghcr.io/occultera/occultera:1.0-preview \
+  python -m app.migrate /w/local_rules.xml --events /w/alerts.jsonl --out /w/migrate-out --json
+```
+
+`migrate-out/` içine çevrilebilen her kural için bir Sigma dosyası (`wazuh-<id>.yml`; `frequency` taşıyan kurallarda
+ayrıca Sigma *correlation* taslağı), kural başına durum, inceleme gerekçeleri ve eşleşme kontrolünü içeren
+`report.md` ve alan eşlemesi yazılır. `--events` satır başına bir JSON olarak 4.x alarm dokümanı alır — örneğin
+`wazuh-alerts-4.x-*`'ten bir günlük dışa aktarım; her olay hem 4.x kuralından hem Sigma kuralından geçer, rapor nerede
+uyuştuklarını gösterir. Üst kuralı (`if_sid`) aynı dosyada olan kurallarda üst kuralın koşulları içe alınır; stok üst
+kural incelemeye listelenir. Alan adları 5.0 sürüm adaylarına göredir, GA'da yeniden kontrol edilir.
+
 ## Şimdi ne yapabilirsiniz
 
 - Üretimde Wazuh 4.x'te kalın; 5.0 yerinde bir yükseltme değil, bir geçiş.

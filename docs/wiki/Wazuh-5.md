@@ -57,6 +57,20 @@ Converted automatically: field matches, `match` / `regex`, groups, level → sev
 Listed for review: `if_sid` / `if_matched_sid` chains, `frequency` / `timeframe`, CDB lists, `overwrite="yes"`
 rules, regex dialect differences. Custom decoders are reported, not converted, in the first version.
 
+### Try the preview (1.0 branch)
+
+```sh
+docker run --rm -v "$PWD:/w" -w /w ghcr.io/occultera/occultera:1.0-preview \
+  python -m app.migrate /w/local_rules.xml --events /w/alerts.jsonl --out /w/migrate-out --json
+```
+
+`migrate-out/` gets one Sigma file per convertible rule (`wazuh-<id>.yml`; rules with `frequency` also carry a
+Sigma *correlation* draft), `report.md` with the status, the review reasons and the match check per rule, and the
+field map. `--events` takes 4.x alert documents, one JSON object per line — for example an export of a day of
+`wazuh-alerts-4.x-*`; each event goes through the 4.x rule and the Sigma rule and the report shows where they agree.
+Rules whose parent (`if_sid`) is in the same file get the parent's conditions inlined; a stock parent is listed for
+review. Field names follow the 5.0 release candidates and are re-checked at GA.
+
 ## What you can do now
 
 - Stay on Wazuh 4.x in production; 5.0 is a migration, not an in-place upgrade.

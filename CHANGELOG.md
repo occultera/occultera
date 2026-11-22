@@ -6,6 +6,12 @@ All notable changes to this project are documented here. The format follows
 ## [Unreleased]
 
 ### Added
+- **Rule migration tool (preview): custom 4.x XML → Sigma** — `python -m app.migrate local_rules.xml --events
+  alerts.jsonl`. Converts field, match/regex (OS_Match/OS_Regex translated), IP, decoder, group, level and ATT&CK
+  conditions; inlines parents from the same file; writes Sigma correlation drafts for `frequency` rules; lists what
+  needs a person (stock parents, CDB lists, time conditions, same_*/different_*, overwrites); maps 4.x fields to the
+  Wazuh Common Schema; and checks 4.x rule and Sigma rule on the same sample events. Works without the rest of
+  Occultera.
 - **Error reports and anonymous usage data** (`app/telemetry/`, wiki *Telemetry*). On by default, `TELEMETRY=off`
   switches it off, `TELEMETRY=errors` keeps crash reports only; never sent by the public demo. Structured data only:
   exception class, `module:function` frames, error category, versions, installation type and yes/no feature flags —

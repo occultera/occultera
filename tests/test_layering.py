@@ -17,9 +17,10 @@ APP = ROOT / "app"
 # Allowed to spell Wazuh 4.x paths:
 #  app/wazuh/       the schema itself
 #  app/demo*.py     the synthetic 4.x documents (the demo engine is a 4.x indexer)
+#  app/migrate      the 4.x → 5.x rule converter names both schemas on purpose
 #  app/query_guard  the field vocabulary the AI and MCP clients may query (4.x names; translated per version in 1.0)
 #  app/whatif.py    replays 4.x XML rules on 4.x documents; uses the V4 schema explicitly
-ALLOWED = ("wazuh/", "demo", "query_guard.py", "whatif.py")
+ALLOWED = ("wazuh/", "demo", "query_guard.py", "whatif.py", "migrate/")
 NOT_FIELDS = {"agent.trace", "rule.deploy", "rule.undeploy"}   # audit actions and stored keys, not Wazuh fields
 PATH = re.compile(r'"((?:rule|agent|data|manager|decoder|vulnerability|package|syscheck|predecoder)\.[A-Za-z0-9_.]+)"')
 INDEX = re.compile(r'"wazuh-(?:alerts|states|archives|events|findings)[^"]*"')
