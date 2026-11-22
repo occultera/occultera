@@ -98,3 +98,37 @@ def test_severity_mapping_round_trip():
         assert W.SEVERITY_LEVELS[W.severity_of(level)] >= level or level > 15
     assert [W.severity_of(x) for x in (0, 4, 7, 10, 13)] == ["informational", "low", "medium", "high", "critical"]
     assert W.V4.level_gte(7) == {"range": {"rule.level": {"gte": 7}}}
+def test_runtime_get_binds_the_environment_schema():
+    """audit, weekly, ruledeploy and the jobs resolve their environment through Runtime.get."""
+    import contextvars
+    from types import SimpleNamespace
+
+    from app.runtime import Runtime
+
+    other = W.Schema(version=98, alerts_index="x-*", vuln_index="y-*", RULE_LEVEL="x.level")
+    W.SCHEMAS[98] = other
+    try:
+        fake = SimpleNamespace(envs={"a": SimpleNamespace(env=SimpleNamespace(wazuh_version=98)),
+                                     "b": SimpleNamespace(env=SimpleNamespace(wazuh_version=4))})
+
+        def run():
+            Runtime.get(fake, "a")
+            first = W.S.RULE_LEVEL
+            Runtime.get(fake, "b")
+            return first, W.S.RULE_LEVEL
+
+        assert contextvars.copy_context().run(run) == ("x.level", "rule.level")
+    finally:
+        W.SCHEMAS.pop(98)
+
+
+def test_schema_entry_points_resolve_through_runtime_get():
+    """Modules that build Wazuh queries for an env_id must get it from runtime.get (which binds) or bind() directly."""
+    import re
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parent.parent / "app"
+    for name in ("audit.py", "weekly.py", "ruledeploy.py"):
+        src = (root / name).read_text(encoding="utf-8")
+        assert "S." in src
+        assert re.search(r"\.get\(env_id\)|bind\(", src), name
