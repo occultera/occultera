@@ -28,6 +28,8 @@ Current release: **0.17.0** · Updated 2026-11-22
 | **Indexer health with advice** | Heap, circuit breaker (“Data too large”), shards per GB of heap, unassigned shards — with what to do. |
 | **Wazuh version detection** | The connection test shows the Wazuh version; a 5.x server is recognised and explained. |
 | **Error reports and anonymous usage data** | On by default, switch off in Settings; structured data only, never alert or log content; open-source collector. |
+| **Rule migration tool (preview): custom 4.x XML → Sigma** | Converts simple rules, lists what needs a person, maps fields, checks matches on sample events. Usable on its own. |
+| **ISO 27001 Annex A mapping in the audit report** | Each section of the monthly report linked to the controls it evidences. |
 
 ## ⬜ Next (0.18)
 
@@ -39,9 +41,7 @@ Current release: **0.17.0** · Updated 2026-11-22
 
 | Item | What it gives you |
 |---|---|
-| **Rule migration tool: custom 4.x XML → Sigma** | Converts simple rules, lists what needs a person, maps fields, checks matches on sample events. Usable on its own. |
 | **Wazuh 5.x support — Occultera 1.0** | Findings, events and states through the version adapter; severity mapping; Sigma drafts on 5.x. After Wazuh 5.0 is generally available. |
-| **ISO 27001 Annex A mapping in the audit report** | Each section of the monthly report linked to the controls it evidences. |
 | **Decoder drafts; PagerDuty and Opsgenie** | New log sources next to rule drafts; on-call escalation of real incidents. |
 
 Missing something? Open an issue or write to hello@occultera.dev · https://github.com/occultera/occultera/issues · https://occultera.dev/roadmap/

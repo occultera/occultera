@@ -26,6 +26,8 @@ Güncel sürüm: **0.17.0** · Güncellendi 2026-11-22
 | **Önerili indexer sağlığı** | Heap, circuit breaker (“Data too large”), GB heap başına shard, atanmamış shard — ne yapılacağıyla birlikte. |
 | **Wazuh sürüm algılama** | Bağlantı testi Wazuh sürümünü gösterir; 5.x sunucu tanınır ve açıklanır. |
 | **Hata bildirimi ve anonim kullanım verisi** | Varsayılan açık, Ayarlar'dan kapatılır; yalnız yapısal veri, alarm ya da log içeriği asla; toplayıcı açık kaynak. |
+| **Kural geçiş aracı: özel 4.x XML → Sigma** | Basit kuralları çevirir, kişi gerektirenleri listeler, alanları eşler, örnek olaylarda eşleşmeyi kontrol eder. Tek başına da çalışır. |
+| **Denetim raporunda ISO 27001 Annex A eşlemesi** | Aylık raporun her bölümü kanıtladığı kontrollere bağlanır. |
 
 ## ⬜ Sırada (0.18)
 
@@ -37,9 +39,7 @@ Güncel sürüm: **0.17.0** · Güncellendi 2026-11-22
 
 | Madde | Size ne kazandırır |
 |---|---|
-| **Kural geçiş aracı: özel 4.x XML → Sigma** | Basit kuralları çevirir, kişi gerektirenleri listeler, alanları eşler, örnek olaylarda eşleşmeyi kontrol eder. Tek başına da çalışır. |
 | **Wazuh 5.x desteği — Occultera 1.0** | Sürüm adaptörüyle findings, events ve states; önem eşlemesi; 5.x'te Sigma taslakları. Wazuh 5.0 genel kullanıma çıktıktan sonra. |
-| **Denetim raporunda ISO 27001 Annex A eşlemesi** | Aylık raporun her bölümü kanıtladığı kontrollere bağlanır. |
 | **Decoder taslakları; PagerDuty ve Opsgenie** | Kural taslaklarının yanında yeni log kaynakları; gerçek olayların nöbet eskalasyonu. |
 
 Eksik bir şey mi var? Bir issue açın ya da yazın: hello@occultera.dev · https://github.com/occultera/occultera/issues · https://occultera.dev/tr/yol-haritasi/
