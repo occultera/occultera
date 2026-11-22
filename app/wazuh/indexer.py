@@ -53,6 +53,9 @@ class Indexer:
         if r.status_code in (401, 403):
             raise IndexerError(f"indexer authorization error {r.status_code} {path}: {r.text[:300]}")
         if r.status_code == 429:
+            if "circuit_breaking_exception" in r.text:
+                raise IndexerError("indexer is out of heap memory (circuit breaker: Data too large) — raise the "
+                                   f"indexer heap or reduce the shard count: {r.text[:300]}")
             raise IndexerError(f"indexer rejected the query (429, too many requests): {r.text[:300]}")
         if r.status_code >= 400:
             raise IndexerError(f"indexer {r.status_code} {method} {path}: {r.text[:500]}")
@@ -79,6 +82,14 @@ class Indexer:
 
     async def cluster_health(self) -> dict:
         return await self.request("GET", "/_cluster/health")
+
+    async def node_stats(self) -> dict:
+        return await self.request("GET", "/_nodes/stats/jvm,breaker",
+                                  params={"filter_path": "nodes.*.name,nodes.*.jvm.mem,nodes.*.breakers.parent"})
+
+    async def shards(self) -> list:
+        return await self.request("GET", "/_cat/shards",
+                                  params={"format": "json", "h": "index,shard,prirep,state,unassigned.reason"})
 
     async def allocation(self) -> list:
         return await self.request("GET", "/_cat/allocation", params={"format": "json", "bytes": "b"})

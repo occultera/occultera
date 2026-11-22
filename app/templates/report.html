@@ -175,6 +175,7 @@
       <table class="tbl compact">
         {% if hl.indexer %}<tr><td>{{ _('rep.indexer') }}</td><td>{{ hl.indexer.status }} · {{ hl.indexer.number_of_nodes }} node · {{ _('rep.unassigned') }} {{ hl.indexer.unassigned_shards }}</td></tr>{% endif %}
         {% for d in hl.indexer_disk or [] %}<tr><td>{{ _('rep.disk') }} {{ d.node }}</td><td>{{ d.percent }}% · {{ d.shards }} {{ _('rep.shards') }}</td></tr>{% endfor %}
+        {% for n in hl.indexer_nodes or [] %}<tr><td>{{ _('rep.heap') }} {{ n.node }}</td><td>{{ n.heap_percent }}% / {{ n.heap_max_gb }} GB{% if n.breaker_tripped %} · circuit breaker {{ n.breaker_tripped }}×{% endif %}</td></tr>{% endfor %}
         {% if hl.api_version %}<tr><td>{{ _('rep.api') }}</td><td>{{ hl.api_version }}</td></tr>{% endif %}
         {% if hl.agents_summary %}<tr><td>{{ _('rep.agents_summary') }}</td><td>{% for k, n in hl.agents_summary.items() %}{{ k }} {{ n }}{{ ' · ' if not loop.last }}{% endfor %}</td></tr>{% endif %}
         {% for a in hl.agents_not_active or [] %}<tr><td>⚠ {{ a.name }}</td><td>{{ a.status }} · {{ _('rep.last') }} {{ a.lastKeepAlive|ts }}</td></tr>{% endfor %}
