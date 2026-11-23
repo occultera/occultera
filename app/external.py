@@ -19,7 +19,6 @@ from __future__ import annotations
 
 import json
 import logging
-import re
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
@@ -72,13 +71,24 @@ def brief(sysmsg: str, usr: str, channel: str, env_id: str, run_id: str) -> str:
             f"# Data for this round\n{usr}\n")
 
 
-_FENCE = re.compile(r"```(?:json)?\s*(\{.*?\})\s*```", re.S)
+def _fenced_objects(text: str) -> list[str]:
+    """Bodies of ```json fences that hold a {...} object. A linear split, not a regex: CodeQL flagged the
+    old lazy pattern as polynomial on pasted input full of '{'."""
+    out = []
+    for body in text.split("```")[1::2]:
+        b = body.lstrip()
+        if b[:4].lower() == "json":
+            b = b[4:]
+        b = b.strip()
+        if b.startswith("{") and b.endswith("}"):
+            out.append(b)
+    return out
 
 
 def parse_answer(text: str) -> dict:
     """The report object from a pasted answer: a ```json block, else the outermost {...}."""
     text = (text or "")[:MAX_ANSWER]
-    cands = [m.group(1) for m in _FENCE.finditer(text)]
+    cands = _fenced_objects(text)
     if not cands and "{" in text:
         cands = [text[text.index("{"): text.rindex("}") + 1]]
     for c in sorted(cands, key=len, reverse=True):
