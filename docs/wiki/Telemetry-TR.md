@@ -43,8 +43,8 @@ Kubernetes, maskeleme, kural yayılımı, SSO.
 ## Nereye gider
 
 `https://telemetry.occultera.dev/v1/events` — Cloudflare Worker ve D1 veritabanı. Yalnız bu iki olay biçimini kabul
-eder, IP adresi ve istek başlığı saklamaz, kayıtları 90 gün sonra siler ve her yeni çökme parmak izi için bir GitHub
-issue'su (`crash` etiketi) açar. Kaynağı açıktır (`occultera/telemetry`). Kendi toplayıcınızı kullanmak için
+eder, IP adresi ve istek başlığı saklamaz, kayıtları 90 gün sonra siler ve aynı çökmenin tekrarlarını gruplar. Geliştirici
+bunları inceler ve düzeltilmeye değer olanlar için GitHub issue'su (`crash` etiketi) açar. Kaynağı açıktır (`occultera/telemetry`). Kendi toplayıcınızı kullanmak için
 `TELEMETRY_URL` ayarlayın.
 
 ## Sorunu kendiniz bildirin

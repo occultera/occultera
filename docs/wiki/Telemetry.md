@@ -42,8 +42,8 @@ Prometheus, Loki, Kubernetes, masking, rule deployment, SSO.
 ## Where it goes
 
 `https://telemetry.occultera.dev/v1/events` — a Cloudflare Worker with a D1 database. It accepts only these two
-event shapes, stores no IP address or request header, deletes rows after 90 days and opens one GitHub issue
-(label `crash`) per new crash fingerprint. Its source is public (`occultera/telemetry`).
+event shapes, stores no IP address or request header, deletes rows after 90 days and groups repeats of the same crash. The maintainer reviews
+them and opens a GitHub issue (label `crash`) for the ones worth fixing. Its source is public (`occultera/telemetry`).
 Point `TELEMETRY_URL` elsewhere to run your own collector.
 
 ## Report a problem yourself
