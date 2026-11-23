@@ -96,7 +96,7 @@ no token. Useful for a first look from any MCP client and for MCP directories th
 tools.
 
 ```sh
-docker run -i --rm -e WDT_DEMO=true ghcr.io/occultera/occultera:0.17.0 python -m app.mcp_stdio
+docker run -i --rm -e WDT_DEMO=true ghcr.io/occultera/occultera:0.18.0 python -m app.mcp_stdio
 ```
 
 Or build it yourself: `docker build -t occultera .` and use `occultera` as the image name.
@@ -108,7 +108,7 @@ Client configuration (Claude Desktop, Cursor, VS Code … — any client that st
   "mcpServers": {
     "wazuh-demo": {
       "command": "docker",
-      "args": ["run", "-i", "--rm", "-e", "WDT_DEMO=true", "ghcr.io/occultera/occultera:0.17.0", "python", "-m", "app.mcp_stdio"]
+      "args": ["run", "-i", "--rm", "-e", "WDT_DEMO=true", "ghcr.io/occultera/occultera:0.18.0", "python", "-m", "app.mcp_stdio"]
     }
   }
 }
@@ -152,7 +152,7 @@ errors. Supported protocol versions: `2025-06-18`, `2025-03-26`, `2024-11-05`.
 
 No model API key? Let an MCP client or any chat assistant write the daily report. Set `LLM_PROVIDER=none`:
 scheduled rounds then keep their deterministic part (flags, health, watch) and the analysis is done in one of two
-ways. *(1.0)*
+ways. *(0.18)*
 
 **In an MCP client** (Claude Desktop, Cursor, VS Code …) choose the **daily_review** prompt (in Claude Desktop:
 the **+** menu → *Add from occultera*). The client calls `start_review`, reads the brief (method, context, knowledge

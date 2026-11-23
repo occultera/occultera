@@ -233,7 +233,7 @@ bir indeks kaybolduğunda kritik bayrak kaldırır. Ayrıntı: [Yedekleme](Backu
 değişiklikleri, canlılık kesintileri, kapsama ve zafiyet SLA'sı. Rapor Markdown (`/api/e/<ortam>/audit.md`),
 PDF (`audit.pdf`) ve MCP (`audit_report`, `month: YYYY-MM`) olarak alınabilir.
 
-### ISO 27001 Annex A kanıtı *(1.0)*
+### ISO 27001 Annex A kanıtı *(0.18)*
 
 Rapor, bir SIEM incelemesinin gerçekten kanıt ürettiği on kontrol için (A.5.9, A.5.25–A.5.28, A.8.8, A.8.9, A.8.15,
 A.8.16, A.8.32) bir **Annex A kanıtı** tablosuyla biter: *kanıt var*, *boşluk*, *veri yok* ya da *kapsam dışı*, her

@@ -1,4 +1,4 @@
-**Occultera 0.17.0**
+**Occultera 0.18.0**
 *Find the signal in the dark.*
 
 [English](Home) · [Türkçe](Home-TR) · [Español](Home-ES) · [Français](Home-FR) · [Deutsch](Home-DE)
@@ -9,6 +9,7 @@
 - [Scenarios](Scenarios)
 - [FAQ and glossary](FAQ)
 - [Name and logo](Name-and-Logo)
+- [Roadmap](Roadmap)
 
 **Install and configure**
 - [Installation](Installation)
@@ -51,6 +52,7 @@
 - [Örnek senaryolar](Scenarios-TR)
 - [SSS ve sözlük](FAQ-TR)
 - [Ad ve logo](Name-and-Logo-TR)
+- [Yol haritası](Roadmap-TR)
 
 **Kurulum ve yapılandırma**
 - [Kurulum](Installation-TR)

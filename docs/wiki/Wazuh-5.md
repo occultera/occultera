@@ -24,10 +24,10 @@ fully supported; nothing on this page changes a running installation.
 
 | Part | Status | Where |
 |---|---|---|
-| Schema layer between Occultera and Wazuh (4.x queries unchanged, golden report) | ✅ released | 0.17.0 |
-| Wazuh version detection in the connection test | 🚧 done, not released | 1.0 branch |
-| One query vocabulary: the AI and MCP clients use 4.x field names, translated per version | 🚧 done, not released | 1.0 branch |
-| Rule migration tool, 4.x XML → Sigma (preview, field names from the 5.0 release candidates) | 🚧 preview | 1.0 branch |
+| Schema layer between Occultera and Wazuh (4.x queries unchanged, golden report) | ✅ released | 0.18.0 |
+| Wazuh version detection in the connection test | ✅ released | 0.18.0 |
+| One query vocabulary: the AI and MCP clients use 4.x field names, translated per version | ✅ released | 0.18.0 |
+| Rule migration tool, 4.x XML → Sigma (preview, field names from the 5.0 release candidates) | 🚧 preview | 0.18.0 |
 | 5.x schema: findings / events / states, categorical severity, rule UUIDs | ⬜ planned | needs a 5.0 lab |
 | Tool results normalised to 4.x names on 5.x | ⬜ planned | with the 5.x schema |
 | Sigma rule drafts on 5.x | ⬜ planned | |
@@ -71,12 +71,11 @@ Converted automatically: field matches, `match` / `regex`, groups, level → sev
 Listed for review: `if_sid` / `if_matched_sid` chains, `frequency` / `timeframe`, CDB lists, `overwrite="yes"`
 rules, regex dialect differences. Custom decoders are reported, not converted, in the first version.
 
-### Try the preview (1.0 branch)
+### Try the preview (0.18)
 
 ```sh
-git clone -b feat/1.0-wazuh-adapter https://github.com/occultera/occultera.git && cd occultera
-python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
-.venv/bin/python -m app.migrate /path/to/local_rules.xml --events /path/to/alerts.jsonl --out migrate-out --json
+docker run --rm -v "$PWD:/w" -w /w ghcr.io/occultera/occultera:0.18.0 \
+  python -m app.migrate /w/local_rules.xml --events /w/alerts.jsonl --out /w/migrate-out --json
 ```
 
 `migrate-out/` gets one Sigma file per convertible rule (`wazuh-<id>.yml`; rules with `frequency` also carry a

@@ -96,7 +96,7 @@ gerekmez. Herhangi bir MCP istemcisinden ilk bakış ve sunucuyu başlatıp ara�
 için kullanışlıdır.
 
 ```sh
-docker run -i --rm -e WDT_DEMO=true ghcr.io/occultera/occultera:0.17.0 python -m app.mcp_stdio
+docker run -i --rm -e WDT_DEMO=true ghcr.io/occultera/occultera:0.18.0 python -m app.mcp_stdio
 ```
 
 Ya da kendiniz build edin: `docker build -t occultera .` ve imaj adı olarak `occultera` kullanın.
@@ -108,7 +108,7 @@ Ya da kendiniz build edin: `docker build -t occultera .` ve imaj adı olarak `oc
   "mcpServers": {
     "wazuh-demo": {
       "command": "docker",
-      "args": ["run", "-i", "--rm", "-e", "WDT_DEMO=true", "ghcr.io/occultera/occultera:0.17.0", "python", "-m", "app.mcp_stdio"]
+      "args": ["run", "-i", "--rm", "-e", "WDT_DEMO=true", "ghcr.io/occultera/occultera:0.18.0", "python", "-m", "app.mcp_stdio"]
     }
   }
 }
@@ -152,7 +152,7 @@ Araç sonuçları, JSON içeren tek bir `text` öğesi barındıran `content` di
 
 Model API anahtarınız yok mu? Günlük raporu bir MCP istemcisine ya da herhangi bir sohbet asistanına yazdırın.
 `LLM_PROVIDER=none` yapın: zamanlanmış turlar deterministik kısmını (bayraklar, sağlık, nöbet) korur, analiz iki
-yoldan biriyle yapılır. *(1.0)*
+yoldan biriyle yapılır. *(0.18)*
 
 **MCP istemcisinde** (Claude Desktop, Cursor, VS Code …) **daily_review** komutunu seçin (Claude Desktop'ta
 **+** menüsü → *occultera'dan ekle*). İstemci `start_review` çağırır, brifingi okur (yöntem, bağlam, bilgi tabanı ve

@@ -24,10 +24,10 @@ Wazuh 4.x tam olarak desteklenmeye devam ediyor; bu sayfadaki hiçbir şey çal�
 
 | Parça | Durum | Nerede |
 |---|---|---|
-| Occultera ile Wazuh arasında şema katmanı (4.x sorguları değişmedi, altın rapor) | ✅ yayında | 0.17.0 |
-| Bağlantı testinde Wazuh sürüm algılama | 🚧 hazır, yayında değil | 1.0 dalı |
-| Tek sorgu dili: AI ve MCP istemcileri 4.x alan adlarını kullanır, sürüme göre çevrilir | 🚧 hazır, yayında değil | 1.0 dalı |
-| Kural geçiş aracı, 4.x XML → Sigma (önizleme, alan adları 5.0 sürüm adaylarından) | 🚧 önizleme | 1.0 dalı |
+| Occultera ile Wazuh arasında şema katmanı (4.x sorguları değişmedi, altın rapor) | ✅ yayında | 0.18.0 |
+| Bağlantı testinde Wazuh sürüm algılama | ✅ yayında | 0.18.0 |
+| Tek sorgu dili: AI ve MCP istemcileri 4.x alan adlarını kullanır, sürüme göre çevrilir | ✅ yayında | 0.18.0 |
+| Kural geçiş aracı, 4.x XML → Sigma (önizleme, alan adları 5.0 sürüm adaylarından) | 🚧 önizleme | 0.18.0 |
 | 5.x şeması: findings / events / states, kategorik önem, kural UUID'leri | ⬜ planlandı | 5.0 lab'ı gerekiyor |
 | 5.x'te araç sonuçlarının 4.x adlarına çevrilmesi | ⬜ planlandı | 5.x şemasıyla |
 | 5.x'te Sigma kural taslakları | ⬜ planlandı | |
@@ -71,12 +71,11 @@ Otomatik çevrilenler: alan eşleşmeleri, `match` / `regex`, gruplar, seviye �
 İncelemeye ayrılanlar: `if_sid` / `if_matched_sid` zincirleri, `frequency` / `timeframe`, CDB listeleri,
 `overwrite="yes"` kuralları, regex lehçe farkları. Özel decoder'lar ilk sürümde çevrilmez, raporlanır.
 
-### Önizlemeyi deneyin (1.0 dalı)
+### Önizlemeyi deneyin (0.18)
 
 ```sh
-git clone -b feat/1.0-wazuh-adapter https://github.com/occultera/occultera.git && cd occultera
-python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
-.venv/bin/python -m app.migrate /path/to/local_rules.xml --events /path/to/alerts.jsonl --out migrate-out --json
+docker run --rm -v "$PWD:/w" -w /w ghcr.io/occultera/occultera:0.18.0 \
+  python -m app.migrate /w/local_rules.xml --events /w/alerts.jsonl --out /w/migrate-out --json
 ```
 
 `migrate-out/` içine çevrilebilen her kural için bir Sigma dosyası (`wazuh-<id>.yml`; `frequency` taşıyan kurallarda

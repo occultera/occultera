@@ -18,7 +18,7 @@ deploy/kubernetes/
 ```sh
 cp -r deploy/kubernetes/example ~/triage-overlay && cd ~/triage-overlay
 # point the base at the repository:
-sed -i 's#  - ../base .*#  - https://github.com/occultera/occultera//deploy/kubernetes/base?ref=v0.17.0#' kustomization.yaml
+sed -i 's#  - ../base .*#  - https://github.com/occultera/occultera//deploy/kubernetes/base?ref=v0.18.0#' kustomization.yaml
 cp secret.env.example secret.env && vi secret.env environments.yaml context.md
 kubectl apply -k .
 kubectl -n occultera rollout status deploy/occultera

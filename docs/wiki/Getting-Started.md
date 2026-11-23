@@ -139,7 +139,7 @@ knowledge base. The next run reads them.
 - Urgent alerts between AI rounds: [Watch](Watch).
 - More than one Wazuh: [Installation](Installation) (A3) and [Configuration](Configuration).
 
-*Applies to 0.17.0 · demo steps 2–4 run on the 0.17.0 code (step 1 on 0.15.0), steps 5–8 checked against the 0.17.0 code · 2026-11-22*
+*Applies to 0.18.0 · demo steps 2–4 run on the 0.18.0 code (step 1 on 0.15.0), steps 5–8 checked against the 0.18.0 code · 2026-11-23*
 
 ---
 

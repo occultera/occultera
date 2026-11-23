@@ -233,7 +233,7 @@ flag when one went missing. Details: [Backup](Backup).
 changes, liveness outages, coverage and vulnerability SLA. It is available as Markdown (`/api/e/<env>/audit.md`),
 as PDF (`audit.pdf`) and through MCP (`audit_report`, `month: YYYY-MM`).
 
-### ISO 27001 Annex A evidence *(1.0)*
+### ISO 27001 Annex A evidence *(0.18)*
 
 The report ends with an **Annex A evidence** table for the ten controls a SIEM review really produces evidence for
 (A.5.9, A.5.25–A.5.28, A.8.8, A.8.9, A.8.15, A.8.16, A.8.32): *evidence*, *gap*, *no data* or *excluded*, each with

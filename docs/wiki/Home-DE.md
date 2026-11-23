@@ -19,7 +19,7 @@ entscheiden; ohne Ihre Freigabe ändert sich nichts in Wazuh.
 
 ![Wachboard](images/dashboard.png)
 
-**Aktuelle Version:** 0.17.0 · **Lizenz:** AGPL-3.0-only · **Wazuh:** 4.x · 5.x kommt mit 1.0 ([Wazuh 5](Wazuh-5))
+**Aktuelle Version:** 0.18.0 · **Lizenz:** AGPL-3.0-only · **Wazuh:** 4.x · 5.x kommt mit 1.0 ([Wazuh 5](Wazuh-5))
 
 ## Was es ist, und was nicht
 

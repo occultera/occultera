@@ -5,6 +5,11 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.18.0] — 2026-11-23
+
+An AI round without an API key, indexer health with advice, error reports, the rule migration preview and ISO 27001
+Annex A evidence. Wazuh 4.x behaves as before; Wazuh 5.x support stays planned for 1.0.
+
 ### Changed
 - **Every module is under 450 lines.** Rule deployment moved to `app/rules_apply.py`, log scanning to
   `app/privacy_scan.py`, export and maintenance routes to `app/web/reports_api.py`; every name stays importable from

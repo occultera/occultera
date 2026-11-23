@@ -1,6 +1,6 @@
 # Hata bildirimi ve kullanım verisi
 
-**Kimin için:** Occultera çalıştıran ve kurulumdan neyin dışarı çıktığını bilmek isteyen herkes. *(1.0)*
+**Kimin için:** Occultera çalıştıran ve kurulumdan neyin dışarı çıktığını bilmek isteyen herkes. *(0.18)*
 
 Occultera **çökme raporları** ve haftada bir **hangi sürüm ve özelliklerin kullanıldığını** gönderir. Varsayılan
 olarak açıktır, tek bir ayarla kapatılır. Amaç: haberimiz olmayan çökmeleri düzeltmek ve kurulumların Wazuh 5.x'e ne

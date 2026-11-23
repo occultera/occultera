@@ -10,7 +10,7 @@ body:
         Security issues: use private vulnerability reporting (see SECURITY.md).
   - type: input
     id: version
-    attributes: { label: Occultera version, placeholder: "0.17.0" }
+    attributes: { label: Occultera version, placeholder: "0.18.0" }
     validations: { required: true }
   - type: input
     id: wazuh

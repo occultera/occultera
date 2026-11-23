@@ -1,6 +1,6 @@
 # Error reports and usage data
 
-**For:** anyone running Occultera who wants to know what leaves the installation. *(1.0)*
+**For:** anyone running Occultera who wants to know what leaves the installation. *(0.18)*
 
 Occultera sends **crash reports** and, once a week, **which versions and features are in use**. It is on by default
 and you switch it off with one setting. The reason: to fix crashes we never hear about, and to see how fast
