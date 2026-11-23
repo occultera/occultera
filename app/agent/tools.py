@@ -397,7 +397,7 @@ class ToolBox(SourceTools):
         if a.get("run_id"):
             r = await self.repo.get_run(a["run_id"])
         else:
-            r = await self.repo.last_success()
+            r = next(iter(await self.repo.list_runs(1, status="done")), None)
         if not r:
             return {"error": "report not found"}
         return {k: r.get(k) for k in ("run_id", "started_at", "status", "window", "health", "metrics", "summary_md",
