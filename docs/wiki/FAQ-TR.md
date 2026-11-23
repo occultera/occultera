@@ -95,7 +95,7 @@ Hayır. Bağımsızdır ve Wazuh, Inc. ile bağlantısı yoktur. Lisans AGPL-3.0
 
 Liste [Uyumluluk](Compatibility-TR) sayfasında, *Bilinen sınırlar* başlığı altında tutulur.
 
-*0.11.0 için geçerlidir · gözden geçirme: 2026-11-11*
+*0.18.0 için geçerlidir · gözden geçirme: 2026-11-22*
 
 ---
 

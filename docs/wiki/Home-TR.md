@@ -2,6 +2,8 @@
 
 [English](Home) · **Türkçe** · [Español](Home-ES) · [Français](Home-FR) · [Deutsch](Home-DE)
 
+Uygulama arayüzü Almancayı da destekler; wiki Almancaya bütünüyle çevrilmemiştir.
+
 **Wazuh 4.x için açık kaynak MCP sunucusu ve AI alarm triage** (Wazuh 5.x desteği geliştiriliyor); kişisel veriler yapay zekâdan önce maskelenir (KVKK / GDPR). Bir nöbet programı: Alarmlarınızı gece gündüz izler, acil bir şey olduğunda dakikalar içinde
 haber verir — yapay zekâya sormadan. Günde bir ya da iki kez bir AI turu, nöbetin gördüğü her şeyi inceler,
 açıklar ve neyin ayarlanması gerektiğini önerir. Kararı siz verirsiniz; onayınız olmadan Wazuh'ta hiçbir şey değişmez.
@@ -102,6 +104,7 @@ Prometheus'undan yeni bir alarm. Sessiz saatlerde kritik olaylar dışındakiler
 | **Güvenlik ve gizlilik** | |
 | Aracın ne yapabildiğini ve verinin nereye gittiğini bilmek | [Güvenlik modeli](Security-Model-TR) |
 | AI sağlayıcısına neyin gittiğini ve maskelemenin sınırlarını öğrenmek (KVKK / GDPR) | [Gizlilik](Privacy-TR) |
+| Hata raporlarının ve telemetri verilerinin tam içeriğini görmek | [Hata bildirimi ve kullanım verisi](Telemetry-TR) |
 | Bir kurulumu üretim öncesi onaylamak | [Güvenlik kontrol listesi](Security-Checklist-TR) |
 | **İşletmek** | |
 | Bir hata iletisinin nedenini bulmak | [Sorun giderme](Troubleshooting-TR) |

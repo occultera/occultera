@@ -2,6 +2,8 @@
 
 [English](Home) · [Türkçe](Home-TR) · [Español](Home-ES) · **Français** · [Deutsch](Home-DE)
 
+L’interface de l’application est également disponible en allemand ; le wiki n’est pas entièrement traduit en allemand.
+
 **Serveur MCP et tri des alertes par IA pour Wazuh 4.x, open source** (support de Wazuh 5.x en développement), avec les données personnelles masquées avant l’IA (RGPD). Un compagnon d'astreinte : Il surveille vos alertes jour et nuit et vous prévient en quelques
 minutes quand quelque chose d'urgent se produit — sans interroger d'IA. Une ou deux fois par jour, une passe d'IA
 examine tout ce que la surveillance a vu, l'explique et propose quoi ajuster. Vous décidez ; rien ne change dans

@@ -94,7 +94,7 @@ through [security advisories](https://github.com/occultera/occultera/security/ad
 
 The list is kept on the [Compatibility](Compatibility) page, under *Known limits*.
 
-*Applies to 0.11.0 · reviewed 2026-11-11*
+*Applies to 0.18.0 · reviewed 2026-11-23*
 
 ---
 

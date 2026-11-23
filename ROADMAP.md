@@ -4,10 +4,7 @@
 
 What Occultera does today, what is being built and what comes next. Wazuh 4.x stays fully supported; Wazuh 5.x support arrives with 1.0, after Wazuh 5.0 is generally available.
 
-Current release: **0.17.0** · Updated 2026-11-22
-
-The items below marked **1.0 preview** are implemented on the `feat/1.0-wazuh-adapter` development branch;
-they are not included in the published 0.17.0 release.
+Current release: **0.18.0** · Updated 2026-11-23
 
 ## ✅ Shipped
 
@@ -22,19 +19,14 @@ they are not included in the published 0.17.0 release.
 | **Monthly audit report and PDF** | Volume, decisions, rule changes, outages, agent coverage, vulnerability SLA — ISMS evidence. |
 | **Helm, Kustomize, Docker Compose; signed images** | One container, no extra database, read-only file system; release images signed with cosign, SBOM per build. |
 | **Internal groundwork for Wazuh 5 (0.17)** | A schema layer between Occultera and Wazuh; 4.x queries unchanged, checked against a golden report. |
+| **AI round without an API key** | Run the daily review in an MCP client (daily_review prompt) or paste a masked brief into Gemini, ChatGPT or Claude and upload the answer. |
+| **Indexer health with advice** | Heap, circuit breaker (“Data too large”), shards per GB of heap, unassigned shards — with what to do. |
+| **Wazuh version detection** | The connection test shows the Wazuh version; a 5.x server is recognised and explained. |
+| **Error reports and anonymous usage data** | On by default, switch off in Settings; structured data only, never alert or log content; open-source collector. |
+| **Rule migration tool (preview): custom 4.x XML → Sigma** | Converts simple rules, lists what needs a person, maps fields, checks matches on sample events. Usable on its own. |
+| **ISO 27001 Annex A mapping in the audit report** | Each section of the monthly report linked to the controls it evidences. |
 
-## 🚧 1.0 preview — development branch
-
-| Item | What it gives you |
-|---|---|
-| **AI round without an API key** | Run the daily review through an MCP client or use a masked brief with a chat assistant and paste the answer back. |
-| **Indexer health with advice** | Heap, circuit breaker, shards per heap and unassigned shards, with recommended checks. |
-| **Wazuh version detection** | The connection test identifies the server version; Wazuh 5 detection does not yet mean its schema is supported. |
-| **Error reports and anonymous usage data** | Configurable telemetry; structured diagnostic data only, never alert or log content. |
-| **Rule migration tool (preview): custom 4.x XML → Sigma** | Converts supported rules, marks cases needing review, maps fields and compares matches on sample events. |
-| **Annex A evidence summary** | Ten selected controls with evidence/gap status, SoA exclusions and references. Supports an ISMS review; it is not certification. |
-
-## ⬜ Next (0.18)
+## ⬜ Next (0.19)
 
 | Item | What it gives you |
 |---|---|
