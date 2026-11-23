@@ -70,6 +70,17 @@ you took before the upgrade.
 
 ## Version notes
 
+### 0.18.0
+
+- **No configuration change is required.** Replace the image (Kustomize `newTag` / `?ref=v0.18.0`, Helm chart 0.8.2).
+- **Error reports and usage data are on by default** (structured only — see [Telemetry](Telemetry)). Set
+  `TELEMETRY=off` (or `errors`) before the upgrade if your policy needs it; outbound HTTPS to
+  `telemetry.occultera.dev` is optional — a blocked egress only means nothing is sent.
+- **New, optional:** `LLM_PROVIDER=none` with the AI round in an MCP client or another assistant
+  ([MCP](MCP#ai-round-without-an-api-key)); `compliance:` for the Annex A table ([Features](Features)).
+- **MCP:** `start_review`, `submit_review` and the `daily_review` prompt are new; like `propose_knowledge` they are
+  writes and are recorded in the audit trail.
+
 ### 0.17.0
 
 - **The container and the Compose service are now `occultera`** (were `triage`). Compose: run

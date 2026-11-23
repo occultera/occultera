@@ -20,6 +20,20 @@ Wazuh 4.x tam olarak desteklenmeye devam ediyor; bu sayfadaki hiçbir şey çal�
 | Manager yolları | `/var/ossec`, `ossec.conf` | `/var/wazuh-manager`, `wazuh-manager.conf` | promotion betikleri |
 | Indexer | OpenSearch 2.x | OpenSearch 3.x | sorgular ikisinde de test edilir |
 
+## Durum (22 Kasım 2026)
+
+| Parça | Durum | Nerede |
+|---|---|---|
+| Occultera ile Wazuh arasında şema katmanı (4.x sorguları değişmedi, altın rapor) | ✅ yayında | 0.18.0 |
+| Bağlantı testinde Wazuh sürüm algılama | ✅ yayında | 0.18.0 |
+| Tek sorgu dili: AI ve MCP istemcileri 4.x alan adlarını kullanır, sürüme göre çevrilir | ✅ yayında | 0.18.0 |
+| Kural geçiş aracı, 4.x XML → Sigma (önizleme, alan adları 5.0 sürüm adaylarından) | 🚧 önizleme | 0.18.0 |
+| 5.x şeması: findings / events / states, kategorik önem, kural UUID'leri | ⬜ planlandı | 5.0 lab'ı gerekiyor |
+| 5.x'te araç sonuçlarının 4.x adlarına çevrilmesi | ⬜ planlandı | 5.x şemasıyla |
+| 5.x'te Sigma kural taslakları | ⬜ planlandı | |
+| demo5.occultera.dev ve 4.x / 5.x smoke-test matrisi | ⬜ planlandı | |
+| **Wazuh 5.x desteği** | ⬜ **Occultera 1.0**, Wazuh 5.0 genel kullanıma çıktıktan sonra | |
+
 ## Plan
 
 1. **Sürüm adaptörü** (geliştiriliyor). Wazuh'a bakan kod, 4.x ve 5.x uygulaması olan tek bir arayüzün arkasına
@@ -56,6 +70,20 @@ Occultera içinden ya da uygulamanın geri kalanı olmadan tek başına kullanı
 Otomatik çevrilenler: alan eşleşmeleri, `match` / `regex`, gruplar, seviye → önem, MITRE ATT&CK.
 İncelemeye ayrılanlar: `if_sid` / `if_matched_sid` zincirleri, `frequency` / `timeframe`, CDB listeleri,
 `overwrite="yes"` kuralları, regex lehçe farkları. Özel decoder'lar ilk sürümde çevrilmez, raporlanır.
+
+### Önizlemeyi deneyin (0.18)
+
+```sh
+docker run --rm -v "$PWD:/w" -w /w ghcr.io/occultera/occultera:0.18.0 \
+  python -m app.migrate /w/local_rules.xml --events /w/alerts.jsonl --out /w/migrate-out --json
+```
+
+`migrate-out/` içine çevrilebilen her kural için bir Sigma dosyası (`wazuh-<id>.yml`; `frequency` taşıyan kurallarda
+ayrıca Sigma *correlation* taslağı), kural başına durum, inceleme gerekçeleri ve eşleşme kontrolünü içeren
+`report.md` ve alan eşlemesi yazılır. `--events` satır başına bir JSON olarak 4.x alarm dokümanı alır — örneğin
+`wazuh-alerts-4.x-*`'ten bir günlük dışa aktarım; her olay hem 4.x kuralından hem Sigma kuralından geçer, rapor nerede
+uyuştuklarını gösterir. Üst kuralı (`if_sid`) aynı dosyada olan kurallarda üst kuralın koşulları içe alınır; stok üst
+kural incelemeye listelenir. Alan adları 5.0 sürüm adaylarına göredir, GA'da yeniden kontrol edilir.
 
 ## Şimdi ne yapabilirsiniz
 

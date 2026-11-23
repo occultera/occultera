@@ -88,7 +88,19 @@ def make_llm(cfg) -> LLM:
     if cfg.provider == "openai":
         from .openai_compat import OpenAICompatLLM
         return OpenAICompatLLM(cfg)
+    if cfg.provider == "none":
+        return NoLLM()
     if cfg.provider == "mock":
         from .mock import MockLLM
         return MockLLM()
     raise ValueError(f"unknown LLM provider: {cfg.provider}")
+
+
+class NoLLM:
+    """LLM_PROVIDER=none: no API key. Scheduled rounds keep their deterministic part; the analysis is done by an MCP
+    client (start_review / submit_review) or another assistant (the brief download, app/external.py)."""
+    name = "none"
+
+    async def complete(self, system, messages, tools, force_tool=None):
+        raise LLMError("no model configured (LLM_PROVIDER=none): run the AI round in an MCP client (daily_review) "
+                       "or with “AI round in another assistant” on the environment page")

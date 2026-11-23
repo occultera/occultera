@@ -20,6 +20,20 @@ fully supported; nothing on this page changes a running installation.
 | Manager paths | `/var/ossec`, `ossec.conf` | `/var/wazuh-manager`, `wazuh-manager.conf` | promotion scripts |
 | Indexer | OpenSearch 2.x | OpenSearch 3.x | queries are tested on both |
 
+## Status (22 November 2026)
+
+| Part | Status | Where |
+|---|---|---|
+| Schema layer between Occultera and Wazuh (4.x queries unchanged, golden report) | ✅ released | 0.18.0 |
+| Wazuh version detection in the connection test | ✅ released | 0.18.0 |
+| One query vocabulary: the AI and MCP clients use 4.x field names, translated per version | ✅ released | 0.18.0 |
+| Rule migration tool, 4.x XML → Sigma (preview, field names from the 5.0 release candidates) | 🚧 preview | 0.18.0 |
+| 5.x schema: findings / events / states, categorical severity, rule UUIDs | ⬜ planned | needs a 5.0 lab |
+| Tool results normalised to 4.x names on 5.x | ⬜ planned | with the 5.x schema |
+| Sigma rule drafts on 5.x | ⬜ planned | |
+| demo5.occultera.dev and a 4.x / 5.x smoke-test matrix | ⬜ planned | |
+| **Wazuh 5.x support** | ⬜ **Occultera 1.0**, after Wazuh 5.0 is generally available | |
+
 ## The plan
 
 1. **Version adapter** (in progress). The Wazuh-facing code moves behind one interface with a 4.x and a 5.x
@@ -56,6 +70,20 @@ Usable inside Occultera or alone, without the rest of the application.
 Converted automatically: field matches, `match` / `regex`, groups, level → severity, MITRE ATT&CK.
 Listed for review: `if_sid` / `if_matched_sid` chains, `frequency` / `timeframe`, CDB lists, `overwrite="yes"`
 rules, regex dialect differences. Custom decoders are reported, not converted, in the first version.
+
+### Try the preview (0.18)
+
+```sh
+docker run --rm -v "$PWD:/w" -w /w ghcr.io/occultera/occultera:0.18.0 \
+  python -m app.migrate /w/local_rules.xml --events /w/alerts.jsonl --out /w/migrate-out --json
+```
+
+`migrate-out/` gets one Sigma file per convertible rule (`wazuh-<id>.yml`; rules with `frequency` also carry a
+Sigma *correlation* draft), `report.md` with the status, the review reasons and the match check per rule, and the
+field map. `--events` takes 4.x alert documents, one JSON object per line — for example an export of a day of
+`wazuh-alerts-4.x-*`; each event goes through the 4.x rule and the Sigma rule and the report shows where they agree.
+Rules whose parent (`if_sid`) is in the same file get the parent's conditions inlined; a stock parent is listed for
+review. Field names follow the 5.0 release candidates and are re-checked at GA.
 
 ## What you can do now
 

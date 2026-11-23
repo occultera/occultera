@@ -1,0 +1,32 @@
+name: Wazuh 5 compatibility
+description: Something behaves differently on Wazuh 5.x, or you can help test it
+labels: [wazuh-5]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Wazuh 5.x support is planned for Occultera 1.0 (see the wiki page *Wazuh 5*). Reports from real 5.x installations help most.
+        **Do not paste real alert data, IP addresses, host names or credentials.**
+  - type: input
+    id: wazuh
+    attributes: { label: Wazuh version, placeholder: "5.0.0-rc2" }
+    validations: { required: true }
+  - type: input
+    id: version
+    attributes: { label: Occultera version, placeholder: "0.18.0 or the 1.0 branch" }
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      multiple: true
+      options: [connection test / version detection, alerts and findings, vulnerabilities, agents, watch, rule drafts / Sigma, rule migration tool, MCP tools, other]
+  - type: textarea
+    id: what
+    attributes: { label: What happened, description: "What you expected on 5.x and what you saw." }
+    validations: { required: true }
+  - type: textarea
+    id: sample
+    attributes:
+      label: Index names or field names (optional)
+      description: "For example the output of GET _cat/indices/wazuh-*?h=index — no document contents."
+      render: text

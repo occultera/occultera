@@ -14,7 +14,7 @@ onayı olmadan Wazuh'ta hiçbir şey değişmez.
 MCP sunucusunu demo verisiyle tek satırda deneyin — Wazuh gerekmez:
 
 ```sh
-docker run -i --rm -e WDT_DEMO=true ghcr.io/occultera/occultera:0.17.0 python -m app.mcp_stdio
+docker run -i --rm -e WDT_DEMO=true ghcr.io/occultera/occultera:0.18.0 python -m app.mcp_stdio
 ```
 
 **[Wazuh](https://wazuh.com) SIEM için nöbet yardımcısı.** Kural tabanlı nöbet, acil bir durum olduğunda
@@ -31,6 +31,9 @@ maskelenir.
 [Başlangıç](https://github.com/occultera/occultera/wiki/Getting-Started-TR) ·
 [Güvenlik modeli](https://github.com/occultera/occultera/wiki/Security-Model-TR) ·
 [Değişiklik günlüğü](CHANGELOG.md)
+
+Uygulama arayüzü İngilizce, Türkçe, İspanyolca ve Almanca kullanılabilir. Wiki ana sayfaları İngilizce,
+Türkçe, İspanyolca ve Fransızcadır; wiki Almancaya bütünüyle çevrilmemiştir.
 
 ![Pano](docs/screenshot-dashboard-tr.png)
 

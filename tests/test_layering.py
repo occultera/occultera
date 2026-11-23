@@ -17,16 +17,17 @@ APP = ROOT / "app"
 # Allowed to spell Wazuh 4.x paths:
 #  app/wazuh/       the schema itself
 #  app/demo*.py     the synthetic 4.x documents (the demo engine is a 4.x indexer)
+#  app/migrate      the 4.x → 5.x rule converter names both schemas on purpose
 #  app/query_guard  the field vocabulary the AI and MCP clients may query (4.x names; translated per version in 1.0)
 #  app/whatif.py    replays 4.x XML rules on 4.x documents; uses the V4 schema explicitly
-ALLOWED = ("wazuh/", "demo", "query_guard.py", "whatif.py")
+ALLOWED = ("wazuh/", "demo", "query_guard.py", "whatif.py", "migrate/")
 NOT_FIELDS = {"agent.trace", "rule.deploy", "rule.undeploy"}   # audit actions and stored keys, not Wazuh fields
 PATH = re.compile(r'"((?:rule|agent|data|manager|decoder|vulnerability|package|syscheck|predecoder)\.[A-Za-z0-9_.]+)"')
 INDEX = re.compile(r'"wazuh-(?:alerts|states|archives|events|findings)[^"]*"')
 
 MAX_LINES = 450
 CEILING = {   # current size of the modules still to split; lower these as they shrink, never raise them
-    "web/api.py": 525, "privacy.py": 497, "rules.py": 465,
+    # every module is under the limit since 1.0 — keep it that way
 }
 
 
@@ -132,3 +133,23 @@ def test_schema_entry_points_resolve_through_runtime_get():
         src = (root / name).read_text(encoding="utf-8")
         assert "S." in src
         assert re.search(r"\.get\(env_id\)|bind\(", src), name
+
+
+
+async def test_version_detection():
+    from app.demo import FakeAPI, FakeIndexer
+    from app.wazuh.detect import detect, major_of, verdict
+
+    assert major_of("v4.14.10") == 4 and major_of("5.0.0-rc2") == 5 and major_of("") is None
+    d = await detect(FakeAPI(), FakeIndexer(), "wazuh-alerts-4.x-*")
+    assert (d.major, d.source) == (4, "api") and verdict("auto", d)[0]
+    d = await detect(None, FakeIndexer(), "wazuh-alerts-4.x-*")
+    assert (d.major, d.source) == (4, "indices")
+    d = await detect(None, FakeIndexer(alerts=[]), "wazuh-alerts-4.x-*")
+    assert d.major is None and verdict("auto", d)[0]
+
+    class V5:
+        async def info(self):
+            return {"api_version": "5.0.0"}
+    ok, detail = verdict("auto", await detect(V5(), FakeIndexer(), "wazuh-alerts-4.x-*"))
+    assert not ok and "1.0" in detail

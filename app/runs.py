@@ -94,6 +94,80 @@ class RunMixin:
             frm = to - timedelta(hours=env.window_min_hours)
         return max(frm, to - timedelta(hours=env.window_max_hours))
 
+    async def _prepare_round(self, rt: EnvRuntime, run: dict, started: datetime, hours: int | None) -> dict:
+        """Collect, check and assemble what the AI round reads. Saves the run in the `analysing` stage."""
+        env, repo, lang = rt.env, rt.repo, self.lang(rt.env)
+        await self.ensure_seed(rt)
+        last = await repo.last_success()
+        frm = self._window(env, last, started, hours)
+        collected = await Collector(env, rt.ix, rt.api, lang,
+                                    inventory=env.inventory_names(self.settings.base_dir)).collect(frm, started)
+        try:  # live verification of deployed / approved rule drafts (best effort)
+            await self.verify_rules(env.id)
+        except Exception as e:  # noqa: BLE001
+            log.warning("%s: rule verification failed: %s", env.id, e)
+        from .services import clusters_of
+        if clusters_of(rt.sources):          # what the clusters' own Prometheus is firing (best effort)
+            from .clusteralerts import collect as collect_alerts
+            from .clusteralerts import for_ai
+            ca = await collect_alerts(clusters_of(rt.sources))
+            collected["cluster_alerts"] = {n: ({"counts": r["counts"], "alerts": for_ai(r["groups"])}
+                                               if "groups" in r else r) for n, r in ca.items()}
+        flags = collected["flags"]
+        flags += await self.storage_flags(rt, lang)      # lost index, risky prefix, retention policy, backup age
+        st = await self.env_settings(rt)
+        from .privacy import profile_info
+        run["privacy"] = profile_info(env, st.mask)
+        run.update(window=collected["window"], flags=flags, health=health_status(flags),
+                   metrics={"total": (collected.get("volume") or {}).get("total", 0),
+                            "high": (collected.get("volume") or {}).get("high_level_total", 0)},
+                   stage="analysing", collected=collected)
+        await repo.save_run(run)
+        knowledge = await repo.list_knowledge(status=["active", "proposed", "rejected"],
+                                              kinds=["context", "baseline", "decision", "open_item",
+                                                     "lesson", "rule_draft", "answer"])
+        prev = await repo.list_runs(3, status="done", light=True)
+        since = last["started_at"] if last else "1970-01-01T00:00:00Z"
+        answers = [k for k in knowledge if k["kind"] == "answer" and k["created_at"] >= since]
+        requests = await repo.list_knowledge(kinds=["request"], status="active")
+        sysmsg = system_prompt(env, env.context_text(self.settings.base_dir),
+                               [k for k in knowledge if k["kind"] != "answer"], self.settings.app.timezone, lang)
+        events = await self.watch_pending(rt)             # everything the watch saw since the last round
+        usr = triage_user_message(_compact(collected), prev, answers, requests,
+                                  [compact_for_ai(e) for e in events])
+        return {"frm": frm, "flags": flags, "sysmsg": sysmsg, "usr": usr, "events": events, "requests": requests}
+
+    async def _finish_round(self, rt: EnvRuntime, run: dict, submitted: dict | None, text: str, frm: datetime,
+                            started: datetime, event_ids: set[str], request_ids: list[str], why: str = "") -> dict:
+        """Turn a submitted report (built-in AI, MCP client or an uploaded answer) into the finished run."""
+        env, repo, lang = rt.env, rt.repo, self.lang(rt.env)
+        if submitted is not None:
+            rep = normalize_report(submitted, text, lang)
+            try:   # add the rules' own ATT&CK mapping to the findings (deterministic, best effort)
+                await enrich_mitre(env, rt.ix, rep["findings"], frm, started)
+            except Exception as e:  # noqa: BLE001
+                log.warning("run %s: ATT&CK enrichment failed: %s", run["run_id"], e)
+        else:
+            # No usable report (text only, truncated/invalid JSON): keep the deterministic findings.
+            log.warning("run %s: model did not submit a valid report (%s)", run["run_id"], why)
+            rep = flags_only_report(run.get("flags") or [], t(lang, "run.no_valid_report", why=why), lang,
+                                    key="run.ai_no_report")
+            run["ai_error"] = f"no valid report: {why}"[:500]
+        run.update(status="done", stage=None, finished_at=now_iso(), **rep)
+        verdicts = normalize_verdicts((submitted or {}).get("event_verdicts"), event_ids)
+        if event_ids:
+            run["watch"] = {"events": len(event_ids), "judged": await self.watch_apply_verdicts(rt, verdicts, run["run_id"]),
+                            "verdicts": verdicts}
+        await repo.save_run(run)
+        for rid in request_ids:  # requests were handed to this run
+            await repo.update_knowledge(rid, status="closed", consumed_run=run["run_id"])
+        log.info("run done %s: %s alerts, %d findings", run["run_id"], (run.get("metrics") or {}).get("total"),
+                 len(run["findings"]))
+        metrics.observe("wdt_run_seconds", (datetime.now(UTC) - started).total_seconds())
+        metrics.inc("wdt_runs_finished_total", status="done", health=str(run.get("health") or "ok"))
+        metrics.observe("wdt_run_findings", len(run.get("findings") or []))
+        return run
+
     async def run_triage(self, rt: EnvRuntime, run_id: str, trigger: str = "manual", hours: int | None = None) -> dict:
         env, repo, lang = rt.env, rt.repo, self.lang(rt.env)
         llm_cfg = self.llm_cfg(env)
@@ -102,50 +176,11 @@ class RunMixin:
                "started_at": iso(started), "stage": "collecting"}
         await repo.save_run(run)
         try:
-            await self.ensure_seed(rt)
-            last = await repo.last_success()
-            frm = self._window(env, last, started, hours)
-
-            collected = await Collector(env, rt.ix, rt.api, lang,
-                                        inventory=env.inventory_names(self.settings.base_dir)).collect(frm, started)
-            try:  # live verification of deployed / approved rule drafts (best effort)
-                await self.verify_rules(env.id)
-            except Exception as e:  # noqa: BLE001
-                log.warning("%s: rule verification failed: %s", env.id, e)
-            from .services import clusters_of
-            if clusters_of(rt.sources):          # what the clusters' own Prometheus is firing (best effort)
-                from .clusteralerts import collect as collect_alerts
-                from .clusteralerts import for_ai
-                ca = await collect_alerts(clusters_of(rt.sources))
-                collected["cluster_alerts"] = {n: ({"counts": r["counts"], "alerts": for_ai(r["groups"])}
-                                                   if "groups" in r else r) for n, r in ca.items()}
-            flags = collected["flags"]
-            flags += await self.storage_flags(rt, lang)      # lost index, risky prefix, retention policy, backup age
-            st = await self.env_settings(rt)
-            from .privacy import profile_info
-            run["privacy"] = profile_info(env, st.mask)
-            run.update(window=collected["window"], flags=flags, health=health_status(flags),
-                       metrics={"total": (collected.get("volume") or {}).get("total", 0),
-                                "high": (collected.get("volume") or {}).get("high_level_total", 0)},
-                       stage="analysing", collected=collected)
-            await repo.save_run(run)
-
-            knowledge = await repo.list_knowledge(status=["active", "proposed", "rejected"],
-                                                  kinds=["context", "baseline", "decision", "open_item",
-                                                         "lesson", "rule_draft", "answer"])
-            prev = await repo.list_runs(3, status="done", light=True)
-            since = last["started_at"] if last else "1970-01-01T00:00:00Z"
-            answers = [k for k in knowledge if k["kind"] == "answer" and k["created_at"] >= since]
-            requests = await repo.list_knowledge(kinds=["request"], status="active")
-
-            sysmsg = system_prompt(env, env.context_text(self.settings.base_dir),
-                                   [k for k in knowledge if k["kind"] != "answer"], self.settings.app.timezone, lang)
-            events = await self.watch_pending(rt)             # everything the watch saw since the last round
-            usr = triage_user_message(_compact(collected), prev, answers, requests,
-                                      [compact_for_ai(e) for e in events])
+            prep = await self._prepare_round(rt, run, started, hours)
+            flags, events, requests = prep["flags"], prep["events"], prep["requests"]
             tb = ToolBox(env, rt.ix, rt.api, repo, mode="triage", run_id=run_id, sources=rt.sources)
             try:
-                res = await run_agent(self.llm_for(env), sysmsg, [{"role": "user", "content": usr}], tb,
+                res = await run_agent(self.llm_for(env), prep["sysmsg"], [{"role": "user", "content": prep["usr"]}], tb,
                                       llm_cfg.max_tool_steps, stop_on="submit_report")
             except LLMError as e:
                 # The AI is unavailable (after retries): keep the deterministic part instead of losing the run.
@@ -156,36 +191,13 @@ class RunMixin:
                                   "provider": llm_cfg.provider, "model": llm_cfg.model})
                 await repo.save_run(run)  # requests stay open for the next run
                 return run
-            if tb.submitted is not None:
-                rep = normalize_report(tb.submitted, res.text, lang)
-                try:   # add the rules' own ATT&CK mapping to the findings (deterministic, best effort)
-                    await enrich_mitre(env, rt.ix, rep["findings"], frm, started)
-                except Exception as e:  # noqa: BLE001
-                    log.warning("run %s: ATT&CK enrichment failed: %s", run_id, e)
-            else:
-                # No usable report (text only, truncated/invalid JSON): keep the deterministic findings.
-                why = "; ".join(res.notes[-3:]) or res.stopped
-                log.warning("run %s: model did not submit a valid report (%s)", run_id, why)
-                rep = flags_only_report(flags, t(lang, "run.no_valid_report", why=why), lang, key="run.ai_no_report")
-                run["ai_error"] = f"no valid report: {why}"[:500]
-            run.update(
-                status="done", stage=None, finished_at=now_iso(), **rep,
-                proposals=[p["id"] for p in tb.proposals],
-                agent={"steps": res.steps, "stopped": res.stopped, "trace": res.trace, "notes": res.notes,
-                       "input_tokens": res.input_tokens, "output_tokens": res.output_tokens,
-                       "provider": llm_cfg.provider, "model": llm_cfg.model},
-            )
-            verdicts = normalize_verdicts((tb.submitted or {}).get("event_verdicts"), {e["id"] for e in events})
-            if events:
-                run["watch"] = {"events": len(events), "judged": await self.watch_apply_verdicts(rt, verdicts, run_id),
-                                "verdicts": verdicts}
-            await repo.save_run(run)
-            for r in requests:  # requests were handed to this run
-                await repo.update_knowledge(r["id"], status="closed", consumed_run=run_id)
-            log.info("run done %s: %s alerts, %d findings", run_id, run["metrics"]["total"], len(run["findings"]))
-            metrics.observe("wdt_run_seconds", (datetime.now(UTC) - started).total_seconds())
-            metrics.inc("wdt_runs_finished_total", status="done", health=str(run.get("health") or "ok"))
-            metrics.observe("wdt_run_findings", len(run.get("findings") or []))
+            run.update(proposals=[p["id"] for p in tb.proposals],
+                       agent={"steps": res.steps, "stopped": res.stopped, "trace": res.trace, "notes": res.notes,
+                              "input_tokens": res.input_tokens, "output_tokens": res.output_tokens,
+                              "provider": llm_cfg.provider, "model": llm_cfg.model})
+            await self._finish_round(rt, run, tb.submitted, res.text, prep["frm"], started,
+                                     {e["id"] for e in events}, [r["id"] for r in requests],
+                                     why="; ".join(res.notes[-3:]) or res.stopped)
             agent = run.get("agent") or {}
             metrics.inc("wdt_llm_tokens_total", float(agent.get("input_tokens") or 0), direction="input")
             metrics.inc("wdt_llm_tokens_total", float(agent.get("output_tokens") or 0), direction="output")

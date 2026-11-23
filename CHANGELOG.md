@@ -5,6 +5,48 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.18.0] — 2026-11-23
+
+An AI round without an API key, indexer health with advice, error reports, the rule migration preview and ISO 27001
+Annex A evidence. Wazuh 4.x behaves as before; Wazuh 5.x support stays planned for 1.0.
+
+### Changed
+- **Every module is under 450 lines.** Rule deployment moved to `app/rules_apply.py`, log scanning to
+  `app/privacy_scan.py`, export and maintenance routes to `app/web/reports_api.py`; every name stays importable from
+  its old place. The size ceiling in `tests/test_layering.py` is empty.
+- **Interface:** visible keyboard focus on links and buttons, `prefers-reduced-motion` respected, emoji icons in
+  the settings, watch, report and knowledge pages replaced by inline SVG icons; the delete button of a masking rule
+  has a label for screen readers.
+
+### Added
+- **ISO 27001 Annex A evidence in the monthly audit report** (`app/controls.py`): ten controls marked evidence,
+  gap, no data or excluded, each with its number; Statement-of-Applicability exclusions and ISMS references per
+  environment (`compliance:`); SHA-256 fingerprint in the report, the PDF and the audit trail. Deterministic, not a
+  conformity statement.
+- **Rule migration tool (preview): custom 4.x XML → Sigma** — `python -m app.migrate local_rules.xml --events
+  alerts.jsonl`. Converts field, match/regex (OS_Match/OS_Regex translated), IP, decoder, group, level and ATT&CK
+  conditions; inlines parents from the same file; writes Sigma correlation drafts for `frequency` rules; lists what
+  needs a person (stock parents, CDB lists, time conditions, same_*/different_*, overwrites); maps 4.x fields to the
+  Wazuh Common Schema; and checks 4.x rule and Sigma rule on the same sample events. Works without the rest of
+  Occultera.
+- **Error reports and anonymous usage data** (`app/telemetry/`, wiki *Telemetry*). On by default, `TELEMETRY=off`
+  switches it off, `TELEMETRY=errors` keeps crash reports only; never sent by the public demo. Structured data only:
+  exception class, `module:function` frames, error category, versions, installation type and yes/no feature flags —
+  never a message, alert, log line, address, name, model or key; each event is checked against a fixed key list.
+  The About page shows exactly what is sent. Collector: a Cloudflare Worker (`occultera-telemetry`). GitHub issue
+  forms for crashes and Wazuh 5 compatibility. Manifests set `OCC_INSTALL`.
+- **One query vocabulary for every Wazuh version.** The AI and MCP clients keep naming fields with their 4.x names;
+  `query_guard.field()` and `query_string()` translate them to the environment's schema (`app/wazuh/schema.py`).
+- **AI round without an API key.** `LLM_PROVIDER=none` keeps scheduled rounds deterministic, and the analysis is done
+  by an MCP client — the `daily_review` prompt, `start_review` and `submit_review` — or by any chat assistant: the
+  environment page downloads a masked brief and the report page takes the pasted answer back. Pseudonyms resolve
+  inside the installation, rule drafts go through `propose_knowledge`, watch verdicts and ATT&CK mapping apply as in a
+  built-in round; the brief for a chat assistant carries the timeline and sample events of the busiest high-level
+  rules, since it has no tools. Internally `run_triage` is split into `_prepare_round` / `_finish_round`, shared by both paths.
+- **Wazuh version in the connection test.** A new `wazuh` row shows the Wazuh version the environment talks to (from
+  the server API, or from the index patterns without it). A Wazuh 5.x server fails the row with a pointer to the
+  wiki page *Wazuh 5*; support is planned for 1.0. `wazuh_version` (`WAZUH_VERSION`) is `auto` or `4`.
+
 ## [0.17.0] — 2026-11-22
 
 Groundwork for Wazuh 5.x. Nothing changes for users on Wazuh 4.x: every query and report is the same as in 0.16.0.

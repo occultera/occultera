@@ -78,7 +78,8 @@ de la fuente», «cero no significa que la regla funcione», bajar el nivel en l
 - **Varios entornos, varios idiomas** (inglés, turco, español, alemán); Docker Compose o Kubernetes.
 
 Cada función se describe en el [wiki](https://github.com/occultera/occultera/wiki/Home-ES)
-(las páginas detalladas están en inglés y en turco).
+(páginas de inicio en inglés, turco, español y francés; la documentación detallada está principalmente en inglés y turco).
+La interfaz de la aplicación también está disponible en alemán; el wiki no está traducido completamente al alemán.
 
 ## Inicio rápido
 

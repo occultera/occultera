@@ -15,6 +15,7 @@ from ..notify import NotifyCfg
 from ..wazuh.schema import V4
 from .base import LANGUAGES
 from .models import (
+    ComplianceCfg,
     Endpoint,
     IncidentCfg,
     LivenessCfg,
@@ -81,6 +82,7 @@ class Environment(BaseModel):
     query: QueryLimitsCfg = Field(default_factory=QueryLimitsCfg)
     mail: MailCfg | None = None          # set to analyse e-mail channel saturation
     vuln_sla: VulnSlaCfg = Field(default_factory=VulnSlaCfg)
+    compliance: ComplianceCfg = Field(default_factory=ComplianceCfg)
     promote: PromoteCfg = Field(default_factory=PromoteCfg)
     inventory: list[str] = Field(default_factory=list)   # expected agent names (coverage reconciliation)
     inventory_file: str | None = None    # one agent name per line (# comments allowed)

@@ -23,7 +23,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: occultera
-          image: ghcr.io/occultera/occultera:0.17.0
+          image: ghcr.io/occultera/occultera:0.18.0
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
@@ -36,6 +36,8 @@ spec:
           env:
             - name: WDT_CONFIG
               value: /app/config/environments.yaml
+            - name: OCC_INSTALL        # telemetry: how Occultera was installed (no other meaning)
+              value: kustomize
           volumeMounts:
             - name: config
               mountPath: /app/config

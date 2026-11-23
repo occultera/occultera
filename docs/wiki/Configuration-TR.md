@@ -78,7 +78,11 @@ aksi halde                    → WAZUH_* değişkenleriyle tek ortam modu
 
 | Değişken | Varsayılan | Anlam |
 |---|---|---|
-| `LLM_PROVIDER` | `anthropic` | `anthropic`, `openai` (OpenAI uyumlu her uç nokta) veya `mock`. |
+| `LLM_PROVIDER` | `anthropic` | `anthropic`, `openai` (OpenAI uyumlu her uç nokta) `mock` ya da `none` — API anahtarı yok: AI turu MCP istemcisinde ya da başka asistanda yapılır ([MCP](MCP-TR#api-anahtarı-olmadan-ai-turu)). |
+| `TELEMETRY` | `errors+usage` | `off`, `errors` ya da `errors+usage` — çökme raporları ve haftalık kullanım bilgisi, yalnız yapısal veri ([Telemetri](Telemetry-TR)). |
+| `TELEMETRY_URL` | `https://telemetry.occultera.dev/v1/events` | kendi toplayıcınız. |
+| `TELEMETRY_ID` | tuzdan türetilir | kurulum kimliğini sıfırlamak için yeni bir değer verin. |
+| `OCC_INSTALL` | manifestler ayarlar | `helm`, `kustomize` ya da `compose`; yalnız telemetride raporlanır. |
 | `LLM_MODEL` | *(boş)* | Sağlayıcının model kimliği. |
 | `LLM_API_KEY` | *(boş)* | Kimlik doğrulaması olmayan yerel modelde gerekmez. |
 | `LLM_BASE_URL` | *(boş)* | OpenAI uyumlu taban URL: OpenAI, Gemini, DeepSeek, Azure, Ollama, vLLM, LM Studio… |
@@ -123,6 +127,7 @@ Bir kanal, alanları dolu olduğunda açıktır. Ayrıntılar: [docs/notificatio
 | `WAZUH_VERIFY_TLS` | `true` | Doğrulamayı kapatmak yerine `WAZUH_CA_FILE` kullanın. |
 | `WAZUH_CA_FILE` | *(boş)* | Konteyner içindeki özel CA yolu (`/app/config/certs/root-ca.pem`). |
 | `WAZUH_ALERTS_INDEX` | `wazuh-alerts-4.x-*` | Alarm indeks deseni. |
+| `WAZUH_VERSION` | `auto` | Wazuh ana sürümü: `auto` ya da `4`. Bağlantı testi algılanan sürümü gösterir; `5` 1.0 ile geliyor ([Wazuh 5](Wazuh-5-TR)). |
 | `SCHEDULE_ENABLED` | `true` | Zamanlanmış koşular. |
 | `SCHEDULE_TIME` | `07:30` | Tek saat veya virgüllü liste (`07:30,19:30`). |
 | `SCHEDULE_DAYS` | `mon,tue,wed,thu,fri` | Haftanın günleri. |
@@ -182,6 +187,7 @@ environments:
       username: ${PROD_API_USER}
       password: ${PROD_API_PASSWORD}
       ca_file: /app/config/certs/root-ca.pem
+    wazuh_version: auto      # auto | 4 (5: Occultera 1.0)
     alerts_index: wazuh-alerts-4.x-*
     vuln_index: wazuh-states-vulnerabilities-*
     storage_prefix: daily-triage      # sonuçlar daily-triage-runs / -knowledge

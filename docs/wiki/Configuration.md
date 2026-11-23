@@ -78,7 +78,11 @@ otherwise                → single-environment mode from WAZUH_* variables
 
 | Variable | Default | Meaning |
 |---|---|---|
-| `LLM_PROVIDER` | `anthropic` | `anthropic`, `openai` (any OpenAI-compatible endpoint) or `mock`. |
+| `LLM_PROVIDER` | `anthropic` | `anthropic`, `openai` (any OpenAI-compatible endpoint) `mock`, or `none` — no API key: the AI round runs in an MCP client or another assistant ([MCP](MCP#ai-round-without-an-api-key)). |
+| `TELEMETRY` | `errors+usage` | `off`, `errors` or `errors+usage` — crash reports and a weekly usage ping, structured data only ([Telemetry](Telemetry)). |
+| `TELEMETRY_URL` | `https://telemetry.occultera.dev/v1/events` | your own collector. |
+| `TELEMETRY_ID` | derived from the salt | set a new value to reset the installation id. |
+| `OCC_INSTALL` | set by the manifests | `helm`, `kustomize` or `compose`; only reported in telemetry. |
 | `LLM_MODEL` | *(empty)* | Model id from the provider. |
 | `LLM_API_KEY` | *(empty)* | Not needed for a local model without auth. |
 | `LLM_BASE_URL` | *(empty)* | OpenAI-compatible base URL: OpenAI, Gemini, DeepSeek, Azure, Ollama, vLLM, LM Studio… |
@@ -123,6 +127,7 @@ A channel is on when its fields are set. See [docs/notifications.md](https://git
 | `WAZUH_VERIFY_TLS` | `true` | Prefer `WAZUH_CA_FILE` over disabling verification. |
 | `WAZUH_CA_FILE` | *(empty)* | Private CA path inside the container (`/app/config/certs/root-ca.pem`). |
 | `WAZUH_ALERTS_INDEX` | `wazuh-alerts-4.x-*` | Alert index pattern. |
+| `WAZUH_VERSION` | `auto` | Wazuh major version: `auto` or `4`. The connection test shows the detected version; `5` arrives with 1.0 ([Wazuh 5](Wazuh-5)). |
 | `SCHEDULE_ENABLED` | `true` | Scheduled runs. |
 | `SCHEDULE_TIME` | `07:30` | One time or a comma-separated list (`07:30,19:30`). |
 | `SCHEDULE_DAYS` | `mon,tue,wed,thu,fri` | Days of the week. |
@@ -182,6 +187,7 @@ environments:
       username: ${PROD_API_USER}
       password: ${PROD_API_PASSWORD}
       ca_file: /app/config/certs/root-ca.pem
+    wazuh_version: auto      # auto | 4 (5: Occultera 1.0)
     alerts_index: wazuh-alerts-4.x-*
     vuln_index: wazuh-states-vulnerabilities-*
     storage_prefix: daily-triage      # results in daily-triage-runs / -knowledge

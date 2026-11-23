@@ -14,7 +14,7 @@ changes in Wazuh without human approval.
 Try the MCP server in one line, with demo data — no Wazuh needed:
 
 ```sh
-docker run -i --rm -e WDT_DEMO=true ghcr.io/occultera/occultera:0.17.0 python -m app.mcp_stdio
+docker run -i --rm -e WDT_DEMO=true ghcr.io/occultera/occultera:0.18.0 python -m app.mcp_stdio
 ```
 
 **An on-call companion for [Wazuh](https://wazuh.com) SIEM.** A rule-based watch tells you within minutes when
@@ -87,6 +87,8 @@ instead of silencing.
 - **Multi-environment, multi-language** (English, Turkish, Spanish, German), Docker Compose or Kubernetes.
 
 Every feature is described in the [wiki](https://github.com/occultera/occultera/wiki).
+The application interface is available in English, Turkish, Spanish and German. The wiki home pages are
+available in English, Turkish, Spanish and French; the wiki is not fully translated into German.
 
 ## Quick start
 

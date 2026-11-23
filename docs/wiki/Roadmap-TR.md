@@ -4,6 +4,9 @@ Occultera bugün ne yapıyor, şu an ne geliştiriliyor, sırada ne var. Wazuh 4
 
 Güncel sürüm: **0.17.0** · Güncellendi 2026-11-22
 
+**1.0 önizlemesi** olarak işaretlenen maddeler `feat/1.0-wazuh-adapter` geliştirme dalında uygulanmıştır;
+yayımlanmış 0.17.0 sürümüne dahil değildir.
+
 ## ✅ Yayında
 
 | Madde | Size ne kazandırır |
@@ -18,28 +21,28 @@ Güncel sürüm: **0.17.0** · Güncellendi 2026-11-22
 | **Helm, Kustomize, Docker Compose; imzalı imajlar** | Tek container, ek veritabanı yok, salt okunur dosya sistemi; sürüm imajları cosign ile imzalı, her derlemede SBOM. |
 | **Wazuh 5 için iç hazırlık (0.17)** | Occultera ile Wazuh arasında şema katmanı; 4.x sorguları değişmedi, altın raporla doğrulandı. |
 
-## 🚧 Yapılıyor — sıradaki sürüm
+## 🚧 1.0 önizlemesi — geliştirme dalı
 
 | Madde | Size ne kazandırır |
 |---|---|
-| **API anahtarı olmadan AI turu** | Günlük incelemeyi bir MCP istemcisinde (daily_review) yapın ya da maskeli brifingi Gemini, ChatGPT veya Claude'a verip cevabı yükleyin. |
-| **Önerili indexer sağlığı** | Heap, circuit breaker (“Data too large”), GB heap başına shard, atanmamış shard — ne yapılacağıyla birlikte. |
-| **Wazuh sürüm algılama** | Bağlantı testi Wazuh sürümünü gösterir; 5.x sunucu tanınır ve açıklanır. |
+| **API anahtarı olmadan AI turu** | Günlük incelemeyi bir MCP istemcisinde yapın ya da maskeli brifingi bir sohbet asistanına verip yanıtı geri yükleyin. |
+| **Önerili Indexer sağlığı** | Heap, circuit breaker, heap başına shard ve atanmamış shard için önerilen kontroller. |
+| **Wazuh sürüm algılama** | Bağlantı testi sunucu sürümünü belirler; Wazuh 5'in algılanması şemasının desteklendiği anlamına gelmez. |
+| **Hata bildirimi ve anonim kullanım verisi** | Ayarlanabilir telemetri; yalnız yapısal tanılama verisi, alarm veya log içeriği gönderilmez. |
+| **Kural geçiş aracı (önizleme): özel 4.x XML → Sigma** | Desteklenen kuralları çevirir, insan incelemesi gerekenleri işaretler, alanları eşler ve örnek olaylarda eşleşmeleri karşılaştırır. |
+| **Annex A kanıt özeti** | On seçili kontrol için kanıt/boşluk durumu, SoA istisnaları ve referanslar. ISMS incelemesine destek olur; sertifika değildir. |
 
 ## ⬜ Sırada (0.18)
 
 | Madde | Size ne kazandırır |
 |---|---|
-| **Hata bildirimi ve anonim kullanım verisi** | Varsayılan açık, Ayarlar'dan kapatılır; yalnız yapısal veri, alarm ya da log içeriği asla; toplayıcı açık kaynak. |
 | **Wazuh 4.x ve 5.x için herkese açık demolar** | 4.x verisiyle demo.occultera.dev, 5.x önizlemesi olarak demo5.occultera.dev. |
 
 ## ⬜ 1.0'a doğru
 
 | Madde | Size ne kazandırır |
 |---|---|
-| **Kural geçiş aracı: özel 4.x XML → Sigma** | Basit kuralları çevirir, kişi gerektirenleri listeler, alanları eşler, örnek olaylarda eşleşmeyi kontrol eder. Tek başına da çalışır. |
 | **Wazuh 5.x desteği — Occultera 1.0** | Sürüm adaptörüyle findings, events ve states; önem eşlemesi; 5.x'te Sigma taslakları. Wazuh 5.0 genel kullanıma çıktıktan sonra. |
-| **Denetim raporunda ISO 27001 Annex A eşlemesi** | Aylık raporun her bölümü kanıtladığı kontrollere bağlanır. |
 | **Decoder taslakları; PagerDuty ve Opsgenie** | Kural taslaklarının yanında yeni log kaynakları; gerçek olayların nöbet eskalasyonu. |
 
 Eksik bir şey mi var? Bir issue açın ya da yazın: hello@occultera.dev · https://github.com/occultera/occultera/issues · https://occultera.dev/tr/yol-haritasi/

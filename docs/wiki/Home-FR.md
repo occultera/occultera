@@ -1,6 +1,6 @@
 # Occultera — Wiki (Français)
 
-[English](Home) · [Türkçe](Home-TR) · [Español](Home-ES) · **Français**
+[English](Home) · [Türkçe](Home-TR) · [Español](Home-ES) · **Français** · [Deutsch](Home-DE)
 
 **Serveur MCP et tri des alertes par IA pour Wazuh 4.x, open source** (support de Wazuh 5.x en développement), avec les données personnelles masquées avant l’IA (RGPD). Un compagnon d'astreinte : Il surveille vos alertes jour et nuit et vous prévient en quelques
 minutes quand quelque chose d'urgent se produit — sans interroger d'IA. Une ou deux fois par jour, une passe d'IA
@@ -22,7 +22,7 @@ Wazuh sans votre accord.
 
 ![Tableau de veille](images/dashboard.png)
 
-**Version :** 0.17.0 · **Licence :** AGPL-3.0-only · **Python :** 3.11–3.15 · **Wazuh :** 4.x · 5.x arrive avec la 1.0 ([Wazuh 5](Wazuh-5))
+**Version :** 0.18.0 · **Licence :** AGPL-3.0-only · **Python :** 3.11–3.15 · **Wazuh :** 4.x · 5.x arrive avec la 1.0 ([Wazuh 5](Wazuh-5))
 
 ## Ce que c'est, et ce que ce n'est pas
 

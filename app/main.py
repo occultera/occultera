@@ -64,9 +64,16 @@ async def lifespan(app: FastAPI):
                 log.exception("demo: could not create the sample data")
     if os.environ.get("WDT_SCHEDULER", "true").lower() not in ("0", "false", "no"):
         rt.start_scheduler()
+    from .telemetry import Telemetry, TelemetryHandler
+    rt.telemetry = Telemetry(rt)
+    rt.telemetry.start()
+    tel_handler = TelemetryHandler(rt.telemetry)
+    logging.getLogger().addHandler(tel_handler)
     log.info("occultera %s started — %d environment(s)%s", __version__, len(settings.environments),
              " (DEMO)" if demo else "")
     yield
+    logging.getLogger().removeHandler(tel_handler)
+    await rt.telemetry.close()
     await rt.close()
 
 
@@ -77,6 +84,14 @@ auth_routes.install(app)
 app.include_router(page_routes.router)
 app.include_router(api_routes.router)
 app.include_router(admin_routes.router)
+
+from .web.external_api import router as external_router  # noqa: E402
+
+app.include_router(external_router)
+
+from .web.reports_api import router as reports_router  # noqa: E402
+
+app.include_router(reports_router)
 
 from .mcp import router as mcp_router  # noqa: E402
 

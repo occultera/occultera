@@ -35,6 +35,18 @@
 {% endif %}
 
 {% if run.status == 'running' %}<div class="runstate" data-runstate="{{ env.id }}" data-poll="{{ run.run_id }}" data-reload="1"></div>{% endif %}
+{% if run.status == 'awaiting' %}
+<section class="card external">
+  <h2>{{ _('ext.title') }}</h2>
+  <p>{{ _('ext.help', ch=run.external.channel, exp=(run.external.expires or '')[:10]) }}</p>
+  {% if run.external.channel == 'mcp' %}<p class="small muted">{{ _('ext.mcp_hint', run=run.run_id) }}</p>{% endif %}
+  <div data-ext-answer="/api/e/{{ env.id }}/external/{{ run.run_id }}">
+    <textarea rows="10" placeholder="{{ _('ext.paste') }}" aria-label="{{ _('ext.paste') }}"></textarea>
+    <div class="row"><input type="file" accept=".md,.txt,.json" aria-label="{{ _('ext.file') }}">
+      <button type="button" class="btn primary" data-busy="{{ _('ext.checking') }}">{{ _('ext.submit') }}</button><span class="small" data-out></span></div>
+  </div>
+</section>
+{% endif %}
 {% if run.error %}<div class="card err"><b>{{ _('rep.failed') }}</b> {{ run.error }}</div>{% endif %}
 
 {% if run.flags %}
@@ -178,7 +190,7 @@
         {% for n in hl.indexer_nodes or [] %}<tr><td>{{ _('rep.heap') }} {{ n.node }}</td><td>{{ n.heap_percent }}% / {{ n.heap_max_gb }} GB{% if n.breaker_tripped %} · circuit breaker {{ n.breaker_tripped }}×{% endif %}</td></tr>{% endfor %}
         {% if hl.api_version %}<tr><td>{{ _('rep.api') }}</td><td>{{ hl.api_version }}</td></tr>{% endif %}
         {% if hl.agents_summary %}<tr><td>{{ _('rep.agents_summary') }}</td><td>{% for k, n in hl.agents_summary.items() %}{{ k }} {{ n }}{{ ' · ' if not loop.last }}{% endfor %}</td></tr>{% endif %}
-        {% for a in hl.agents_not_active or [] %}<tr><td>⚠ {{ a.name }}</td><td>{{ a.status }} · {{ _('rep.last') }} {{ a.lastKeepAlive|ts }}</td></tr>{% endfor %}
+        {% for a in hl.agents_not_active or [] %}<tr><td><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3L2 21h20z"/><path d="M12 10v5M12 18v.5"/></svg> {{ a.name }}</td><td>{{ a.status }} · {{ _('rep.last') }} {{ a.lastKeepAlive|ts }}</td></tr>{% endfor %}
         {% for m in hl.managers_last_2h or [] %}<tr><td>{{ m.manager }}</td><td>{{ _('rep.last2h') }} {{ m.count|n }} · {{ _('rep.last') }} {{ m.last|ts }}</td></tr>{% endfor %}
         {% for e in hl.manager_errors or [] %}<tr><td class="small">{{ e.tag }}</td><td class="small">{{ e.count }}× {{ e.msg }}</td></tr>{% endfor %}
       </table>

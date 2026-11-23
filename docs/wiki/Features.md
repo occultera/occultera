@@ -233,6 +233,22 @@ flag when one went missing. Details: [Backup](Backup).
 changes, liveness outages, coverage and vulnerability SLA. It is available as Markdown (`/api/e/<env>/audit.md`),
 as PDF (`audit.pdf`) and through MCP (`audit_report`, `month: YYYY-MM`).
 
+### ISO 27001 Annex A evidence *(0.18)*
+
+The report ends with an **Annex A evidence** table for the ten controls a SIEM review really produces evidence for
+(A.5.9, A.5.25–A.5.28, A.8.8, A.8.9, A.8.15, A.8.16, A.8.32): *evidence*, *gap*, *no data* or *excluded*, each with
+the number behind it ("19 finished rounds in 30 days, expected at least 24"). No model, no score — supporting
+monitoring evidence, not a statement of conformity. The report's SHA-256 fingerprint is printed and written to the
+audit trail (`audit.generated`). Per environment:
+
+```yaml
+compliance:
+  max_outage_minutes: 60      # A.8.15
+  min_run_ratio: 0.8          # A.8.16: finished rounds per day
+  exclude: {A.5.9: "Inventory kept in the CMDB (SoA)"}
+  isms_refs: {A.8.16: "ISMS-23 §4", A.5.25: "ISMS-18"}
+```
+
 ## Knowledge base import / export
 
 - UI: knowledge page → **Import / export**. Download a template (**TXT**, **Excel CSV** or YAML), fill it in with

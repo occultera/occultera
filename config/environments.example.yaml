@@ -52,6 +52,7 @@ environments:
       username: ${PROD_API_USER}
       password: ${PROD_API_PASSWORD}
       verify_tls: true
+    wazuh_version: auto      # auto | 4 (5: Occultera 1.0)
     alerts_index: wazuh-alerts-4.x-*
     vuln_index: wazuh-states-vulnerabilities-*
     storage_prefix: daily-triage        # results: daily-triage-runs / -knowledge in THIS indexer

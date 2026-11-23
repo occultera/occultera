@@ -235,9 +235,15 @@ async def about_page(request: Request):
     links = {k: wiki_url(lang, p) for k, p in (("home", "Home"), ("install", "Installation"), ("features", "Features"),
                                                 ("privacy", "Privacy"), ("mcp", "MCP"), ("viewer", "Viewer-Mode"),
                                                 ("sso", "SSO-Proxy-Auth"), ("config", "Configuration"),
-                                                ("guide", "User-Guide"), ("name", "Name-and-Logo"))}
+                                                ("guide", "User-Guide"), ("name", "Name-and-Logo"),
+                                                ("telemetry", "Telemetry"))}
+    import json as _json
+
+    from ..telemetry import preview
+    tel = preview(rt)
+    tel_json = _json.dumps({"error": tel["error_example"], "usage": tel["usage"]}, indent=1, ensure_ascii=False)
     return tpl.TemplateResponse(request, "about.html", _ctx(request, rows=rows, mcp_on=mcp_on, mcp_url=f"{base}/mcp",
-                                                            links=links))
+                                                            links=links, tel_level=tel["level"], tel_json=tel_json))
 
 
 @router.get("/e/{env_id}/noise", response_class=HTMLResponse)

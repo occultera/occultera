@@ -96,7 +96,7 @@ no token. Useful for a first look from any MCP client and for MCP directories th
 tools.
 
 ```sh
-docker run -i --rm -e WDT_DEMO=true ghcr.io/occultera/occultera:0.17.0 python -m app.mcp_stdio
+docker run -i --rm -e WDT_DEMO=true ghcr.io/occultera/occultera:0.18.0 python -m app.mcp_stdio
 ```
 
 Or build it yourself: `docker build -t occultera .` and use `occultera` as the image name.
@@ -108,7 +108,7 @@ Client configuration (Claude Desktop, Cursor, VS Code … — any client that st
   "mcpServers": {
     "wazuh-demo": {
       "command": "docker",
-      "args": ["run", "-i", "--rm", "-e", "WDT_DEMO=true", "ghcr.io/occultera/occultera:0.17.0", "python", "-m", "app.mcp_stdio"]
+      "args": ["run", "-i", "--rm", "-e", "WDT_DEMO=true", "ghcr.io/occultera/occultera:0.18.0", "python", "-m", "app.mcp_stdio"]
     }
   }
 }
@@ -147,6 +147,27 @@ curl -s https://occultera.example.com/mcp \
 
 Tool results arrive as a `content` array with one `text` item containing JSON; `isError` is `true` for tool
 errors. Supported protocol versions: `2025-06-18`, `2025-03-26`, `2024-11-05`.
+
+## AI round without an API key
+
+No model API key? Let an MCP client or any chat assistant write the daily report. Set `LLM_PROVIDER=none`:
+scheduled rounds then keep their deterministic part (flags, health, watch) and the analysis is done in one of two
+ways. *(0.18)*
+
+**In an MCP client** (Claude Desktop, Cursor, VS Code …) choose the **daily_review** prompt (in Claude Desktop:
+the **+** menu → *Add from occultera*). The client calls `start_review`, reads the brief (method, context, knowledge
+and the period's data — personal data masked), investigates with the usual tools, may ask you what only a person
+knows, proposes rule drafts with `propose_knowledge` and finishes with `submit_review`. The run appears as a normal
+report marked *MCP · client name*. `start_review` and `submit_review` are writes: they are recorded in the audit
+trail like `propose_knowledge`.
+
+**In any chat assistant** (Gemini, ChatGPT, Claude.ai …) press **AI round in another assistant** on the environment
+page. Occultera collects the period and downloads `occultera-<run>.md`. Give the file to the assistant, then paste its
+answer (the JSON block is enough) or choose the saved file on the report page and press *Check and save the report*.
+The assistant has no tools there, so the brief carries more data and the analysis is shallower than with MCP.
+
+Both channels: pseudonyms are resolved back inside your installation, rule drafts go through the same ID-range,
+XML and logtest checks, watch verdicts and ATT&CK mapping are applied, and an unanswered round expires after 7 days.
 
 ## Environment scoping and limits
 

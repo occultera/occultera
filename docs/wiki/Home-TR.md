@@ -1,6 +1,6 @@
 # Occultera — Wiki (Türkçe)
 
-[English](Home) · **Türkçe** · [Español](Home-ES) · [Français](Home-FR)
+[English](Home) · **Türkçe** · [Español](Home-ES) · [Français](Home-FR) · [Deutsch](Home-DE)
 
 **Wazuh 4.x için açık kaynak MCP sunucusu ve AI alarm triage** (Wazuh 5.x desteği geliştiriliyor); kişisel veriler yapay zekâdan önce maskelenir (KVKK / GDPR). Bir nöbet programı: Alarmlarınızı gece gündüz izler, acil bir şey olduğunda dakikalar içinde
 haber verir — yapay zekâya sormadan. Günde bir ya da iki kez bir AI turu, nöbetin gördüğü her şeyi inceler,
@@ -20,7 +20,7 @@ açıklar ve neyin ayarlanması gerektiğini önerir. Kararı siz verirsiniz; on
 
 ![Nöbet panosu](images/dashboard.png)
 
-**Sürüm:** 0.17.0 · **Lisans:** AGPL-3.0-only · **Python:** 3.11–3.15 · **Wazuh:** 4.x · 5.x 1.0 ile geliyor ([Wazuh 5](Wazuh-5-TR))
+**Sürüm:** 0.18.0 · **Lisans:** AGPL-3.0-only · **Python:** 3.11–3.15 · **Wazuh:** 4.x · 5.x 1.0 ile geliyor ([Wazuh 5](Wazuh-5-TR))
 
 ## Nedir, ne değildir
 

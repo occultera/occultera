@@ -91,6 +91,35 @@ document.addEventListener("DOMContentLoaded", () => {
       poll(env, r.run_id, el, false);
     } catch (e) { el.textContent = tr("failed_start") + " " + e.message; btn.disabled = false; btn.textContent = tr("now"); }
   }));
+  // AI round without an API key: download the brief, then the report page waits for the pasted answer
+  document.querySelectorAll("[data-external]").forEach(btn => btn.addEventListener("click", async () => {
+    const env = btn.dataset.external, label = btn.textContent;
+    const hoursSel = btn.dataset.hoursFrom && document.getElementById(btn.dataset.hoursFrom);
+    const hours = hoursSel && hoursSel.value ? parseInt(hoursSel.value, 10) : null;
+    btn.disabled = true; btn.textContent = btn.dataset.busy;
+    const el = document.querySelector(`[data-runstate="${env}"]`);
+    try {
+      const r = await fetch(`/api/e/${env}/external/start`, { method: "POST", credentials: "same-origin",
+        headers: { "Content-Type": "application/json" }, body: JSON.stringify({ hours }) });
+      if (!r.ok) { const d = await r.json().catch(() => ({})); throw new Error(d.detail || `HTTP ${r.status}`); }
+      const run = r.headers.get("X-Occultera-Run");
+      const url = URL.createObjectURL(await r.blob());
+      const a = Object.assign(document.createElement("a"), { href: url, download: `occultera-${run}.md` });
+      document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+      location.href = `/e/${env}/r/${run}`;
+    } catch (e) { el.textContent = tr("failed_start") + " " + e.message; btn.disabled = false; btn.textContent = label; }
+  }));
+  document.querySelectorAll("[data-ext-answer]").forEach(box => {
+    const ta = box.querySelector("textarea"), out = box.querySelector("[data-out]"), btn = box.querySelector("button");
+    box.querySelector("input[type=file]").addEventListener("change", async ev => {
+      const f = ev.target.files[0]; if (f) ta.value = await f.text();
+    });
+    btn.addEventListener("click", async () => {
+      const label = btn.textContent; btn.disabled = true; btn.textContent = btn.dataset.busy;
+      try { await api(box.dataset.extAnswer, "POST", { text: ta.value }); location.reload(); }
+      catch (e) { out.textContent = tr("error") + " " + e.message; btn.disabled = false; btn.textContent = label; }
+    });
+  });
   document.querySelectorAll("[data-poll]").forEach(el => poll(el.dataset.runstate, el.dataset.poll, el, !!el.dataset.reload));
 
   // cluster pulse: AI explanation of the firing alerts (a background job; the answer is server-rendered markdown)

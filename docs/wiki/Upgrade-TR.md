@@ -72,6 +72,17 @@ etkisizdir. Eski sürüm yeni veriyle düzgün çalışmazsa yükseltmeden önce
 
 ## Sürüm notları
 
+### 0.18.0
+
+- **Yapılandırma değişikliği gerekmez.** İmajı değiştirin (Kustomize `newTag` / `?ref=v0.18.0`, Helm chart 0.8.2).
+- **Hata bildirimi ve kullanım verisi varsayılan olarak açık** (yalnız yapısal veri — bkz. [Telemetri](Telemetry-TR)).
+  Politikanız gerektiriyorsa yükseltmeden önce `TELEMETRY=off` (ya da `errors`) yapın; `telemetry.occultera.dev`'e
+  HTTPS çıkışı isteğe bağlıdır — kapalıysa yalnız hiçbir şey gönderilmez.
+- **Yeni, isteğe bağlı:** `LLM_PROVIDER=none` ve AI turunun MCP istemcisinde ya da başka asistanda yapılması
+  ([MCP](MCP-TR#api-anahtarı-olmadan-ai-turu)); Annex A tablosu için `compliance:` ([Özellikler](Features-TR)).
+- **MCP:** `start_review`, `submit_review` ve `daily_review` komutu yeni; `propose_knowledge` gibi yazma işlemidir,
+  denetim kaydına geçer.
+
 ### 0.17.0
 
 - **Container ve Compose servisinin adı artık `occultera`** (önce `triage`). Compose: eski `triage` servisinin
