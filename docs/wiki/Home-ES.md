@@ -2,6 +2,8 @@
 
 [English](Home) · [Türkçe](Home-TR) · **Español** · [Français](Home-FR) · [Deutsch](Home-DE)
 
+La interfaz de la aplicación también está disponible en alemán; el wiki no está traducido completamente al alemán.
+
 **Servidor MCP y triaje de alertas con IA para Wazuh 4.x, de código abierto** (soporte de Wazuh 5.x en desarrollo), con los datos personales enmascarados antes de la IA (RGPD). Un compañero de guardia: Vigila sus alertas día y noche y le avisa en minutos cuando ocurre algo
 urgente — sin preguntar a una IA. Una o dos veces al día, una ronda de IA revisa todo lo que vio la vigilancia,
 lo explica y propone qué ajustar. Usted decide; nada cambia en Wazuh sin su aprobación.

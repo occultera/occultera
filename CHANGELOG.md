@@ -5,6 +5,13 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+- The review window now starts where the last report **with a successful AI analysis** ended. A run that
+  only saved the deterministic part (provider error, no balance) no longer moves the start forward, so the next
+  round — scheduled or through MCP — covers the unanalysed period too (still capped by `window_max_hours`).
+- About page: telemetry shows the current `TELEMETRY` value and explains that it is an environment variable,
+  not a UI setting, with the exact place to set it for Docker Compose, Kubernetes and Helm.
+
 ## [0.18.0] — 2026-11-23
 
 An AI round without an API key, indexer health with advice, error reports, the rule migration preview and ISO 27001

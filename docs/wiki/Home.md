@@ -2,6 +2,8 @@
 
 **English** · [Türkçe](Home-TR) · [Español](Home-ES) · [Français](Home-FR) · [Deutsch](Home-DE)
 
+The application interface also supports German; the wiki is not fully translated into German.
+
 **Open-source MCP server and AI alert triage for Wazuh 4.x** (Wazuh 5.x support in development), with personal data masked before the AI (GDPR / KVKK). An on-call companion: It watches your alerts around the clock and tells you within minutes when
 something urgent happens — without asking an AI. Once or twice a day an AI round reviews everything the watch
 saw, explains it and suggests what to tune. You decide; nothing changes in Wazuh without your approval.
@@ -20,7 +22,7 @@ saw, explains it and suggests what to tune. You decide; nothing changes in Wazuh
 
 ![Watch board](images/dashboard.png)
 
-**Current release:** 0.18.0 · **Licence:** AGPL-3.0-only · **Python:** 3.11–3.15 · **Wazuh:** 4.x · 5.x coming in 1.0 ([Wazuh 5](Wazuh-5))
+**Current release:** 0.18.0 · **Licence:** AGPL-3.0-only · **Python:** 3.11–3.15 · **Wazuh:** 4.x · 5.x production support planned for 1.0 ([Wazuh 5](Wazuh-5))
 
 ## What it is, and what it is not
 
@@ -100,6 +102,7 @@ cluster's own Prometheus. Quiet hours hold everything but critical events. The w
 | **Security and privacy** | |
 | Know what the tool can do and where data goes | [Security model](Security-Model) |
 | See what reaches the AI provider and the limits of masking (KVKK / GDPR) | [Privacy](Privacy) |
+| See exactly what error reports and usage telemetry contain | [Error reports and usage data](Telemetry) |
 | Sign off an installation before production | [Security checklist](Security-Checklist) |
 | **Operate** | |
 | Find the cause of an error message | [Troubleshooting](Troubleshooting) |

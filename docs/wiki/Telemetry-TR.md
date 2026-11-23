@@ -18,6 +18,17 @@ Herkese açık demo (`WDT_PUBLIC_DEMO`) hiçbir şey göndermez. Dışarıya HTT
 olur, başka hiçbir şey etkilenmez. **Ayarlar → Hakkında → Hata bildirimi ve kullanım verisi** seviyeyi ve bir olayın
 tam olarak neye benzediğini gösterir.
 
+## Nasıl kapatılır ya da değiştirilir
+
+`TELEMETRY` arayüzde bir ayar **değildir**; kurulumda verilen bir ortam değişkenidir. Değer pod ya da container
+yeniden başlayınca geçerli olur. **Ayarlar → Hakkında** şu anki değeri gösterir.
+
+| Kurulum | Yapılacak |
+|---|---|
+| Docker Compose | `docker-compose.yml` yanındaki `.env` dosyasına `TELEMETRY=off` ekleyin, sonra `docker compose up -d` |
+| Kubernetes | Kustomize: overlay'deki env dosyasına (`configMapGenerator` ya da `secret.env`) `TELEMETRY=off` ekleyin, `kubectl apply -k .` |
+| Helm | `--set env.TELEMETRY=off` ya da values içinde `env: {TELEMETRY: "off"}`, `helm upgrade` |
+
 ## Çökme raporunda ne var
 
 | Alan | Örnek |

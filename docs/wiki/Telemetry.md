@@ -18,6 +18,17 @@ The public demo (`WDT_PUBLIC_DEMO`) never sends anything. If outbound HTTPS is b
 nothing else is affected. **Settings → About → Error reports and usage data** shows the level and exactly what an
 event looks like.
 
+## How to switch it off or change it
+
+`TELEMETRY` is **not** a setting in the UI; it is an environment variable of the installation. The value applies
+after the pod or container restarts. **Settings → About** shows the current value.
+
+| Install | What to do |
+|---|---|
+| Docker Compose | add `TELEMETRY=off` to the `.env` file next to `docker-compose.yml`, then `docker compose up -d` |
+| Kubernetes | Kustomize: in the overlay's env file (`configMapGenerator` or `secret.env`) add `TELEMETRY=off`, `kubectl apply -k .` |
+| Helm | `--set env.TELEMETRY=off` or in values `env: {TELEMETRY: "off"}`, `helm upgrade` |
+
 ## What a crash report contains
 
 | Field | Example |

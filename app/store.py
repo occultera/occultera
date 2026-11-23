@@ -286,8 +286,15 @@ class Repo:
         return await self.s.query("runs", {"env": self.env, "status": status}, "started_at", size, exclude=ex)
 
     async def last_success(self) -> dict | None:
-        r = await self.list_runs(1, status="done")
-        return r[0] if r else None
+        """The last finished run whose AI analysis succeeded.
+
+        A run that only saved the deterministic part (``ai_error``: provider down, no balance) does not count,
+        so the next window starts where the last real analysis ended and no period is left unanalysed.
+        """
+        for r in await self.list_runs(50, status="done", light=True):
+            if not r.get("ai_error"):
+                return r
+        return None
 
     async def prune_runs(self, days: int) -> int:
         """Delete runs older than ``days``; knowledge stays forever (decisions are durable evidence)."""
