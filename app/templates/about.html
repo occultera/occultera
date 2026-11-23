@@ -62,6 +62,7 @@
   <h2>{{ _('tel.title') }}</h2>
   <p>{% if tel_level == 'off' %}<span class="pill gray">{{ _('ab.off') }}</span>{% else %}<span class="pill green">{{ tel_level }}</span>{% endif %}
     {{ _('tel.desc') }}</p>
+  <p><strong>{{ _('tel.now', level=tel_level) }}</strong></p>
   <p class="small muted">{{ _('tel.how') }}</p>
   <details><summary>{{ _('tel.preview') }}</summary><pre class="code">{{ tel_json }}</pre></details>
   <p><a href="{{ links.telemetry }}" target="_blank" rel="noopener">{{ _('tel.doc') }} →</a>

@@ -5,6 +5,10 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+- About page: telemetry shows the current `TELEMETRY` value and explains that it is an environment variable,
+  not a UI setting, with the exact place to set it for Docker Compose, Kubernetes and Helm.
+
 ## [0.18.0] — 2026-11-23
 
 An AI round without an API key, indexer health with advice, error reports, the rule migration preview and ISO 27001
